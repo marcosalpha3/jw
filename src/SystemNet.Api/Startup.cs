@@ -57,7 +57,11 @@ namespace SystemNet.Api
 
             services.AddCors();
 
-            ConfigureSwagger(ref services);
+            // Register the Swagger generator, defining one or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "JW Api", Version = "v1" });
+            });
 
             services.AddScoped<AppDataContext, AppDataContext>();
 
@@ -134,10 +138,13 @@ namespace SystemNet.Api
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
 
-            // activating middlewares to use the Swagger
-            app.UseSwagger(c =>
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
             {
-                c.RouteTemplate = "api-docs/{documentName}/swagger.json";
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "JW API");
             });
 
 

@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.6" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +30,10 @@
     <ProjectReference Include="..\SystemNet.Core.Infraestructure\SystemNet.Core.Infraestructure.csproj" />
     <ProjectReference Include="..\SystemNet.Practices.Security.Bearer\SystemNet.Practices.Security.Bearer.csproj" />
     <ProjectReference Include="..\SystemNet.Shared\SystemNet.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>
