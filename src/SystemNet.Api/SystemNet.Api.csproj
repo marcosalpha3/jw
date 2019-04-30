@@ -15,7 +15,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netcoreapp2.0\SystemNet.Api.xml</DocumentationFile>
-    <OutputPath>C:\Websites\SystemNet.AccessControl\</OutputPath>
+    <OutputPath>bin\Release\netcoreapp2.0\SystemNet.Api.xml</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
