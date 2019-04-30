@@ -15,7 +15,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netcoreapp2.0\SystemNet.Api.xml</DocumentationFile>
-    <OutputPath></OutputPath>
+    <OutputPath>home\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
