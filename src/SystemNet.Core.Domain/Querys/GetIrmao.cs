@@ -1,0 +1,19 @@
+﻿namespace SystemNet.Core.Domain.Querys
+{
+    public class GetIrmao
+    {
+        public int Codigo { get; set; }
+        public string Nome { get; set; }
+        public string Email { get; set; }
+        public string Telefone { get; set; }
+        public bool Ativo { get; set; }
+        public bool Indicador { get; set; }
+        public bool Microfonista { get; set; }
+        public bool LeitorSentinela { get; set; }
+        public bool LeitorEstudoLivro { get; set; }
+        public bool SistemaSonoro { get; set; }
+        public bool OracaoFinal { get; set; }
+        public bool PresidenteConferencia { get; set; }
+        public bool Carrinho { get; set; }
+    }
+}

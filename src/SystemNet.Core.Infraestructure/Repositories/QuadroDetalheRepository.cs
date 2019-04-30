@@ -1,0 +1,99 @@
+﻿using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using SystemNet.Core.Domain.Contracts.Repositories;
+using SystemNet.Core.Domain.enums;
+using SystemNet.Core.Domain.Models;
+using SystemNet.Practices.Data.Uow;
+
+namespace SystemNet.Core.Infraestructure.Repositories
+{
+    public class QuadroDetalheRepository : IQuadroDetalheRepository
+    {
+        #region [Scripts SQL]
+
+        private const string SelectIrmaoDetalheLista = @"SELECT I.Nome FROM [dbo].[QuadroDetalhe] QD
+                                                            INNER JOIN dbo.Quadro Q ON Q.Codigo = QD.QuadroId
+															INNER JOIN dbo.Irmao I ON I.Codigo = QD.IrmaoId
+                                                            Where Q.Quadro = @QuadroId
+															and QD.Data = CAST(@Data As Date)
+                                                            and Q.TipoListaId = @TipoListaId ";
+
+        private const string SelectUltimaReuniao = @" SELECT top 1 * FROM [dbo].[QuadroDetalhe] QD
+                                                      INNER JOIN dbo.Quadro Q ON Q.Codigo = QD.QuadroId
+                                                      Where Data < @data
+                                                      and Q.CongregacaoId = @CongregacaoId 
+                                                      order by Data desc";
+
+
+        private const string SelectProximaReuniao = @"SELECT top 1 * FROM [dbo].[QuadroDetalhe] QD
+                                                      INNER JOIN dbo.Quadro Q ON Q.Codigo = QD.QuadroId
+                                                      Where Data > @data
+                                                      and Q.CongregacaoId = 1 
+                                                      order by Data ";
+        #endregion
+
+        public void ApagaDetalhesQuadro(ref IUnitOfWork unitOfWork, int QuadroId)
+        {
+            unitOfWork.Connection.Execute("DELETE FROM [dbo].[QuadroDetalhe] WHERE QuadroId = @QuadroId",
+                param: new
+                {
+                    @QuadroId = QuadroId
+                },
+                transaction: unitOfWork.Transaction);
+        }
+
+        public void InsereDataQuadro(ref IUnitOfWork unitOfWork, QuadroDetalhe model)
+        {
+            unitOfWork.Connection.Execute(@" INSERT INTO [dbo].[QuadroDetalhe] ([QuadroId], [Data], [IrmaoId], [EventoId])
+                                             VALUES (@QuadroId, @Data, @IrmaoId, @EventoId) ",
+                param: new
+                {
+                    @QuadroId = model.QuadroId,
+                    @Data = model.Data,
+                    @IrmaoId = (model.IrmaoId <= 0) ? (int?)null : model.IrmaoId,
+                    @EventoId = (model.EventoId <= 0) ? (int?)null : model.EventoId,
+                },
+                transaction: unitOfWork.Transaction);
+        }
+
+        public List<Irmao> ObterIrmaosTipoLista(ref IUnitOfWork unitOfWork, eTipoLista tipolist, int QuadroId, DateTime data)
+        {
+            return unitOfWork.Connection.Query<Irmao>(SelectIrmaoDetalheLista,
+                    param: new
+                    {
+                        @QuadroId = QuadroId,
+                        @TipoListaId = tipolist,
+                        @Data = data
+                    }
+               ).ToList();
+        }
+
+        public QuadroDetalhe ObterUltimaReuniaoValida(ref IUnitOfWork unitOfWork, int congregacaoId, DateTime data)
+        {
+            return unitOfWork.Connection.Query<QuadroDetalhe>(SelectUltimaReuniao,
+                param: new
+                {
+                    @data = data,
+                    @CongregacaoId = congregacaoId
+                },
+                    transaction: unitOfWork.Transaction
+                    ).FirstOrDefault();
+        }
+
+        public QuadroDetalhe ObterProximaReuniaoValida(ref IUnitOfWork unitOfWork, int congregacaoId, DateTime data)
+        {
+            return unitOfWork.Connection.Query<QuadroDetalhe>(SelectProximaReuniao,
+                param: new
+                {
+                    @data = data,
+                    @CongregacaoId = congregacaoId
+                },
+                    transaction: unitOfWork.Transaction
+                    ).FirstOrDefault();
+        }
+
+    }
+}

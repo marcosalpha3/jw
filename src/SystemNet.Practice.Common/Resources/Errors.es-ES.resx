@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccessDeny" xml:space="preserve">
+    <value>Acceso denegado</value>
+  </data>
+  <data name="AtleastOneEvent" xml:space="preserve">
+    <value>La funcionalidad, necesita al menos 1 evento registrado.</value>
+  </data>
+  <data name="AtleastOneFuncionality" xml:space="preserve">
+    <value>El Perfil, necesita al menos 1 funcionalidad registrada.</value>
+  </data>
+  <data name="BlockedUser" xml:space="preserve">
+    <value>Usuario bloqueado, Contactar el administrador de la operadora.</value>
+  </data>
+  <data name="EmailExists" xml:space="preserve">
+    <value>Esto e-mail es invalido.</value>
+  </data>
+  <data name="EmailInvalido" xml:space="preserve">
+    <value>El e-mail es inválido</value>
+  </data>
+  <data name="EmailMustBeDiferent" xml:space="preserve">
+    <value>El e-mail secundario debe ser diferente del e-mail principal</value>
+  </data>
+  <data name="EndDateGreater" xml:space="preserve">
+    <value>La fecha inicial debe ser mayor que la fecha final</value>
+  </data>
+  <data name="Exists" xml:space="preserve">
+    <value>{0} ya existe</value>
+  </data>
+  <data name="FuncionalityDoesNotExists" xml:space="preserve">
+    <value>Esta funcionalidad / Evento {0} no existe.</value>
+  </data>
+  <data name="FuncionalityDuplicate" xml:space="preserve">
+    <value>Esta Funcionalidade '{0}' ya existe para esto perfil.</value>
+  </data>
+  <data name="HtmlBody_1" xml:space="preserve">
+    <value>Hola {0}! Un nuevo usuario ha sido creado por usted en el sistema.</value>
+  </data>
+  <data name="HtmlBody_1b" xml:space="preserve">
+    <value>Hola {0}! La contraseña del usuario se restablece en el sistema.</value>
+  </data>
+  <data name="HtmlBody_2" xml:space="preserve">
+    <value>Usuario:</value>
+  </data>
+  <data name="HtmlBody_3" xml:space="preserve">
+    <value>Contraseña temporal:</value>
+  </data>
+  <data name="HtmlBody_4" xml:space="preserve">
+    <value>Para su seguridad, la entrada se le solicitará que cambie la contraseña.</value>
+  </data>
+  <data name="HtmlBody_5" xml:space="preserve">
+    <value>Haga clic &lt;a href="{0}"&gt;aquí&lt;/a&gt; para acceder el sistema.</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Credenciais Inválidas</value>
+  </data>
+  <data name="InvalidPassword" xml:space="preserve">
+    <value>Contraseña inválida</value>
+  </data>
+  <data name="InvalidUserName" xml:space="preserve">
+    <value>El nombre del usuario es invalido</value>
+  </data>
+  <data name="LoginExists" xml:space="preserve">
+    <value>Esto login ya existe</value>
+  </data>
+  <data name="MaxEmail" xml:space="preserve">
+    <value>El e-mail no debe tener más de {0} caracteres</value>
+  </data>
+  <data name="MaxLogin" xml:space="preserve">
+    <value>El login no debe tener más de {0} caracteres</value>
+  </data>
+  <data name="MaxName" xml:space="preserve">
+    <value>El nombre no debe tener más de {0} caracteres</value>
+  </data>
+  <data name="MaxPassword" xml:space="preserve">
+    <value>La contraseña no debe tener más de {0} caracteres</value>
+  </data>
+  <data name="MinLogin" xml:space="preserve">
+    <value>El login debe tener al menos {0} caracteres</value>
+  </data>
+  <data name="MinName" xml:space="preserve">
+    <value>El nombre debe tener al menos {0} caracteres</value>
+  </data>
+  <data name="MinPassword" xml:space="preserve">
+    <value>La contraseña debe tener al menos {0} caracteres</value>
+  </data>
+  <data name="NewPasswordEqualPrevious" xml:space="preserve">
+    <value>La contraseña no puede ser es igual a la contraseña anterior</value>
+  </data>
+  <data name="OperatorGroupInvalid" xml:space="preserve">
+    <value>Al elegir un grupo de operadora, no debe ser informado una operadora, cliente o sala.</value>
+  </data>
+  <data name="OperatorNotFound" xml:space="preserve">
+    <value>La operadora no existe</value>
+  </data>
+  <data name="PasswordDoesNotMatch" xml:space="preserve">
+    <value>Las contraseñas informadas no coinciden.</value>
+  </data>
+  <data name="PeriodoInvalid" xml:space="preserve">
+    <value>La duración del acceso al sistema ha expirado. Póngase en contacto con el responsable por la operadora.</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Perfil</value>
+  </data>
+  <data name="ProfileEventAlreadyExists" xml:space="preserve">
+    <value>Esta funcionalidad / evento {0} ya existe</value>
+  </data>
+  <data name="ProfileHasUsers" xml:space="preserve">
+    <value>Este perfil '{0}' tiene usuario(s) asociado(s)</value>
+  </data>
+  <data name="ProfileRequired" xml:space="preserve">
+    <value>El perfil del usuario es obligatorio</value>
+  </data>
+  <data name="RegisterNotFound" xml:space="preserve">
+    <value>{0} no existe.</value>
+  </data>
+  <data name="RequirementsPassword" xml:space="preserve">
+    <value>La contraseña debe contener letras y números, y al menos una letra mayúscula.</value>
+  </data>
+  <data name="ResponsibleRequired" xml:space="preserve">
+    <value>O Responsável debe ser informado.</value>
+  </data>
+  <data name="SubjectEmail" xml:space="preserve">
+    <value>Cuenta Creada</value>
+  </data>
+  <data name="SubjectEmail1" xml:space="preserve">
+    <value>Su cuenta se restablezca</value>
+  </data>
+  <data name="SystemDoesNotExists" xml:space="preserve">
+    <value>Esto sistema no existe</value>
+  </data>
+  <data name="SystemRequired" xml:space="preserve">
+    <value>El sistema debe ser informado.</value>
+  </data>
+  <data name="TellOperator" xml:space="preserve">
+    <value>La operador debe ser informada</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>El usuario no existe</value>
+  </data>
+  <data name="UserPassInvalidValidator" xml:space="preserve">
+    <value>Login / Contraseña invalidos.</value>
+  </data>
+</root>

@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  systemnet.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+    
