@@ -27,8 +27,8 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                            LEFT JOIN Irmao IL ON IL.Codigo = QDL.IrmaoId
                                                            LEFT JOIN DataEvento DE ON DE.Codigo = QDL.EventoId
                                                            WHERE (TipoListaId = @TipoLeitorELC OR TipoListaId = @TipoLeitorJW)
+                                                           AND QDL.Data >= GETDATE()
                                                            AND Q.Quadro = @Quadro
-                                                           AND DATA >= GETDATE()
                                                            ORDER BY DATA ";
 
         private const string SelectUltimoQuadro = @"SELECT Tab.*, Min(QD.Data) As DataInicioLista, Max(QD.Data) As DataFimLista from
