@@ -1,13 +1,12 @@
-﻿namespace SystemNet.Core.Domain.Querys
+﻿namespace SystemNet.Api.Models.Irmao
 {
-    public class GetIrmao
+    public class AlteraIrmao
     {
         public int Codigo { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
         public string Telefone { get; set; }
         public string Sexo { get; set; }
-        public bool Ativo { get; set; }
         public bool Indicador { get; set; }
         public bool Microfonista { get; set; }
         public bool LeitorSentinela { get; set; }

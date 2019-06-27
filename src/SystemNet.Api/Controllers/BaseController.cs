@@ -1,4 +1,4 @@
-﻿using FluentValidator;
+﻿using Flunt.Notifications;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -38,7 +38,7 @@ namespace SystemNet.Api.Controllers
                 }
         }
 
-        public async Task<IActionResult> Response(object result, IEnumerable<Notification> notifications)
+        public async Task<IActionResult> Response(object result, IReadOnlyCollection<Notification> notifications)
         {
             if (!notifications.Any())
             {

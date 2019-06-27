@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Flunt.Notifications;
+using System.Collections.Generic;
+using SystemNet.Core.Domain.Models;
 using SystemNet.Core.Domain.Querys;
 
 namespace SystemNet.Core.Domain.Contracts.Services
@@ -6,5 +8,10 @@ namespace SystemNet.Core.Domain.Contracts.Services
     public interface IIrmaoServices 
     {
         IEnumerable<GetIrmao> ObterIrmaosPorCongregacao(int congregacaoId);
+        IReadOnlyCollection<Notification> Atualizar(Irmao updatemodel, int userId);
+        Irmao Autenticar(string login, string password);
+        Irmao Adicionar(Irmao model, int userId);
+        Irmao Desativar(int id, int userId);
+        Irmao Ativar(int id, int userId);
     }
 }

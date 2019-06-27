@@ -19,6 +19,9 @@ namespace SystemNet.Shared
         public static string Password { get; set; }
         public static string Ssl { get; set; }
         public static string TimeOutClientSmtp { get; set; }
+        public static string UrlSystem { get; set; }
+
+        public const string JWInstance = "JW";
 
 
         public static string GetConnectionString(string instance)

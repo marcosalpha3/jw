@@ -97,6 +97,15 @@ namespace SystemNet.Practice.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Congreagation is required.
+        /// </summary>
+        public static string CongreagationRequired {
+            get {
+                return ResourceManager.GetString("CongreagationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This email already exists.
         /// </summary>
         public static string EmailExists {
@@ -156,6 +165,15 @@ namespace SystemNet.Practice.Common.Resources {
         public static string FuncionalityDuplicate {
             get {
                 return ResourceManager.GetString("FuncionalityDuplicate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group is required.
+        /// </summary>
+        public static string GroupRequired {
+            get {
+                return ResourceManager.GetString("GroupRequired", resourceCulture);
             }
         }
         
@@ -241,7 +259,7 @@ namespace SystemNet.Practice.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This login already exists.
+        ///   Looks up a localized string similar to This login or E-mail already exists.
         /// </summary>
         public static string LoginExists {
             get {
@@ -286,6 +304,15 @@ namespace SystemNet.Practice.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Phone number should not have more than {0} chars.
+        /// </summary>
+        public static string MaxPhone {
+            get {
+                return ResourceManager.GetString("MaxPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login should have at least {0} chars.
         /// </summary>
         public static string MinLogin {
@@ -309,6 +336,15 @@ namespace SystemNet.Practice.Common.Resources {
         public static string MinPassword {
             get {
                 return ResourceManager.GetString("MinPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This name already exists.
+        /// </summary>
+        public static string NameExists {
+            get {
+                return ResourceManager.GetString("NameExists", resourceCulture);
             }
         }
         
@@ -408,6 +444,15 @@ namespace SystemNet.Practice.Common.Resources {
         public static string ResponsibleRequired {
             get {
                 return ResourceManager.GetString("ResponsibleRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El Sex is invalid.
+        /// </summary>
+        public static string SexInvalid {
+            get {
+                return ResourceManager.GetString("SexInvalid", resourceCulture);
             }
         }
         

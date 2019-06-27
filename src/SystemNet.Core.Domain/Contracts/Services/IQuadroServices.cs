@@ -1,7 +1,5 @@
-﻿using FluentValidator;
-using System;
+﻿using Flunt.Notifications;
 using System.Collections.Generic;
-using System.Text;
 using SystemNet.Core.Domain.Querys;
 
 namespace SystemNet.Core.Domain.Contracts.Services

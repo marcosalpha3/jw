@@ -12,5 +12,13 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
         void AtualizaDesativarProximaLista(ref IUnitOfWork unitOfWork, int id);
         IEnumerable<Irmao> ObterIrmaosADesativarOuAtivar(ref IUnitOfWork unitOfWork, int congregacaoId);
         IEnumerable<GetIrmao> ObterIrmaosPorCongregacao(ref IUnitOfWork unitOfWork, int congregacaoId);
+        int Inserir(ref IUnitOfWork unitOfWork, Irmao model);
+        void Atualizar(ref IUnitOfWork unitOfWork, Irmao model);
+        void Desativar(ref IUnitOfWork unitOfWork, int codigo);
+        void Ativar(ref IUnitOfWork unitOfWork, int codigo);
+        Irmao PesquisarporEmail(ref IUnitOfWork unitOfWork, string email, int? id = (int?)null);
+        Irmao PesquisarporNome(ref IUnitOfWork unitOfWork, string nome, int? id = (int?)null);
+        void SendEmail(Irmao model, string password, bool newUser);
+        void Login(ref IUnitOfWork unitOfWork, Irmao model);
     }
 }

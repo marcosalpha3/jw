@@ -129,6 +129,9 @@
   <data name="BlockedUser" xml:space="preserve">
     <value>Usuário bloqueado, Entre em contato com o administrador do sistema.</value>
   </data>
+  <data name="CongreagationRequired" xml:space="preserve">
+    <value>A congregação é obrigatório</value>
+  </data>
   <data name="EmailExists" xml:space="preserve">
     <value>Este e-mail já existe</value>
   </data>
@@ -149,6 +152,9 @@
   </data>
   <data name="FuncionalityDuplicate" xml:space="preserve">
     <value>Esta Funcionalidade '{0}' já existe para este perfil.</value>
+  </data>
+  <data name="GroupRequired" xml:space="preserve">
+    <value>O grupo de campo é obrigatório</value>
   </data>
   <data name="HtmlBody_1" xml:space="preserve">
     <value>Olá {0}! Um novo usuário foi criado para você no sistema.</value>
@@ -178,7 +184,7 @@
     <value>Nome do usuário está inválido</value>
   </data>
   <data name="LoginExists" xml:space="preserve">
-    <value>Este login já existe.</value>
+    <value>Este login ou E-mail já existe.</value>
   </data>
   <data name="MaxEmail" xml:space="preserve">
     <value>O E-mail não deve ter mais de {0} caracteres</value>
@@ -192,6 +198,9 @@
   <data name="MaxPassword" xml:space="preserve">
     <value>A senha não deve ter mais de {0} caracteres</value>
   </data>
+  <data name="MaxPhone" xml:space="preserve">
+    <value>O telefone não pode ter mais de {0} caracteres</value>
+  </data>
   <data name="MinLogin" xml:space="preserve">
     <value>O Login deve ter pelo menos {0} caracteres</value>
   </data>
@@ -200,6 +209,9 @@
   </data>
   <data name="MinPassword" xml:space="preserve">
     <value>A senha deve ter pelo menos {0} caracteres</value>
+  </data>
+  <data name="NameExists" xml:space="preserve">
+    <value>Este nome já existe.</value>
   </data>
   <data name="NewPasswordEqualPrevious" xml:space="preserve">
     <value>A nova senha não pode ser igual a anterior.</value>
@@ -233,6 +245,9 @@
   </data>
   <data name="ResponsibleRequired" xml:space="preserve">
     <value>O Responsável é Obrigatório</value>
+  </data>
+  <data name="SexInvalid" xml:space="preserve">
+    <value>O sexo está inválido</value>
   </data>
   <data name="SubjectEmail" xml:space="preserve">
     <value>Nova conta criada</value>

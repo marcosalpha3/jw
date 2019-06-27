@@ -87,6 +87,14 @@ namespace SystemNet.Api
 
             services.AddTransient<ITipoListaRepository, TipoListaRepository>();
             services.AddTransient<TipoLista, TipoLista>();
+
+            services.AddTransient<ICongregacaoRepository, CongregacaoRepository>();
+            services.AddTransient<ICongregacaoServices, CongregacaoServices>();
+            services.AddTransient<Congregacao, Congregacao>();
+
+            services.AddTransient<IGrupoRepository, GrupoRepository>();
+            services.AddTransient<IGrupoServices, GrupoServices>();
+            services.AddTransient<Grupo, Grupo>();
         }
 
 
@@ -155,6 +163,7 @@ namespace SystemNet.Api
             Runtime.connectionStrings = new string[1, 2] { { "JW", Configuration.GetConnectionString("JW") } };
 
             Runtime.DataPrimeiraReuniao = Configuration["AppSettings:URLSystemNet"];
+            Runtime.UrlSystem = Configuration["AppSettings:UrlSystem"]; 
             Runtime.Smtp = Configuration["EmailSettings:smtp"];
             Runtime.Port = Configuration["EmailSettings:port"];
             Runtime.User = Configuration["EmailSettings:user"];
@@ -163,9 +172,6 @@ namespace SystemNet.Api
             Runtime.Ssl = Configuration["EmailSettings:ssl"];
             Runtime.TimeOutClientSmtp = Configuration["EmailSettings:timeOutClientSmtp"];
             Runtime.NameSystem = Configuration["AppSettings:NameSystem"];
-
-            
-
         }
 
 

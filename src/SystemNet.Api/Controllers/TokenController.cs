@@ -1,24 +1,26 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using SystemNet.Api.Models.Token;
+using SystemNet.Core.Domain.Contracts.Services;
+using SystemNet.Core.Domain.Models;
 using SystemNet.Practices.Security.Bearer;
 using SystemNet.Shared;
 
 namespace SystemNet.Api.Products.Controllers
 {
-
     [AllowAnonymous]
     public class TokenController : Controller
     {
 
         private const int expiredminutes = 120;
+        IIrmaoServices _service;
 
-        public TokenController()
+        public TokenController(IIrmaoServices service)
         {
-           
+            _service = service;
         }
-
 
         /// <summary>
         /// Generation a new TOKEN
@@ -29,35 +31,34 @@ namespace SystemNet.Api.Products.Controllers
         [HttpPost]
         public IActionResult Create(LoginInputModel inputModel)
         {
-
-
             try
             {
-               // User ret = _service.Authenticate(inputModel.Username, inputModel.Password);
+               Irmao ret = _service.Autenticar(inputModel.Username, inputModel.Password);
 
                 //TODO LOGIN
-                if (inputModel.Username == "admin" && inputModel.Password == "senha")
+                if (ret.Notifications.Any())
                     return Unauthorized(
                         );
 
+                var member = (ret.AcessoAdmin) ? "MembershipId" : "Brother";
+
                 var token = new JwtTokenBuilder()
                                     .AddSecurityKey(JwtSecurityKey.Create(Runtime.SecreteKey))
-                                    .AddSubject("admin")
+                                    .AddSubject(ret.Nome)
                                     .AddIssuer("SystemNet.Security")
-                                    .AddAudience("SystemNet.Security")
-                                    .AddClaim("MembershipId","1")
-                                    //.AddClaim("UserName", ret.Login)
+                                    .AddAudience("SystemNet.Security")                                   
+                                    .AddClaim(member,ret.Codigo.ToString())
+                                    .AddClaim("UserName", ret.Email)
                                     .AddExpiry(expiredminutes)
                                     .Build();
-
-
                 return Ok(new
                 {
                     access_token = token.Value,
-                    token_type = "bearer",
-                    expires_in = (expiredminutes * 60),
-                    changePassword = true,
-                    userid = 1
+                    changePassword = ret.AlterarSenha,
+                    userid = ret.Codigo,
+                    username = ret.Nome,
+                    congregation = "Guanabara",
+                    congregationId = ret.CongregacaoId
                 });
 
             }
@@ -70,9 +71,6 @@ namespace SystemNet.Api.Products.Controllers
                     errors = new[] { ex }
                 });
             }
-
-
         }
     }
-
 }

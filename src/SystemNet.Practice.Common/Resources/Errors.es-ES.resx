@@ -129,6 +129,9 @@
   <data name="BlockedUser" xml:space="preserve">
     <value>Usuario bloqueado, Contactar el administrador de la operadora.</value>
   </data>
+  <data name="CongreagationRequired" xml:space="preserve">
+    <value>La congreagación es obligatorio</value>
+  </data>
   <data name="EmailExists" xml:space="preserve">
     <value>Esto e-mail es invalido.</value>
   </data>
@@ -149,6 +152,9 @@
   </data>
   <data name="FuncionalityDuplicate" xml:space="preserve">
     <value>Esta Funcionalidade '{0}' ya existe para esto perfil.</value>
+  </data>
+  <data name="GroupRequired" xml:space="preserve">
+    <value>El grupo es obligatorio</value>
   </data>
   <data name="HtmlBody_1" xml:space="preserve">
     <value>Hola {0}! Un nuevo usuario ha sido creado por usted en el sistema.</value>
@@ -178,7 +184,7 @@
     <value>El nombre del usuario es invalido</value>
   </data>
   <data name="LoginExists" xml:space="preserve">
-    <value>Esto login ya existe</value>
+    <value>Esto login o correo electrónico ya existe</value>
   </data>
   <data name="MaxEmail" xml:space="preserve">
     <value>El e-mail no debe tener más de {0} caracteres</value>
@@ -192,6 +198,9 @@
   <data name="MaxPassword" xml:space="preserve">
     <value>La contraseña no debe tener más de {0} caracteres</value>
   </data>
+  <data name="MaxPhone" xml:space="preserve">
+    <value>El telefono no puede tener más de {0} caracteres</value>
+  </data>
   <data name="MinLogin" xml:space="preserve">
     <value>El login debe tener al menos {0} caracteres</value>
   </data>
@@ -200,6 +209,9 @@
   </data>
   <data name="MinPassword" xml:space="preserve">
     <value>La contraseña debe tener al menos {0} caracteres</value>
+  </data>
+  <data name="NameExists" xml:space="preserve">
+    <value>Esto nombre ya existe.</value>
   </data>
   <data name="NewPasswordEqualPrevious" xml:space="preserve">
     <value>La contraseña no puede ser es igual a la contraseña anterior</value>
@@ -236,6 +248,9 @@
   </data>
   <data name="ResponsibleRequired" xml:space="preserve">
     <value>O Responsável debe ser informado.</value>
+  </data>
+  <data name="SexInvalid" xml:space="preserve">
+    <value>El sexo no es valido</value>
   </data>
   <data name="SubjectEmail" xml:space="preserve">
     <value>Cuenta Creada</value>
