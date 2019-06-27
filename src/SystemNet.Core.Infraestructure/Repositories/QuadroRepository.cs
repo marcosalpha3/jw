@@ -28,7 +28,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                            LEFT JOIN DataEvento DE ON DE.Codigo = QDL.EventoId
                                                            WHERE (TipoListaId = @TipoLeitorELC OR TipoListaId = @TipoLeitorJW)
                                                            AND Q.Quadro = @Quadro
-                                                           DATA >= GETDATE()
+                                                           AND DATA >= GETDATE()
                                                            ORDER BY DATA ";
 
         private const string SelectUltimoQuadro = @"SELECT Tab.*, Min(QD.Data) As DataInicioLista, Max(QD.Data) As DataFimLista from
