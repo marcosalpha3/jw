@@ -1,4 +1,4 @@
-﻿using Flunt.Notifications;
+﻿using FluentValidator;
 using System.Collections.Generic;
 using SystemNet.Core.Domain.Querys;
 

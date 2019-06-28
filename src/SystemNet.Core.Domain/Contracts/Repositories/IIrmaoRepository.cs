@@ -20,5 +20,7 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
         Irmao PesquisarporNome(ref IUnitOfWork unitOfWork, string nome, int? id = (int?)null);
         void SendEmail(Irmao model, string password, bool newUser);
         void Login(ref IUnitOfWork unitOfWork, Irmao model);
+        void ReiniciarSenha(ref IUnitOfWork unitOfWork, Irmao model);
+        void AlterarSenha(ref IUnitOfWork unitOfWork, int Id, string senha);
     }
 }

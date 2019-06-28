@@ -5,7 +5,7 @@
         UserId = 2,
         UserName = 0,
         GivenNameUser = 1,
-        Login = 3,
-        Profile = 4
+        Login = 4,
+        Profile = 5
     }
 }

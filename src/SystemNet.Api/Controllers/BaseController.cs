@@ -1,4 +1,4 @@
-﻿using Flunt.Notifications;
+﻿using FluentValidator;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

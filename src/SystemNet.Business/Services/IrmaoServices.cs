@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Flunt.Notifications;
+using FluentValidator;
 using SystemNet.Core.Domain.Contracts.Repositories;
 using SystemNet.Core.Domain.Contracts.Services;
 using SystemNet.Core.Domain.Models;
@@ -7,6 +7,7 @@ using SystemNet.Core.Domain.Querys;
 using SystemNet.Practice.Common.Resources;
 using SystemNet.Practices.Data.Uow;
 using SystemNet.Shared;
+using static SystemNet.Core.Domain.Models.Irmao;
 
 namespace SystemNet.Business.Services
 {
@@ -56,6 +57,41 @@ namespace SystemNet.Business.Services
             }
 
             return model;
+        }
+
+        public Irmao EsquecerSenha(string login)
+        {
+            using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
+            {
+                IUnitOfWork unitOfWork = dalSession.UnitOfWork;
+                unitOfWork.Begin();
+                try
+                {
+
+                    var model = BuscarporLogin(ref unitOfWork, login);
+
+                    if (model == null || model.Invalid) return model;
+                    else if (model.StatusId != (int)Status.Ativo)
+                    {
+                        model.AddNotification(nameof(Irmao.Email), Errors.BlockedUser);
+                        unitOfWork.Rollback();
+                        return model;
+                    }
+
+                    var novasenha = model.GeraNovaSenha(8, false);
+
+                    _repository.ReiniciarSenha(ref unitOfWork, model);
+                    _repository.SendEmail(model, novasenha, false);
+                    unitOfWork.Commit();
+                    return model;
+                }
+                catch
+                {
+                    unitOfWork.Rollback();
+                    throw;
+                }
+            }
+
         }
 
         public Irmao Ativar(int id, int userId)
@@ -146,6 +182,36 @@ namespace SystemNet.Business.Services
                 }
             }
         }
+
+        public Irmao AlterarSenha(string login, string UserToken, string senha, string novaSenha, string confirmacaoNovaSenha)
+        {
+            using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
+            {
+                IUnitOfWork unitOfWork = dalSession.UnitOfWork;
+                unitOfWork.Begin();
+                try
+                {
+                    var model = BuscarporLogin(ref unitOfWork, login);
+
+                    if (model == null || model.Invalid) return model;
+
+                    if (model.AlteraSenhaAtual(model.Email, model.Senha,
+                        senha, novaSenha, confirmacaoNovaSenha, UserToken))
+                    {
+                        _repository.AlterarSenha(ref unitOfWork, model.Codigo, model.Senha);
+                        unitOfWork.Commit();
+                    }
+                    return model;
+                }
+                catch
+                {
+                    unitOfWork.Rollback();
+                    throw;
+                }
+            }
+
+        }
+
 
         public Irmao Desativar(int id, int userId)
         {

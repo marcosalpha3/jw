@@ -44,7 +44,7 @@ namespace SystemNet.Api.Controllers
 
         [HttpGet]
         [Route("api/v1/quadro/congregacao/{id}/atual")]
-        [AllowAnonymous]
+        [Authorize(Policy = "Brother")]
         public async Task<IActionResult> Get(int id)
         {
             try
@@ -66,7 +66,7 @@ namespace SystemNet.Api.Controllers
 
         [HttpGet]
         [Route("api/v1/quadro/congregacao/{id}/proxima")]
-        [AllowAnonymous]
+        [Authorize(Policy = "Brother")]
         public async Task<IActionResult> GetProxima(int id)
         {
             try

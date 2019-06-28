@@ -1,4 +1,4 @@
-﻿using Flunt.Notifications;
+﻿using FluentValidator;
 using System;
 
 namespace SystemNet.Core.Domain.Models

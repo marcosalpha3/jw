@@ -1,8 +1,10 @@
-﻿using Flunt.Notifications;
-using Flunt.Validations;
+﻿
+using FluentValidator;
+using FluentValidator.Validation;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using SystemNet.Practice.Common.Resources;
 
 namespace SystemNet.Core.Domain.Models
@@ -29,13 +31,13 @@ namespace SystemNet.Core.Domain.Models
             CongregacaoId = congregacaoId;
             AcessoAdmin = acessoAdmin;
 
-            AddNotifications(new Contract()
+            AddNotifications(new ValidationContract()
                            .Requires()
                            .HasMinLen(Nome, 3, nameof(Nome), String.Format(Errors.MinName, 3))
                            .HasMaxLen(Nome, 100, nameof(Nome), String.Format(Errors.MaxName, 100))
                            .IsEmail(Email, nameof(Email), Errors.EmailInvalido)
 
-                           .HasMaxLengthIfNotNullOrEmpty(Telefone, 50, nameof(Telefone), String.Format(Errors.MaxPhone, 50))
+                           .HasMaxLen(Telefone, 50, nameof(Telefone), String.Format(Errors.MaxPhone, 50))
                            .IsTrue((Sexo == "M" || Sexo == "F"), nameof(Sexo), Errors.SexInvalid)
 
                            .IsGreaterThan(GrupoId, 0, nameof(GrupoId), Errors.GroupRequired)
@@ -71,6 +73,7 @@ namespace SystemNet.Core.Domain.Models
         public bool AlterarSenha { get; set; }
         public byte Tentativas { get; set; }
         public DateTime UltimoLogin { get; set; }
+        public string CongregacaoNome { get; set; }
 
         public void VerificaDesignacoes(Irmao modelAtual)
         {
@@ -109,6 +112,31 @@ namespace SystemNet.Core.Domain.Models
             return true;
         }
 
+        public bool AlteraSenhaAtual(string user, string passworddatabase, string password, string newpassword, string confirmNewPass, string userconnect)
+        {
+            AddNotifications(new ValidationContract()
+                .HasMinLen(newpassword, 8, nameof(this.Senha), String.Format(Errors.MinPassword, 8))
+                .HasMaxLen(newpassword, 20, nameof(this.Senha), String.Format(Errors.MaxPassword, 20))
+                .AreEquals(passworddatabase, CriptografarSenha(password), nameof(this.Senha), Errors.InvalidPassword)
+                .AreNotEquals(CriptografarSenha(password), CriptografarSenha(newpassword), nameof(this.Senha), Errors.NewPasswordEqualPrevious)
+                .AreEquals(newpassword, confirmNewPass, nameof(this.Senha), Errors.PasswordDoesNotMatch)
+                .IsTrue(VerificaSenhaForte(newpassword), nameof(this.Senha), Errors.RequirementsPassword)
+                .AreEquals(user, userconnect, nameof(Irmao.Email), Errors.InvalidCredentials)
+                );
+
+            if (Valid)
+            {
+                this.Senha = CriptografarSenha(newpassword);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        private static bool VerificaSenhaForte(string password)
+        {
+            return Regex.IsMatch(password, @"^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$");
+        }
 
         public string GeraNovaSenha(int tamanho, bool desbloquearUsuario)
         {

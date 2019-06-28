@@ -33,7 +33,7 @@ namespace SystemNet.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/v1/irmao/congregacao/{id}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "Member")]
         public async Task<IActionResult> Get(int id)
         {
             try
@@ -140,7 +140,26 @@ namespace SystemNet.Api.Controllers
                     errors = new[] { ex }
                 });
             }
+        }
 
+        [HttpGet]
+        [Route("api/v1/irmao/esquecersenha/{login}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(string login)
+        {
+            try
+            {
+                var result = _service.EsquecerSenha(login);
+                return await Response(result, result.Notifications);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    errors = new[] { ex }
+                });
+            }
         }
 
         /// <summary>
@@ -170,5 +189,33 @@ namespace SystemNet.Api.Controllers
                 });
             }
         }
+
+        /// <summary>
+        /// Alterar Senha do Usuario
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("api/v1/irmao/alterarsenha")]
+        [Authorize(Policy = "Brother")]
+        public async Task<IActionResult> AlterarSenha([FromBody]AlterarSenhaIrmao model)
+        {
+            try
+            {
+                var result = _service.AlterarSenha(model.Email, GetLoginToken(), model.Senha, model.NovaSenha, model.ConfirmacaoNovaSenha);
+                return (result == null) ? NoContent() : await Response(result, result.Notifications);
+            }
+            catch (Exception ex)
+            {
+                // Logar o erro (Elmah) 
+                return BadRequest(new
+                {
+                    success = false,
+                    errors = new[] { ex }
+                });
+            }
+
+        }
+
     }
 }

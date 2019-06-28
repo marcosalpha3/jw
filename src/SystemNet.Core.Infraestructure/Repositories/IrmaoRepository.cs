@@ -27,6 +27,14 @@ namespace SystemNet.Core.Infraestructure.Repositories
             transaction: unitOfWork.Transaction);
         }
 
+        public void ReiniciarSenha(ref IUnitOfWork unitOfWork, Irmao model)
+        {
+            unitOfWork.Connection.Execute(
+              "UPDATE Irmao SET Senha = @Senha, Tentativas = @Tentativas, StatusId = @StatusId, AlterarSenha = 1 where Codigo = @Id ",
+                param: new { @Senha = model.Senha, @Id = model.Codigo, @Tentativas = model.Tentativas, @StatusId = model.StatusId },
+                transaction: unitOfWork.Transaction);
+        }
+
         public void AtualizaAtivarProximaLista(ref IUnitOfWork unitOfWork, int id)
         {
             unitOfWork.Connection.Execute("UPDATE [dbo].[Irmao]  SET [Ativo] = 1, [AtivarProximaLista] = 0  WHERE Codigo = @id",
@@ -149,6 +157,13 @@ namespace SystemNet.Core.Infraestructure.Repositories
                );
         }
 
+        public void AlterarSenha(ref IUnitOfWork unitOfWork, int Id, string senha)
+        {
+            unitOfWork.Connection.Execute("UPDATE dbo.[Irmao] SET Senha = @Senha, AlterarSenha = 0 where Codigo = @Id",
+                param: new { @Senha = senha, @Id = Id },
+                transaction: unitOfWork.Transaction);
+        }
+
         public IEnumerable<GetIrmao> ObterIrmaosPorCongregacao(ref IUnitOfWork unitOfWork, int congregacaoId)
         {
             return unitOfWork.Connection.Query<GetIrmao>("Select * from dbo.Irmao where CongregacaoId = @congregacao order by nome",
@@ -162,7 +177,13 @@ namespace SystemNet.Core.Infraestructure.Repositories
         public Irmao PesquisarporEmail(ref IUnitOfWork unitOfWork, string email, int? id = null)
         {
             return unitOfWork.Connection.Query<Irmao>(
-                      (id != null) ? @"SELECT * FROM dbo.[Irmao] WHERE Email = @Email  and Codigo <> @Codigo " : "SELECT * FROM dbo.[Irmao] WHERE Email = @Email ",
+                      (id != null) ? @"SELECT I.*, C.Nome As CongregacaoNome FROM dbo.[Irmao] I 
+                                     INNER JOIN Congregacao C ON C.Codigo = I.CongregacaoId
+                                     WHERE Email = @Email  and I.Codigo <> @Codigo " :
+                                     @" SELECT I.*, C.Nome As CongregacaoNome FROM 
+                                        dbo.[Irmao] I 
+                                        INNER JOIN Congregacao C ON C.Codigo = I.CongregacaoId
+                                        WHERE Email = @Email ",
                       param: new
                       {
                           @Email = email,

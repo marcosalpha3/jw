@@ -216,6 +216,9 @@ namespace SystemNet.Api
             {
                 options.AddPolicy("Member",
                     policy => policy.RequireClaim("MembershipId"));
+                options.AddPolicy("Brother",
+                    policy => policy.RequireClaim("Brother"));
+
             });
 
 

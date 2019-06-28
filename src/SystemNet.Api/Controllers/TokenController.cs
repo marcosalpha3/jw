@@ -48,6 +48,7 @@ namespace SystemNet.Api.Products.Controllers
                                     .AddIssuer("SystemNet.Security")
                                     .AddAudience("SystemNet.Security")                                   
                                     .AddClaim(member,ret.Codigo.ToString())
+                                    .AddClaim((member != "Brother") ? "Brother" : "Patner", ret.Codigo.ToString())
                                     .AddClaim("UserName", ret.Email)
                                     .AddExpiry(expiredminutes)
                                     .Build();
@@ -57,8 +58,10 @@ namespace SystemNet.Api.Products.Controllers
                     changePassword = ret.AlterarSenha,
                     userid = ret.Codigo,
                     username = ret.Nome,
-                    congregation = "Guanabara",
-                    congregationId = ret.CongregacaoId
+                    congregation = ret.CongregacaoNome,
+                    congregationId = ret.CongregacaoId,
+                    admin = ret.AcessoAdmin,
+                    email = ret.Email
                 });
 
             }
