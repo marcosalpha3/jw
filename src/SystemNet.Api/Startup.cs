@@ -171,6 +171,7 @@ namespace SystemNet.Api
             Runtime.Password = Configuration["EmailSettings:password"];
             Runtime.Ssl = Configuration["EmailSettings:ssl"];
             Runtime.TimeOutClientSmtp = Configuration["EmailSettings:timeOutClientSmtp"];
+            Runtime.KeySendGrid = Configuration["EmailSettings:KeySendGrid"];
             Runtime.NameSystem = Configuration["AppSettings:NameSystem"];
         }
 

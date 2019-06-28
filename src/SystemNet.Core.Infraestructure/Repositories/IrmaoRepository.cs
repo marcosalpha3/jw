@@ -1,4 +1,6 @@
 ﻿using Dapper;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -237,21 +239,15 @@ namespace SystemNet.Core.Infraestructure.Repositories
                             Errors.HtmlBody_3 + "<b> " + password + "</b> </p> <p>" +
              "</p> <p>" + Errors.HtmlBody_4 + " </p> </body></html>";
 
-            AlternateView avHtml = alternateView(htmlBody);
-
             if (!String.IsNullOrEmpty(model.Email))
             {
-                mailMsg.AlternateViews.Add(avHtml);
-                mailMsg.DeliveryNotificationOptions = DeliveryNotificationOptions.OnSuccess;
-                mailMsg.To.Add(model.Email);
 
-                mailMsg.From = endereco;
-                string assuntoEmail = (newUser) ? Errors.SubjectEmail : Errors.SubjectEmail1;
-                mailMsg.Subject = $"{assuntoEmail} - {Runtime.NameSystem}";
-
-                SmtpClient objSmtpClient = Email.smtpClient();
-
-                objSmtpClient.SendAsync(mailMsg, null);
+                var client = new SendGridClient(Runtime.KeySendGrid);
+                var from = new EmailAddress(Runtime.Sender, "JW");
+                var subject = (newUser) ? Errors.SubjectEmail : Errors.SubjectEmail1;
+                var to = new EmailAddress(model.Email, model.Nome);
+                var msg = MailHelper.CreateSingleEmail(from, to, subject,"", htmlBody);
+                var response = client.SendEmailAsync(msg);
             }
         }
 

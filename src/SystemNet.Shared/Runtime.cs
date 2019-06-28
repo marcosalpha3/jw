@@ -10,6 +10,7 @@ namespace SystemNet.Shared
     {
         public  static string SecreteKey = "28008307-bd68-4954-agd0-a992c481a521";
         public static string[,] connectionStrings;
+        public static string KeySendGrid { get; set; }
         public static string DataPrimeiraReuniao { get; set; }
         public static string NameSystem { get; set; }
         public static string Smtp { get; set; }
