@@ -29,6 +29,9 @@ using SystemNet.Shared;
 
 namespace SystemNet.Api
 {
+    /// <summary>
+    /// Startup
+    /// </summary>
     public class Startup
     {
         public IConfiguration Configuration { get; set; }
