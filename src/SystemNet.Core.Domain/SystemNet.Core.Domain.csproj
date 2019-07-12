@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidator" Version="2.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
