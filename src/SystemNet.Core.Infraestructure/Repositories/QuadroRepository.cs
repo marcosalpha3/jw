@@ -56,6 +56,87 @@ namespace SystemNet.Core.Infraestructure.Repositories
 
         #endregion
 
+        public void InserirQuadroPersonalizado(ref IUnitOfWork unitOfWork, QuadroPersonalizado model)
+        {
+            unitOfWork.Connection.Execute(@" INSERT INTO [dbo].[QuadroPersonalizado]
+                                                          ([Url], [Titulo], [CongregacaoId], [DataExpiracao], [DataInicio], [AtivoStorage])
+                                                          VALUES
+                                                         (@Url, @Titulo, @CongregacaoId, @DataExpiracao, @DataInicio, @AtivoStorage)",
+               param: new
+               {
+                   @Url = model.Url,
+                   @Titulo = model.Titulo,
+                   @CongregacaoId = model.CongregacaoId,
+                   @DataExpiracao = model.DataExpiracao,
+                   @DataInicio = model.DataInicio,
+                   @AtivoStorage = model.AtivoStorage
+               }, transaction: unitOfWork.Transaction
+               );
+        }
+
+        public void AlterarStatusStorageQuadroPersonalizado(ref IUnitOfWork unitOfWork, string url)
+        {
+            unitOfWork.Connection.Execute(@" UPDATE QuadroPersonalizado set AtivoStorage = 0 where Url = @Url",
+               param: new
+               {
+                   @Url = url
+               }, transaction: unitOfWork.Transaction
+               );
+        }
+
+        public void ApagarQuadroPersonalizado(ref IUnitOfWork unitOfWork, string url, int congregacaoId)
+        {
+            unitOfWork.Connection.Execute(@" DELETE FROM QuadroPersonalizado where Url = @Url and congregacaoId = @congregacaoId",
+               param: new
+               {
+                   @Url = url,
+                   @congregacaoId = congregacaoId
+               }, transaction: unitOfWork.Transaction
+               );
+        }
+
+        public List<QuadroPersonalizado> ObterQuadrosPersonalizadosAtivosPorCongregacao(ref IUnitOfWork unitOfWork, int congregacaoId)
+        {
+            return unitOfWork.Connection.Query<QuadroPersonalizado>(@" SELECT * FROM QuadroPersonalizado WHERE CongregacaoId = @CongregacaoId AND DataInicio <= CAST(GETDATE() AS DATE) and 
+                                                                       DataExpiracao >= CAST(GETDATE() AS DATE) ",
+                    param: new
+                    {
+                        @CongregacaoId = congregacaoId
+                    }
+                ).ToList();
+        }
+
+        public List<QuadroPersonalizado> ObterQuadrosPersonalizadosExpiradosAtivosStorage(ref IUnitOfWork unitOfWork)
+        {
+            return unitOfWork.Connection.Query<QuadroPersonalizado>(@" Select * from QuadroPersonalizado where DataExpiracao < GetDate() and AtivoStorage = 1 ",
+                transaction: unitOfWork.Transaction
+                ).ToList();
+        }
+
+        public List<QuadroPersonalizado> ObterQuadrosPersonalizadosPorCongregacao(ref IUnitOfWork unitOfWork, int congregacaoId)
+        {
+            return unitOfWork.Connection.Query<QuadroPersonalizado>(@" Select * from QuadroPersonalizado where DataExpiracao >= GetDate() and AtivoStorage = 1 
+                                                                               and CongregacaoId = @CongregacaoId ",
+                    param: new
+                    {
+                        @CongregacaoId = congregacaoId
+                    }
+                ).ToList();
+        }
+
+        public QuadroPersonalizado ObterQuadroPersonalizado(ref IUnitOfWork unitOfWork, int congregacaoId, string url)
+        {
+            return unitOfWork.Connection.Query<QuadroPersonalizado>(@" Select * from QuadroPersonalizado where Url = @Url and congregacaoId = @congregacaoId ",
+                param: new
+                {
+                    @CongregacaoId = congregacaoId,
+                    @Url = url
+                },
+                   transaction: unitOfWork.Transaction
+               ).FirstOrDefault();
+        }
+
+
         public int InserirNovoQuadro(ref IUnitOfWork unitOfWork, int congregacaoId, int quadroId, int tipoListaId)
         {
             return Convert.ToInt32(unitOfWork.Connection.ExecuteScalar(insereQuadro,

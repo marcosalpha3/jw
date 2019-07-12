@@ -147,6 +147,9 @@
   <data name="Exists" xml:space="preserve">
     <value>{0} já existe.</value>
   </data>
+  <data name="ExpirationDateGrantInitialDate" xml:space="preserve">
+    <value>A Data Expiração deve ser maior ou igual a data inicio</value>
+  </data>
   <data name="FuncionalityDoesNotExists" xml:space="preserve">
     <value>Esta funcionalidade / Evento {0} não existe.</value>
   </data>
@@ -174,6 +177,9 @@
   <data name="HtmlBody_5" xml:space="preserve">
     <value>Clique &lt;a href="{0}"&gt;aqui&lt;/a&gt; para acessar o sistema.</value>
   </data>
+  <data name="InitialDateGrantCurrentDate" xml:space="preserve">
+    <value>A Data Inicio deve ser maior ou igual a data atual</value>
+  </data>
   <data name="InvalidCredentials" xml:space="preserve">
     <value>Credenciais inválidas</value>
   </data>
@@ -185,6 +191,9 @@
   </data>
   <data name="LoginExists" xml:space="preserve">
     <value>Este login ou E-mail já existe.</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>{0} não deve ter mais de {1} caracteres</value>
   </data>
   <data name="MaxEmail" xml:space="preserve">
     <value>O E-mail não deve ter mais de {0} caracteres</value>
@@ -200,6 +209,9 @@
   </data>
   <data name="MaxPhone" xml:space="preserve">
     <value>O telefone não pode ter mais de {0} caracteres</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>{0} deve ter pelo menos {1} caracteres</value>
   </data>
   <data name="MinLogin" xml:space="preserve">
     <value>O Login deve ter pelo menos {0} caracteres</value>
@@ -263,6 +275,9 @@
   </data>
   <data name="TellOperator" xml:space="preserve">
     <value>A operadora deve ser informada</value>
+  </data>
+  <data name="Titulo" xml:space="preserve">
+    <value>Titulo</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>Usuário não existe</value>

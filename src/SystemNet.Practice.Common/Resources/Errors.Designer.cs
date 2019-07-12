@@ -151,6 +151,15 @@ namespace SystemNet.Practice.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The expiration date must be greater or equal than the initial date.
+        /// </summary>
+        public static string ExpirationDateGrantInitialDate {
+            get {
+                return ResourceManager.GetString("ExpirationDateGrantInitialDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This Funcionality / Event {0} does not exist.
         /// </summary>
         public static string FuncionalityDoesNotExists {
@@ -232,6 +241,15 @@ namespace SystemNet.Practice.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The initial date must be greater or equal than the current date.
+        /// </summary>
+        public static string InitialDateGrantCurrentDate {
+            get {
+                return ResourceManager.GetString("InitialDateGrantCurrentDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid Credentials.
         /// </summary>
         public static string InvalidCredentials {
@@ -264,6 +282,15 @@ namespace SystemNet.Practice.Common.Resources {
         public static string LoginExists {
             get {
                 return ResourceManager.GetString("LoginExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} should not have more than {1} chars.
+        /// </summary>
+        public static string Max {
+            get {
+                return ResourceManager.GetString("Max", resourceCulture);
             }
         }
         
@@ -309,6 +336,15 @@ namespace SystemNet.Practice.Common.Resources {
         public static string MaxPhone {
             get {
                 return ResourceManager.GetString("MaxPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} should have at least {1} chars.
+        /// </summary>
+        public static string Min {
+            get {
+                return ResourceManager.GetString("Min", resourceCulture);
             }
         }
         
@@ -498,6 +534,15 @@ namespace SystemNet.Practice.Common.Resources {
         public static string TellOperator {
             get {
                 return ResourceManager.GetString("TellOperator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string Titulo {
+            get {
+                return ResourceManager.GetString("Titulo", resourceCulture);
             }
         }
         

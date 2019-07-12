@@ -1,12 +1,17 @@
 ﻿using FluentValidator;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SystemNet.Core.Domain.Contracts.Repositories;
 using SystemNet.Core.Domain.Contracts.Services;
 using SystemNet.Core.Domain.Models;
 using SystemNet.Core.Domain.Querys;
+using SystemNet.Practices.Data.Storage;
+using SystemNet.Practices.Data.Storage.Models;
 using SystemNet.Practices.Data.Uow;
+using SystemNet.Shared;
 
 namespace SystemNet.Business.Services
 {
@@ -19,6 +24,8 @@ namespace SystemNet.Business.Services
         IQuadroDetalheRepository _repositoryQuadroDetalhe;
         IQuadroRepository _repositoryQuadro;
         ITipoListaRepository _repositoryTipoLista;
+        StorageHelper _storageAzure;
+
 
         public QuadroServices(ICongregacaoRepository repositoryCongregacao,
                               IControleListaRepository repositoryControleLista,
@@ -26,7 +33,9 @@ namespace SystemNet.Business.Services
                               IIrmaoRepository repositoryIrmao,
                               IQuadroDetalheRepository repositoryQuadroDetalhe,
                               IQuadroRepository repositoryQuadro,
-                              ITipoListaRepository repositoryTipoLista)
+                              ITipoListaRepository repositoryTipoLista,
+                              StorageHelper storageAzure
+                              )
         {
             _repositoryCongregacao = repositoryCongregacao;
             _repositoryControleLista = repositoryControleLista;
@@ -35,7 +44,122 @@ namespace SystemNet.Business.Services
             _repositoryQuadroDetalhe = repositoryQuadroDetalhe;
             _repositoryQuadro = repositoryQuadro;
             _repositoryTipoLista = repositoryTipoLista;
+            _storageAzure = storageAzure;
         }
+
+        public async Task<QuadroPersonalizado> NovoQuadroPersonalizado(QuadroPersonalizado model, StorageConfig config, IFormFile file)
+        {
+                using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
+                {
+                    IUnitOfWork unitOfWork = dalSession.UnitOfWork;
+                    JsonImage url = new JsonImage();
+                    unitOfWork.Begin();
+                    try
+                    {
+
+                        if (model.Valid)
+                        {
+                            if (file != null && _storageAzure.IsImage(file.FileName.Trim('\"')))
+                            {
+                                if (file.Length > 0)
+                                 {
+                                  using (var stream = file.OpenReadStream())
+                                    url = await _storageAzure.Upload(stream, Guid.NewGuid() + "_" + file.FileName, config);
+                                 }
+                                else
+                                 model.AddNotification(nameof(JsonImage.Url), "Arquivo Vazio");
+                            }
+                            else
+                                model.AddNotification(nameof(JsonImage.Url), "Arquivo não suportado");
+
+                            model.Url = url.Url;
+                            if (model.Valid)
+                             {
+                                _repositoryQuadro.InserirQuadroPersonalizado(ref unitOfWork, model);
+                                unitOfWork.Commit();
+                             }
+                            else if (model.Url != null)
+                             await _storageAzure.DeleteBlobData(model.Url, config);
+                    }
+                    }
+                    catch
+                    {
+                        unitOfWork.Rollback();
+                        await _storageAzure.DeleteBlobData(model.Url, config);
+                        throw;
+                    }
+                return model;
+            }
+        }
+
+        public async Task<List<QuadroPersonalizado>> ApagarStorageNaoUtilizado(StorageConfig config)
+        {
+            using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
+            {
+                IUnitOfWork unitOfWork = dalSession.UnitOfWork;
+                try
+                {
+                    var ret = _repositoryQuadro.ObterQuadrosPersonalizadosExpiradosAtivosStorage(ref unitOfWork);
+
+                    foreach (var item in ret)
+                    {
+                        await _storageAzure.DeleteBlobData(item.Url, config);
+                        _repositoryQuadro.AlterarStatusStorageQuadroPersonalizado(ref unitOfWork, item.Url);
+                    }
+                    return ret;            
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+        }
+
+        public List<QuadroPersonalizado> ObterQuadrosPersonalizados(int congregacaoId)
+        {
+            using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
+            {
+                IUnitOfWork unitOfWork = dalSession.UnitOfWork;
+                try
+                {
+                    return _repositoryQuadro.ObterQuadrosPersonalizadosAtivosPorCongregacao(ref unitOfWork, congregacaoId);
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+        }
+
+        public async Task<QuadroPersonalizado> ApagarQuadroPersonalizado(int congregacaoId, string url, StorageConfig config)
+        {
+            using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
+            {
+                IUnitOfWork unitOfWork = dalSession.UnitOfWork;
+                unitOfWork.Begin();
+                try
+                {
+                    var model = _repositoryQuadro.ObterQuadroPersonalizado(ref unitOfWork, congregacaoId, url);
+                    if (model == null)
+                    {
+                        model = new QuadroPersonalizado();
+                        model.AddNotification(nameof(JsonImage.Url), "Quadro não encontrado");
+                        unitOfWork.Rollback();
+                        return model;
+                    }
+
+                    await _storageAzure.DeleteBlobData(model.Url, config);
+                    _repositoryQuadro.ApagarQuadroPersonalizado(ref unitOfWork, url, congregacaoId);
+                    unitOfWork.Commit();
+                    return model;
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+        }
+
 
         public IReadOnlyCollection<Notification> GeraLista()
         {

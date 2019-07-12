@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="EnterpriseLibrary.Data.NetCore" Version="6.0.1313" />
+    <PackageReference Include="FluentValidator" Version="2.0.4" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
   <ItemGroup>

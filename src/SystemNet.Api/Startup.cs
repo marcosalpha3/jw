@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,8 @@ using SystemNet.Core.Domain.Contracts.Services;
 using SystemNet.Core.Domain.Models;
 using SystemNet.Core.Infraestructure;
 using SystemNet.Core.Infraestructure.Repositories;
+using SystemNet.Practices.Data.Storage;
+using SystemNet.Practices.Data.Storage.Models;
 using SystemNet.Practices.Security.Bearer;
 using SystemNet.Shared;
 
@@ -54,15 +57,22 @@ namespace SystemNet.Api
 
             services.AddMvc();
 
+            ConfigureAzureStorage(ref services);
 
             services.AddCors();
+
+            ConfigureDependencies(ref services);
 
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "JW Api", Version = "v1" });
             });
+       }
 
+
+        private void ConfigureDependencies(ref IServiceCollection services)
+        {
             services.AddScoped<AppDataContext, AppDataContext>();
 
             services.AddTransient<IQuadroRepository, QuadroRepository>();
@@ -95,8 +105,23 @@ namespace SystemNet.Api
             services.AddTransient<IGrupoRepository, GrupoRepository>();
             services.AddTransient<IGrupoServices, GrupoServices>();
             services.AddTransient<Grupo, Grupo>();
+
+            services.AddTransient<StorageHelper, StorageHelper>();
+            services.AddTransient<StorageConfig, StorageConfig>();
+
+            
         }
 
+        private void ConfigureAzureStorage(ref IServiceCollection services)
+        {
+            services.AddOptions();
+            services.Configure<StorageConfig>(Configuration.GetSection("StorageConfig"));
+            services.Configure<FormOptions>(options =>
+            {
+                options.MemoryBufferThreshold = Int32.MaxValue;
+            });
+
+        }
 
         /// <summary>
         /// his method gets called by the runtime. Use this method to configure the HTTP request pipeline.
