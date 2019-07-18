@@ -54,6 +54,33 @@ namespace SystemNet.Api.Controllers
         }
 
         /// <summary>
+        /// Obter Irmaos separados por Grupo de campo
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/v1/irmao/grupos/congregacao/{id}")]
+        [Authorize(Policy = "Brother")]
+        public async Task<IActionResult> GetIrmaosporGrupo(int id)
+        {
+            try
+            {
+                var result = _service.ObterGruposComIrmaos(id);
+                return (result == null || !result.Any()) ? NoContent() : await Response(result);
+            }
+            catch (Exception ex)
+            {
+                // Logar o erro (Elmah) 
+                return BadRequest(new
+                {
+                    success = false,
+                    errors = new[] { ex }
+                });
+            }
+        }
+
+
+        /// <summary>
         /// Gera um novo irmão / usuário e envia os dados com as credenciais
         /// </summary>
         /// <param name="model"></param>
@@ -198,6 +225,7 @@ namespace SystemNet.Api.Controllers
         [HttpPut]
         [Route("api/v1/irmao/alterarsenha")]
         [Authorize(Policy = "Brother")]
+        [ResponseCache(Duration = 600)]
         public async Task<IActionResult> AlterarSenha([FromBody]AlterarSenhaIrmao model)
         {
             try

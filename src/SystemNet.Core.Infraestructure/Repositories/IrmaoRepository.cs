@@ -9,9 +9,9 @@ using System.Net.Mime;
 using SystemNet.Core.Domain.Contracts.Repositories;
 using SystemNet.Core.Domain.Models;
 using SystemNet.Core.Domain.Querys;
+using SystemNet.Core.Domain.Querys.Grupo;
 using SystemNet.Practice.Common.Resources;
 using SystemNet.Practice.Common.Values;
-using SystemNet.Practices.Data;
 using SystemNet.Practices.Data.Uow;
 using SystemNet.Shared;
 
@@ -27,6 +27,37 @@ namespace SystemNet.Core.Infraestructure.Repositories
                 @IrmaoId = codigo
             },
             transaction: unitOfWork.Transaction);
+        }
+
+        public IEnumerable<GetGrupoIrmao> ObterGruposComIrmaos(ref IUnitOfWork unitOfWork, int congregacaoId)
+        {
+            var grupoDictionary = new Dictionary<int, GetGrupoIrmao>();
+
+            unitOfWork.Connection.Query<GetGrupoIrmao, GetIrmaoGrupo, GetGrupoIrmao>
+            (@" select G.Codigo, G.Nome, ID.Nome As Dirigente, G.Local, I.Codigo As IrmaoCodigo, 
+                I.Nome As Irmao
+                from Grupo G
+                inner join Irmao ID ON ID.Codigo = G.DirigenteId
+                inner join Irmao I ON I.GrupoId = G.Codigo
+                WHERE  G.CongregacaoId = @CongregacaoId
+                order By G.Nome, I.Nome",
+            (pd, pp) =>
+            {
+                GetGrupoIrmao grupoEntry;
+                if (!grupoDictionary.TryGetValue(pd.Codigo, out grupoEntry))
+                {
+                    grupoEntry = pd;
+                    grupoEntry.Irmaos = new List<GetIrmaoGrupo>();
+                    grupoDictionary.Add(grupoEntry.Codigo, grupoEntry);
+                }
+                grupoEntry.Irmaos.Add(pp);
+                return grupoEntry;
+            }
+            , splitOn: "IrmaoCodigo ",
+            param: new { @CongregacaoId = congregacaoId }
+            );
+
+            return grupoDictionary.Values.ToList();
         }
 
         public void ReiniciarSenha(ref IUnitOfWork unitOfWork, Irmao model)

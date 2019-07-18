@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using SystemNet.Core.Domain.Models;
 using SystemNet.Core.Domain.Querys;
+using SystemNet.Core.Domain.Querys.Grupo;
 using SystemNet.Practices.Data.Uow;
 
 namespace SystemNet.Core.Domain.Contracts.Repositories
@@ -22,5 +23,6 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
         void Login(ref IUnitOfWork unitOfWork, Irmao model);
         void ReiniciarSenha(ref IUnitOfWork unitOfWork, Irmao model);
         void AlterarSenha(ref IUnitOfWork unitOfWork, int Id, string senha);
+        IEnumerable<GetGrupoIrmao> ObterGruposComIrmaos(ref IUnitOfWork unitOfWork, int congregacaoId);
     }
 }

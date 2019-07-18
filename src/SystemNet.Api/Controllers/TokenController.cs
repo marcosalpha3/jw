@@ -14,7 +14,7 @@ namespace SystemNet.Api.Products.Controllers
     public class TokenController : Controller
     {
 
-        private const int expiredminutes = 120;
+        private const int expiredminutes = 240;
         IIrmaoServices _service;
 
         public TokenController(IIrmaoServices service)

@@ -4,6 +4,7 @@ using SystemNet.Core.Domain.Contracts.Repositories;
 using SystemNet.Core.Domain.Contracts.Services;
 using SystemNet.Core.Domain.Models;
 using SystemNet.Core.Domain.Querys;
+using SystemNet.Core.Domain.Querys.Grupo;
 using SystemNet.Practice.Common.Resources;
 using SystemNet.Practices.Data.Uow;
 using SystemNet.Shared;
@@ -156,7 +157,6 @@ namespace SystemNet.Business.Services
                     }
                 }
             }
-
             return updatemodel.Notifications;
         }
 
@@ -212,7 +212,6 @@ namespace SystemNet.Business.Services
 
         }
 
-
         public Irmao Desativar(int id, int userId)
         {
             using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
@@ -236,6 +235,23 @@ namespace SystemNet.Business.Services
                 }
             }
         }
+
+        public IEnumerable<GetGrupoIrmao> ObterGruposComIrmaos(int congregacaoId)
+        {
+            using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
+            {
+                IUnitOfWork unitOfWork = dalSession.UnitOfWork;
+                try
+                {
+                    return _repository.ObterGruposComIrmaos(ref unitOfWork, congregacaoId);
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+        }
+
 
         public IEnumerable<GetIrmao> ObterIrmaosPorCongregacao(int congregacaoId)
         {

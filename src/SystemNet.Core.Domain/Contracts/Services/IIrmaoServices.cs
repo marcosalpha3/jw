@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SystemNet.Core.Domain.Models;
 using SystemNet.Core.Domain.Querys;
+using SystemNet.Core.Domain.Querys.Grupo;
 
 namespace SystemNet.Core.Domain.Contracts.Services
 {
@@ -15,5 +16,6 @@ namespace SystemNet.Core.Domain.Contracts.Services
         Irmao Ativar(int id, int userId);
         Irmao EsquecerSenha(string login);
         Irmao AlterarSenha(string login, string UserToken, string senha, string novaSenha, string confirmacaoNovaSenha);
+        IEnumerable<GetGrupoIrmao> ObterGruposComIrmaos(int congregacaoId);
     }
 }
