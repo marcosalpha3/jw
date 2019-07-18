@@ -196,7 +196,6 @@ namespace SystemNet.Api
             Runtime.Port = Configuration["EmailSettings:port"];
             Runtime.User = Configuration["EmailSettings:user"];
             Runtime.Sender = Configuration["EmailSettings:sender"];
-            Runtime.Password = Configuration["EmailSettings:password"];
             Runtime.Ssl = Configuration["EmailSettings:ssl"];
             Runtime.TimeOutClientSmtp = Configuration["EmailSettings:timeOutClientSmtp"];
             Runtime.KeySendGrid = Configuration["EmailSettings:KeySendGrid"];
