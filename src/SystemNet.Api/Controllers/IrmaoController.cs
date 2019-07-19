@@ -93,13 +93,6 @@ namespace SystemNet.Api.Controllers
         {
             try
             {
-                using (StreamReader stream = new StreamReader(HttpContext.Request.Body))
-                {
-                    string body = stream.ReadToEnd();
-                    // body = "param=somevalue&param2=someothervalue"
-                }
-
-
                 var result = _service.Adicionar(new Irmao(int.MinValue, model.Nome, model.Email, model.Telefone, model.Sexo, model.Indicador, model.Microfonista, model.LeitorSentinela,
                     model.LeitorEstudoLivro, model.SistemaSonoro, model.OracaoFinal, model.PresidenteConferencia, model.Carrinho, model.GrupoId, model.CongregacaoId, model.AcessoAdmin), 
                     GetUserToken());
@@ -225,7 +218,6 @@ namespace SystemNet.Api.Controllers
         [HttpPut]
         [Route("api/v1/irmao/alterarsenha")]
         [Authorize(Policy = "Brother")]
-        [ResponseCache(Duration = 600)]
         public async Task<IActionResult> AlterarSenha([FromBody]AlterarSenhaIrmao model)
         {
             try

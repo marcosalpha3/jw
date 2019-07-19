@@ -189,6 +189,9 @@
   <data name="InvalidUserName" xml:space="preserve">
     <value>El nombre del usuario es invalido</value>
   </data>
+  <data name="LeaderRequired" xml:space="preserve">
+    <value>El Lider es obligatório</value>
+  </data>
   <data name="LoginExists" xml:space="preserve">
     <value>Esto login o correo electrónico ya existe</value>
   </data>

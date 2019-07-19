@@ -277,6 +277,15 @@ namespace SystemNet.Practice.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Leader is required.
+        /// </summary>
+        public static string LeaderRequired {
+            get {
+                return ResourceManager.GetString("LeaderRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This login or E-mail already exists.
         /// </summary>
         public static string LoginExists {

@@ -243,7 +243,15 @@ namespace SystemNet.Business.Services
                 IUnitOfWork unitOfWork = dalSession.UnitOfWork;
                 try
                 {
-                    return _repository.ObterGruposComIrmaos(ref unitOfWork, congregacaoId);
+                    var ret = _repository.ObterGruposComIrmaos(ref unitOfWork, congregacaoId);
+
+                    foreach (var item in ret)
+                    {
+                        if (item.Irmaos[0] == null)
+                            item.Irmaos.Clear();
+                    }
+
+                    return ret;
                 }
                 catch
                 {

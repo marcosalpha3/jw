@@ -34,11 +34,11 @@ namespace SystemNet.Core.Infraestructure.Repositories
             var grupoDictionary = new Dictionary<int, GetGrupoIrmao>();
 
             unitOfWork.Connection.Query<GetGrupoIrmao, GetIrmaoGrupo, GetGrupoIrmao>
-            (@" select G.Codigo, G.Nome, ID.Nome As Dirigente, G.Local, I.Codigo As IrmaoCodigo, 
+            (@" select G.Codigo, G.Nome, ID.Nome As Dirigente, ID.Codigo As DirigenteId, G.Local, I.Codigo As IrmaoCodigo, 
                 I.Nome As Irmao
                 from Grupo G
                 inner join Irmao ID ON ID.Codigo = G.DirigenteId
-                inner join Irmao I ON I.GrupoId = G.Codigo
+                left join Irmao I ON I.GrupoId = G.Codigo
                 WHERE  G.CongregacaoId = @CongregacaoId
                 order By G.Nome, I.Nome",
             (pd, pp) =>
@@ -117,7 +117,8 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                             @AcessoAdmin = model.AcessoAdmin,
                                             @Codigo = model.Codigo
                                         },
-                                        transaction: unitOfWork.Transaction);        }
+                                        transaction: unitOfWork.Transaction);
+        }
 
         public void Desativar(ref IUnitOfWork unitOfWork, int codigo)
         {
@@ -130,6 +131,19 @@ namespace SystemNet.Core.Infraestructure.Repositories
             },
             transaction: unitOfWork.Transaction);
         }
+
+        public void UpdateGrupoCampo(ref IUnitOfWork unitOfWork, int grupoAtual, int novoGrupo)
+        {
+            unitOfWork.Connection.Execute(@" UPDATE Irmao set GrupoId = @NovoGrupoId  where GrupoId = @GrupoAtualId",
+            param: new
+            {
+                @NovoGrupoId = novoGrupo,
+                @GrupoAtualId = grupoAtual
+
+            },
+            transaction: unitOfWork.Transaction);
+        }
+
 
         public Irmao FindById(ref IUnitOfWork unitOfWork, int id)
         {
