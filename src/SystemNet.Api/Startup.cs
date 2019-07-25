@@ -109,6 +109,10 @@ namespace SystemNet.Api
             services.AddTransient<IGrupoServices, GrupoServices>();
             services.AddTransient<Grupo, Grupo>();
 
+            services.AddTransient<IAssistenciaReuniaoRepository, AssistenciaReuniaoRepository>();
+            services.AddTransient<IAssistenciaReuniaoServices, AssistenciaReuniaoServices>();
+            services.AddTransient<AssistenciaReuniao, AssistenciaReuniao>();
+
             services.AddTransient<StorageHelper, StorageHelper>();
             services.AddTransient<StorageConfig, StorageConfig>();
 
@@ -246,7 +250,8 @@ namespace SystemNet.Api
                     policy => policy.RequireClaim("MembershipId"));
                 options.AddPolicy("Brother",
                     policy => policy.RequireClaim("Brother"));
-
+                options.AddPolicy("Indicator",
+                    policy => policy.RequireClaim("Indicator"));                
             });
 
 

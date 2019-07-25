@@ -49,6 +49,7 @@ namespace SystemNet.Api.Products.Controllers
                                     .AddAudience("SystemNet.Security")                                   
                                     .AddClaim(member,ret.Codigo.ToString())
                                     .AddClaim((member != "Brother") ? "Brother" : "Patner", ret.Codigo.ToString())
+                                    .AddClaim((ret.AcessoAdmin || ret.Indicador) ? "Indicator" : "Patner2", ret.Codigo.ToString())
                                     .AddClaim("UserName", ret.Email)
                                     .AddExpiry(expiredminutes)
                                     .Build();
@@ -61,7 +62,8 @@ namespace SystemNet.Api.Products.Controllers
                     congregation = ret.CongregacaoNome,
                     congregationId = ret.CongregacaoId,
                     admin = ret.AcessoAdmin,
-                    email = ret.Email
+                    email = ret.Email,
+                    indicator = ret.Indicador
                 });
 
             }

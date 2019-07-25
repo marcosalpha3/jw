@@ -120,6 +120,9 @@
   <data name="AccessDeny" xml:space="preserve">
     <value>Access Deny</value>
   </data>
+  <data name="AssistanceRequired" xml:space="preserve">
+    <value>Assistance is required</value>
+  </data>
   <data name="AtleastOneEvent" xml:space="preserve">
     <value>The Funcionality needs at least one event registered</value>
   </data>
@@ -183,6 +186,9 @@
   <data name="InvalidCredentials" xml:space="preserve">
     <value>Invalid Credentials</value>
   </data>
+  <data name="InvalidDate" xml:space="preserve">
+    <value>The date must be  or equal less the current date</value>
+  </data>
   <data name="InvalidPassword" xml:space="preserve">
     <value>Invalid Password</value>
   </data>
@@ -197,6 +203,9 @@
   </data>
   <data name="Max" xml:space="preserve">
     <value>{0} should not have more than {1} chars</value>
+  </data>
+  <data name="MaxAssistance" xml:space="preserve">
+    <value>Assistance should not have more than {0} </value>
   </data>
   <data name="MaxEmail" xml:space="preserve">
     <value>Login should not have more than {0} chars</value>

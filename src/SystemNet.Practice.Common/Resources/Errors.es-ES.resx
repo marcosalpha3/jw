@@ -120,6 +120,9 @@
   <data name="AccessDeny" xml:space="preserve">
     <value>Acceso denegado</value>
   </data>
+  <data name="AssistanceRequired" xml:space="preserve">
+    <value>La asistencia deve ser mayor que cero</value>
+  </data>
   <data name="AtleastOneEvent" xml:space="preserve">
     <value>La funcionalidad, necesita al menos 1 evento registrado.</value>
   </data>
@@ -183,6 +186,9 @@
   <data name="InvalidCredentials" xml:space="preserve">
     <value>Credenciais Inválidas</value>
   </data>
+  <data name="InvalidDate" xml:space="preserve">
+    <value>La fecha debe ser igual o menor que la fecha actual</value>
+  </data>
   <data name="InvalidPassword" xml:space="preserve">
     <value>Contraseña inválida</value>
   </data>
@@ -197,6 +203,9 @@
   </data>
   <data name="Max" xml:space="preserve">
     <value>{0} no debe tener más de {1} caracteres</value>
+  </data>
+  <data name="MaxAssistance" xml:space="preserve">
+    <value>La asistencia no debe tener más de {0} </value>
   </data>
   <data name="MaxEmail" xml:space="preserve">
     <value>El e-mail no debe tener más de {0} caracteres</value>

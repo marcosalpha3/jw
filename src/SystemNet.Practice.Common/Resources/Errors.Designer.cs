@@ -70,6 +70,15 @@ namespace SystemNet.Practice.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assistance is required.
+        /// </summary>
+        public static string AssistanceRequired {
+            get {
+                return ResourceManager.GetString("AssistanceRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Funcionality needs at least one event registered.
         /// </summary>
         public static string AtleastOneEvent {
@@ -259,6 +268,15 @@ namespace SystemNet.Practice.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The date must be  or equal less the current date.
+        /// </summary>
+        public static string InvalidDate {
+            get {
+                return ResourceManager.GetString("InvalidDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid Password.
         /// </summary>
         public static string InvalidPassword {
@@ -300,6 +318,15 @@ namespace SystemNet.Practice.Common.Resources {
         public static string Max {
             get {
                 return ResourceManager.GetString("Max", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assistance should not have more than {0} .
+        /// </summary>
+        public static string MaxAssistance {
+            get {
+                return ResourceManager.GetString("MaxAssistance", resourceCulture);
             }
         }
         

@@ -120,6 +120,9 @@
   <data name="AccessDeny" xml:space="preserve">
     <value>Acesso Negado</value>
   </data>
+  <data name="AssistanceRequired" xml:space="preserve">
+    <value>A assistência deve ser maior que zero</value>
+  </data>
   <data name="AtleastOneEvent" xml:space="preserve">
     <value>Uma funcionalidade, precisa de pelo menos 1 evento registrado</value>
   </data>
@@ -178,10 +181,13 @@
     <value>Clique &lt;a href="{0}"&gt;aqui&lt;/a&gt; para acessar o sistema.</value>
   </data>
   <data name="InitialDateGrantCurrentDate" xml:space="preserve">
-    <value>A Data Inicio deve ser maior ou igual a data atual</value>
+    <value>A Data deve ser maior ou igual a data atual</value>
   </data>
   <data name="InvalidCredentials" xml:space="preserve">
     <value>Credenciais inválidas</value>
+  </data>
+  <data name="InvalidDate" xml:space="preserve">
+    <value>A data deve ser igual ou menor que a data atual</value>
   </data>
   <data name="InvalidPassword" xml:space="preserve">
     <value>Senha Inválida</value>
@@ -197,6 +203,9 @@
   </data>
   <data name="Max" xml:space="preserve">
     <value>{0} não deve ter mais de {1} caracteres</value>
+  </data>
+  <data name="MaxAssistance" xml:space="preserve">
+    <value>A assistência não deve ter mais de {0} </value>
   </data>
   <data name="MaxEmail" xml:space="preserve">
     <value>O E-mail não deve ter mais de {0} caracteres</value>
