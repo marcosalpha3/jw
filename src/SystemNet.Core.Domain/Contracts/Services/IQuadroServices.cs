@@ -11,9 +11,8 @@ namespace SystemNet.Core.Domain.Contracts.Services
     public interface IQuadroServices
     {
         IReadOnlyCollection<Notification> GeraLista();
-        IReadOnlyCollection<Notification> RegerarListaAtual();
-        List<GetQuadroDesignacaoMecanica> ObterListaAtualDesignacoesMecanicas(int congregacaoId);
-        List<GetQuadroDesignacaoMecanica> ObterProximaListaDesignacoesMecanicas(int congregacaoId);
+        IReadOnlyCollection<Notification> RegerarListaAtual(int congregacaoAtual);
+        List<GetQuadroDesignacaoMecanica> ObterListaDesignacoesMecanicas(int congregacaoId);
         Task<QuadroPersonalizado> NovoQuadroPersonalizado(QuadroPersonalizado model, StorageConfig config, IFormFile file);
         Task<List<QuadroPersonalizado>> ApagarStorageNaoUtilizado(StorageConfig config);
         List<QuadroPersonalizado> ObterQuadrosPersonalizados(int congregacaoId);

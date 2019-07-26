@@ -17,7 +17,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
         private const string SelectIrmaoDetalheLista = @"SELECT I.Nome FROM [dbo].[QuadroDetalhe] QD
                                                             INNER JOIN dbo.Quadro Q ON Q.Codigo = QD.QuadroId
 															INNER JOIN dbo.Irmao I ON I.Codigo = QD.IrmaoId
-                                                            Where Q.Quadro = @QuadroId
+                                                            Where (Q.Quadro = @QuadroAtual or Q.Quadro = @QuadroProximo)
 															and QD.Data = CAST(@Data As Date)
                                                             and Q.TipoListaId = @TipoListaId ";
 
@@ -37,7 +37,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
 
         public void ApagaDetalhesQuadro(ref IUnitOfWork unitOfWork, int QuadroId)
         {
-            unitOfWork.Connection.Execute("DELETE FROM [dbo].[QuadroDetalhe] WHERE QuadroId = @QuadroId",
+            unitOfWork.Connection.Execute("DELETE FROM [dbo].[Quadro] WHERE Quadro = @QuadroId",
                 param: new
                 {
                     @QuadroId = QuadroId
@@ -59,12 +59,13 @@ namespace SystemNet.Core.Infraestructure.Repositories
                 transaction: unitOfWork.Transaction);
         }
 
-        public List<Irmao> ObterIrmaosTipoLista(ref IUnitOfWork unitOfWork, eTipoLista tipolist, int QuadroId, DateTime data)
+        public List<Irmao> ObterIrmaosTipoLista(ref IUnitOfWork unitOfWork, eTipoLista tipolist, int quadroAtual, int quadroProximo, DateTime data)
         {
             return unitOfWork.Connection.Query<Irmao>(SelectIrmaoDetalheLista,
                     param: new
                     {
-                        @QuadroId = QuadroId,
+                        @QuadroAtual = quadroAtual,
+                        @QuadroProximo = quadroProximo,
                         @TipoListaId = tipolist,
                         @Data = data
                     }
@@ -93,6 +94,33 @@ namespace SystemNet.Core.Infraestructure.Repositories
                 },
                     transaction: unitOfWork.Transaction
                     ).FirstOrDefault();
+        }
+
+
+        public DateTime ObterDataInicioQuadro(ref IUnitOfWork unitOfWork, int quadroId)
+        {
+            return Convert.ToDateTime(unitOfWork.Connection.ExecuteScalar(@" select Min(QD.Data) from Quadro Q
+                                                          INNER JOIN QuadroDetalhe QD ON QD.QuadroId = Q.Codigo
+                                                          WHERE Q.Quadro = @Quadro ",
+                param: new
+                {
+                    @Quadro = quadroId
+                },
+                    transaction: unitOfWork.Transaction
+                    ));
+        }
+
+        public DateTime ObterDataFimQuadro(ref IUnitOfWork unitOfWork, int quadroId)
+        {
+            return Convert.ToDateTime(unitOfWork.Connection.ExecuteScalar(@" select Max(QD.Data) from Quadro Q
+                                                          INNER JOIN QuadroDetalhe QD ON QD.QuadroId = Q.Codigo
+                                                          WHERE Q.Quadro = @Quadro ",
+                param: new
+                {
+                    @Quadro = quadroId
+                },
+                    transaction: unitOfWork.Transaction
+                    ));
         }
 
     }

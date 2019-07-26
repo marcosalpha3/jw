@@ -79,7 +79,8 @@ namespace SystemNet.Core.Domain.Models
         {
             if ((modelAtual.Indicador != this.Indicador) || (modelAtual.LeitorEstudoLivro != this.LeitorEstudoLivro) ||
                 (modelAtual.LeitorSentinela != this.LeitorSentinela) || (modelAtual.Microfonista != this.Microfonista) ||
-                (modelAtual.OracaoFinal != this.OracaoFinal) || (modelAtual.PresidenteConferencia != this.PresidenteConferencia))
+                (modelAtual.OracaoFinal != this.OracaoFinal) || (modelAtual.PresidenteConferencia != this.PresidenteConferencia) ||
+                (modelAtual.SistemaSonoro != this.SistemaSonoro))
                 this.AtualizarDesignacao = true;
             else
                 this.AtualizarDesignacao = false;

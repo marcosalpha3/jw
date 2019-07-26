@@ -164,7 +164,7 @@ namespace SystemNet.Business.Services
         public IReadOnlyCollection<Notification> GeraLista()
         {
             var model = new Quadro();
-            using (RepositorySession dalSession = new RepositorySession("JW"))
+            using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
             {
                 IUnitOfWork unitOfWork = dalSession.UnitOfWork;
                 unitOfWork.Begin();
@@ -284,15 +284,17 @@ namespace SystemNet.Business.Services
             return model.Notifications;
         }
 
-        public List<GetQuadroDesignacaoMecanica> ObterListaAtualDesignacoesMecanicas(int congregacaoId)
+        public List<GetQuadroDesignacaoMecanica> ObterListaDesignacoesMecanicas(int congregacaoId)
         {
-            using (RepositorySession dalSession = new RepositorySession("JW"))
+            using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
             {
                 IUnitOfWork unitOfWork = dalSession.UnitOfWork;
                 try
                 {
-                    int quadro = _repositoryQuadro.ObterQuadroAtual(ref unitOfWork, congregacaoId);
-                    return ObterListaPorQuadroId(ref unitOfWork, quadro);
+                    var quadroAtual = _repositoryQuadro.ObterQuadroAtual(ref unitOfWork, congregacaoId);
+                    var proximoQuadro = _repositoryQuadro.ObterProximoQuadro(ref unitOfWork, congregacaoId);
+
+                    return ObterListaPorQuadroId(ref unitOfWork, quadroAtual, proximoQuadro);
                 }
                 catch
                 {
@@ -301,49 +303,184 @@ namespace SystemNet.Business.Services
             }
         }
 
-        public List<GetQuadroDesignacaoMecanica> ObterProximaListaDesignacoesMecanicas(int congregacaoId)
+        public IReadOnlyCollection<Notification> RegerarListaAtual(int congregacaoAtual)
         {
-            using (RepositorySession dalSession = new RepositorySession("JW"))
+            var model = new Quadro();
+            using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
             {
                 IUnitOfWork unitOfWork = dalSession.UnitOfWork;
+                unitOfWork.Begin();
                 try
                 {
-                    int quadro = _repositoryQuadro.ObterProximoQuadro(ref unitOfWork, congregacaoId);
-                    return ObterListaPorQuadroId(ref unitOfWork, quadro);
+                    var congregacao = _repositoryCongregacao.ListAll(ref unitOfWork).ToList().Find(x => x.Codigo == congregacaoAtual);
+
+                    if (congregacao == null)
+                    {
+                        model.AddNotification("Congregacao", "Não existe nenhuma congregação cadastrada");
+                        unitOfWork.Rollback();
+                        return model.Notifications;
+                    }
+
+                    var quadroAtual = _repositoryQuadro.ObterQuadroAtual(ref unitOfWork, congregacaoAtual);
+                    var proximoQuadro = _repositoryQuadro.ObterProximoQuadro(ref unitOfWork, congregacaoAtual);
+                    int quadro = 0;
+                    DateTime dataInicioLista;
+
+                    if (proximoQuadro > 0)
+                        quadro = proximoQuadro;
+                    else
+                        quadro = quadroAtual;
+
+                    dataInicioLista = _repositoryQuadroDetalhe.ObterDataInicioQuadro(ref unitOfWork, quadro);
+
+
+                    var tipolistas = _repositoryTipoLista.ListAll(ref unitOfWork, congregacaoAtual);
+                    DateTime dataFinalLista = _repositoryQuadroDetalhe.ObterDataFimQuadro(ref unitOfWork, quadro);
+                    //Apaga Lista Atual
+                    _repositoryQuadroDetalhe.ApagaDetalhesQuadro(ref unitOfWork, quadro);
+
+                    // Caso a próxima lista ainda não foi gerada, a lista atual será gerada até a última reunião antes da data atual
+                    if (proximoQuadro == 0)
+                    {
+                        // Gera lista até data atual
+                        GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, dataInicioLista, quadro, DateTime.Now, true, true);
+
+                        // Atualiza o Controle da lista com base nas atribuições atuais dos irmãos
+                        AtualizarControleLista(ref unitOfWork, congregacao.Codigo);
+
+                        // Continua a geração da lista da data atual até o final da lista
+                        GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, DateTime.Now, quadro, dataFinalLista, false, false);
+                    }
+                    else
+                    {
+                        // Recupera Backup das lista 
+                        foreach (var item in tipolistas)
+                            _repositoryControleLista.RecuperaBackupListaAtual(ref unitOfWork, (int)item.Codigo);
+                        
+                        // Atualiza o Controle da lista com base nas atribuições atuais dos irmãos
+                        AtualizarControleLista(ref unitOfWork, congregacao.Codigo);
+
+                        // Gera lista até data atual
+                        GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, dataInicioLista, quadro, dataFinalLista, true, false);
+                    }
+
+                    unitOfWork.Commit();
                 }
                 catch
                 {
+                    unitOfWork.Rollback();
                     throw;
                 }
             }
+
+            return model.Notifications;
         }
 
-        public IReadOnlyCollection<Notification> RegerarListaAtual()
+        private void GeraListas(ref IUnitOfWork unitOfWork, ref IEnumerable<TipoLista> tipolistas, ref Congregacao congregacao, DateTime dataInicioLista, int quadro, DateTime datalimite, 
+            bool regerarlista, bool recuperabackup)
         {
-            throw new NotImplementedException();
+            int codQuadro = 0;
+            DateTime dataFinalLista = DateTime.MinValue;
+            foreach (var itemTipoLista in tipolistas)
+            {
+                DateTime dataControle = dataInicioLista;
+
+                if (recuperabackup) _repositoryControleLista.RecuperaBackupListaAtual(ref unitOfWork, (int)itemTipoLista.Codigo);
+
+                // Se estiver for o primeiro ciclo de geração da lista
+                if (regerarlista)
+                {
+                    codQuadro = _repositoryQuadro.InserirNovoQuadro(ref unitOfWork, congregacao.Codigo, quadro, (int)itemTipoLista.Codigo);
+                }
+                else
+                    codQuadro = _repositoryQuadro.ObterQuadroTipoLista(ref unitOfWork, quadro, (int)itemTipoLista.Codigo);
+                                       
+                int i = 0;
+                while (i < itemTipoLista.QuantidadeDatas)
+                {
+                    bool assembleia = false;
+                    switch (itemTipoLista.Codigo)
+                    {
+                        case Core.Domain.enums.eTipoLista.Indicador:
+                        case Core.Domain.enums.eTipoLista.AudioVideo:
+                            if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
+                            {
+                                for (int iIndicador = 0; iIndicador < congregacao.QuantidadeIndicadores; iIndicador++)
+                                {
+                                    if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                }
+                                i++;
+                            }
+                            break;
+                        case Core.Domain.enums.eTipoLista.Microfonista:
+                            if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
+                            {
+                                for (int iMicrofonistas = 0; iMicrofonistas < congregacao.QuantidadeMicrofonistas; iMicrofonistas++)
+                                {
+                                    if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                }
+                                i++;
+                            }
+                            break;
+                        case Core.Domain.enums.eTipoLista.OracaoFinal:
+                            if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
+                            {
+                                InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                i++;
+                            }
+                            break;
+                        case Core.Domain.enums.eTipoLista.LeitorJW:
+                            if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela)
+                            {
+                                if (dataControle <= dataFinalLista) InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                i++;
+                            }
+                            break;
+                        case Core.Domain.enums.eTipoLista.LeitorELC:
+                            if (dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
+                            {
+                                if (dataControle <= dataFinalLista) InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                i++;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    dataControle = dataControle.AddDays(1);
+                    // Para a atualização
+                    if (dataControle.Date > datalimite.Date)
+                    {
+                        i = itemTipoLista.QuantidadeDatas;
+                    }
+
+                }
+                if (dataFinalLista == DateTime.MinValue)
+                    dataFinalLista = dataControle.AddDays(-1);
+
+            }
         }
 
-        private List<GetQuadroDesignacaoMecanica> ObterListaPorQuadroId(ref IUnitOfWork unitOfWork, int quadro)
+        private List<GetQuadroDesignacaoMecanica> ObterListaPorQuadroId(ref IUnitOfWork unitOfWork, int quadroAtual, int proximoQuadro)
         {
-            var lista = _repositoryQuadro.ObterListaDesignacoesMecanicas(ref unitOfWork, quadro);
+            var lista = _repositoryQuadro.ObterListaDesignacoesMecanicas(ref unitOfWork, quadroAtual, proximoQuadro);
             for (int i = 0; i < lista.Count; i++)
             {
                 lista[i].DataFormatada = lista[i].Data.ToString("dd/MM");
-                var indicadores = _repositoryQuadroDetalhe.ObterIrmaosTipoLista(ref unitOfWork, Core.Domain.enums.eTipoLista.Indicador, quadro, lista[i].Data);
+                var indicadores = _repositoryQuadroDetalhe.ObterIrmaosTipoLista(ref unitOfWork, Core.Domain.enums.eTipoLista.Indicador, quadroAtual, proximoQuadro,lista[i].Data);
                 lista[i].Indicadores = new List<string>();
                 foreach (var item in indicadores)
                 {
                     lista[i].Indicadores.Add(item.Nome);
                 }
 
-                var microfonistas = _repositoryQuadroDetalhe.ObterIrmaosTipoLista(ref unitOfWork, Core.Domain.enums.eTipoLista.Microfonista, quadro, lista[i].Data);
+                var microfonistas = _repositoryQuadroDetalhe.ObterIrmaosTipoLista(ref unitOfWork, Core.Domain.enums.eTipoLista.Microfonista, quadroAtual, proximoQuadro, lista[i].Data);
                 lista[i].Microfonistas = new List<string>();
                 foreach (var item2 in microfonistas)
                 {
                     lista[i].Microfonistas.Add(item2.Nome);
                 }
 
-                var somvideo = _repositoryQuadroDetalhe.ObterIrmaosTipoLista(ref unitOfWork, Core.Domain.enums.eTipoLista.AudioVideo, quadro, lista[i].Data);
+                var somvideo = _repositoryQuadroDetalhe.ObterIrmaosTipoLista(ref unitOfWork, Core.Domain.enums.eTipoLista.AudioVideo, quadroAtual, proximoQuadro, lista[i].Data);
                 lista[i].SomVideo = new List<string>();
                 foreach (var item3 in somvideo)
                 {

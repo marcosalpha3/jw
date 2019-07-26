@@ -9,10 +9,11 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
     {
         int ObterCodigoProximoQuadro(ref IUnitOfWork unitOfWork);
         int InserirNovoQuadro(ref IUnitOfWork unitOfWork, int congregacaoId, int quadroId, int tipoListaId);
-        List<GetQuadroDesignacaoMecanica> ObterListaDesignacoesMecanicas(ref IUnitOfWork unitOfWork, int QuadroId);
+        List<GetQuadroDesignacaoMecanica> ObterListaDesignacoesMecanicas(ref IUnitOfWork unitOfWork, int quadroAtual, int quadroProximo);
         Quadro ObterUltimoQuadro(ref IUnitOfWork unitOfWork, int congregacaoId);
         int ObterQuadroAtual(ref IUnitOfWork unitOfWork, int congregacaoId);
         int ObterProximoQuadro(ref IUnitOfWork unitOfWork, int congregacaoId);
+        int ObterQuadroTipoLista(ref IUnitOfWork unitOfWork, int quadroId, int tipoListaId);
         void InserirQuadroPersonalizado(ref IUnitOfWork unitOfWork, QuadroPersonalizado model);
         void AlterarStatusStorageQuadroPersonalizado(ref IUnitOfWork unitOfWork, string url);
         List<QuadroPersonalizado> ObterQuadrosPersonalizadosExpiradosAtivosStorage(ref IUnitOfWork unitOfWork);

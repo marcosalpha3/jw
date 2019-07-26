@@ -53,6 +53,27 @@ namespace SystemNet.Api.Controllers
         }
 
         [HttpPost]
+        [Route("api/v1/quadro/regerar/congregacao/{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegerarQuadro(int id)
+        {
+            try
+            {
+                var result = _service.RegerarListaAtual(id);
+                return await Response(new Quadro { Codigo = 1 }, result);
+            }
+            catch (Exception ex)
+            {
+                // Logar o erro (Elmah) 
+                return BadRequest(new
+                {
+                    success = false,
+                    errors = new[] { ex }
+                });
+            }
+        }
+
+        [HttpPost]
         [Route("api/v1/quadro/congregacao/{id}/expirationdate/{expirationdate}/initialdate/{initialDate}/titulo/{titulo}")]
         [Authorize(Policy = "Member")]
         public async Task<IActionResult> NovoQuadroPesonalizado(int id, string expirationdate, string initialDate, string titulo, IFormFile file)
@@ -143,13 +164,13 @@ namespace SystemNet.Api.Controllers
 
 
         [HttpGet]
-        [Route("api/v1/quadro/congregacao/{id}/atual")]
+        [Route("api/v1/quadro/congregacao/{id}")]
         [Authorize(Policy = "Brother")]
         public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var result = _service.ObterListaAtualDesignacoesMecanicas(id);
+                var result = _service.ObterListaDesignacoesMecanicas(id);
                 return (result == null || !result.Any()) ? NoContent() : await Response(result);
             }
             catch (Exception ex)
@@ -163,29 +184,6 @@ namespace SystemNet.Api.Controllers
             }
 
         }
-
-        [HttpGet]
-        [Route("api/v1/quadro/congregacao/{id}/proxima")]
-        [Authorize(Policy = "Brother")]
-        public async Task<IActionResult> GetProxima(int id)
-        {
-            try
-            {
-                var result = _service.ObterProximaListaDesignacoesMecanicas(id);
-                return (result == null || !result.Any()) ? NoContent() : await Response(result);
-            }
-            catch (Exception ex)
-            {
-                // Logar o erro (Elmah) 
-                return BadRequest(new
-                {
-                    success = false,
-                    errors = new[] { ex }
-                });
-            }
-
-        }
-
 
     }
 }

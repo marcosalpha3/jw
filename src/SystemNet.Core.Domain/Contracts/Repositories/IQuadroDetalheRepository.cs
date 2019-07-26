@@ -9,9 +9,11 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
     public interface IQuadroDetalheRepository
     {
         void InsereDataQuadro(ref IUnitOfWork unitOfWork, QuadroDetalhe model);
-        void ApagaDetalhesQuadro(ref IUnitOfWork unitOfWork, int QuadroId);
-        List<Irmao> ObterIrmaosTipoLista(ref IUnitOfWork unitOfWork, eTipoLista tipolist, int QuadroId, DateTime data);
+        void ApagaDetalhesQuadro(ref IUnitOfWork unitOfWork, int QuadroId);        
+        List<Irmao> ObterIrmaosTipoLista(ref IUnitOfWork unitOfWork, eTipoLista tipolist, int quadroAtual, int quadroProximo, DateTime data);
         QuadroDetalhe ObterUltimaReuniaoValida(ref IUnitOfWork unitOfWork, int congregacaoId, DateTime data);
         QuadroDetalhe ObterProximaReuniaoValida(ref IUnitOfWork unitOfWork, int congregacaoId, DateTime data);
+        DateTime ObterDataInicioQuadro(ref IUnitOfWork unitOfWork, int quadroId);
+        DateTime ObterDataFimQuadro(ref IUnitOfWork unitOfWork, int quadroId);
     }
 }

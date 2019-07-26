@@ -28,7 +28,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                            LEFT JOIN DataEvento DE ON DE.Codigo = QDL.EventoId
                                                            WHERE (TipoListaId = @TipoLeitorELC OR TipoListaId = @TipoLeitorJW)
                                                            AND QDL.Data >= CAST(DATEADD(DAY, -1, getdate()) As Date)
-                                                           AND Q.Quadro = @Quadro
+                                                           AND (Q.Quadro = @QuadroAtual or Q.Quadro = @QuadroProximo)
                                                            ORDER BY DATA ";
 
         private const string SelectUltimoQuadro = @"SELECT Tab.*, Min(QD.Data) As DataInicioLista, Max(QD.Data) As DataFimLista from
@@ -149,19 +149,31 @@ namespace SystemNet.Core.Infraestructure.Repositories
                transaction: unitOfWork.Transaction));
         }
 
+        public int ObterQuadroTipoLista(ref IUnitOfWork unitOfWork, int quadroId, int tipoListaId)
+        {
+            return Convert.ToInt32(unitOfWork.Connection.ExecuteScalar(@" select Codigo from Quadro where Quadro = @Quadro and TipoListaId = @TipoListaId ",
+               param: new
+               {
+                   @Quadro = quadroId,
+                   @TipoListaId = tipoListaId
+               },
+               transaction: unitOfWork.Transaction));
+        }
+
         public int ObterCodigoProximoQuadro(ref IUnitOfWork unitOfWork)
         {
             return (int)unitOfWork.Connection.ExecuteScalar("SELECT ISNULL(Max(Codigo), 0) + 1 from dbo.Quadro",
             transaction: unitOfWork.Transaction);
         }
 
-        public List<GetQuadroDesignacaoMecanica> ObterListaDesignacoesMecanicas(ref IUnitOfWork unitOfWork, int QuadroId)
+        public List<GetQuadroDesignacaoMecanica> ObterListaDesignacoesMecanicas(ref IUnitOfWork unitOfWork, int quadroAtual, int quadroProximo)
         {
             return unitOfWork.Connection.Query<GetQuadroDesignacaoMecanica>(SelectDesignacoesMecanicas,
                     param: new { @TipoLeitorELC = eTipoLista.LeitorELC,
                                  @TipoLeitorJW = eTipoLista.LeitorJW,
                                  @TipoOracaoFinal = eTipoLista.OracaoFinal,
-                                 @Quadro = QuadroId
+                                 @QuadroAtual = quadroAtual,
+                                 @QuadroProximo = quadroProximo
                     }
                 ).ToList();
         }
@@ -172,7 +184,9 @@ namespace SystemNet.Core.Infraestructure.Repositories
                param: new
                {
                    @CongregacaoId = congregacaoId,
-               });
+               },
+                   transaction: unitOfWork.Transaction
+               );
 
             return (quadro == null) ? 0 : (int)quadro;
         }
@@ -183,7 +197,9 @@ namespace SystemNet.Core.Infraestructure.Repositories
                param: new
                {
                    @CongregacaoId = congregacaoId,
-               });
+               },
+                   transaction: unitOfWork.Transaction
+               );
 
             return (quadro == null) ? 0 : (int)quadro;
         }
