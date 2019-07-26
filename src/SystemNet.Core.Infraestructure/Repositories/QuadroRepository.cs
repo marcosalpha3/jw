@@ -162,7 +162,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
 
         public int ObterCodigoProximoQuadro(ref IUnitOfWork unitOfWork)
         {
-            return (int)unitOfWork.Connection.ExecuteScalar("SELECT ISNULL(Max(Codigo), 0) + 1 from dbo.Quadro",
+            return (int)unitOfWork.Connection.ExecuteScalar("SELECT ISNULL(Max(Quadro), 0) + 1 from dbo.Quadro",
             transaction: unitOfWork.Transaction);
         }
 
