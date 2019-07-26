@@ -33,7 +33,7 @@ namespace SystemNet.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("api/v1/quadro")]
-        [AllowAnonymous]
+        [Authorize(Policy = "Member")]
         public async Task<IActionResult> Post()
         {
             try
@@ -54,7 +54,7 @@ namespace SystemNet.Api.Controllers
 
         [HttpPost]
         [Route("api/v1/quadro/regerar/congregacao/{id}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "Member")]
         public async Task<IActionResult> RegerarQuadro(int id)
         {
             try
