@@ -26,7 +26,7 @@ namespace SystemNet.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/v1/assistencia/congregacao/{congregacaoid}/datainicial/{datainicial}/datafinal/{datafinal}")]
-        [Authorize(Policy = "Indicator")]
+        [Authorize(Policy = "Brother")]
         public async Task<IActionResult> Get(int congregacaoId, DateTime dataInicial, DateTime dataFinal)
         {
             try
@@ -52,7 +52,7 @@ namespace SystemNet.Api.Controllers
         /// <returns></returns>
         [HttpDelete]
         [Route("api/v1/assistencia/congregacao/{congregacaoid}/data/{data}")]
-        [Authorize(Policy = "Brother")]
+        [Authorize(Policy = "Indicator")]
         public async Task<IActionResult> Apagar(int congregacaoId, DateTime data)
         {
             try
