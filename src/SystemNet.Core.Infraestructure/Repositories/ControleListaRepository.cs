@@ -35,7 +35,9 @@ namespace SystemNet.Core.Infraestructure.Repositories
 
         private const string SelectProximoListaComFolga = @" SELECT top 1 * from ControleLista where TipoListaId = @TipoListaId and Participou = 0 
                                                              and IrmaoId NOT IN (select IrmaoId from
-                                                            (select *, Case when SistemaSonoro = 1 and Hoje = 1 then 1 when SistemaSonoro = 1 and Hoje is null then 0 else 1 end As Repetir  from
+                                                            (select *, Case when SistemaSonoro = 1 and Hoje = 1 then 1 else 1 end As Repetir 
+                                                            --(select *, Case when SistemaSonoro = 1 and Hoje = 1 then 1 when SistemaSonoro = 1 and Hoje is null then 0 else 1 end As Repetir 
+                                                            from
                                                             (select ISNULL(IrmaoId, 0) As IrmaoId, I2.SistemaSonoro,
 															 (select 1  from dbo.QuadroDetalhe QD3
                                                              INNER JOIN Quadro Q3 ON Q3.Codigo = QD3.QuadroId
@@ -50,7 +52,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                              CAST(@DataReuniaoAtual AS DATE) OR Data = CAST(@DataProximaReuniao As Date))) As TabNot) As TabNot2
                                                              WHERE Repetir = 1 
 )
-                                                             Order by OrdenaFinal, CodigoControleLista ";
+                                                             Order by OrdenaFinal, Participacoes, CodigoControleLista ";
 
         private const string SelectProximoListaSemFolga = @" SELECT top 1 * from ControleLista where TipoListaId = @TipoListaId and Participou = 0 
                                                              and IrmaoId NOT IN ( select ISNULL(IrmaoId, 0) from dbo.QuadroDetalhe where Data = CAST(@DataReuniaoAtual AS DATE))
