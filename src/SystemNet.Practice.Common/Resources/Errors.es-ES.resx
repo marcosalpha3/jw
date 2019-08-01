@@ -147,6 +147,12 @@
   <data name="EndDateGreater" xml:space="preserve">
     <value>La fecha inicial debe ser mayor que la fecha final</value>
   </data>
+  <data name="EventDescription" xml:space="preserve">
+    <value>Descrición del evento</value>
+  </data>
+  <data name="EventExists" xml:space="preserve">
+    <value>Ya existe un evento registrado para esta fecha</value>
+  </data>
   <data name="Exists" xml:space="preserve">
     <value>{0} ya existe</value>
   </data>

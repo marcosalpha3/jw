@@ -22,7 +22,7 @@ namespace SystemNet.Core.Domain.Models
                            .HasMinLen(Titulo, 3, nameof(Titulo), String.Format(Errors.Min, Errors.Titulo, 3))
                            .HasMaxLen(Titulo, 50, nameof(Titulo), String.Format(Errors.Titulo, Errors.Max, 50))
                            .IsGreaterThan(CongregacaoId, 0, nameof(CongregacaoId), Errors.CongreagationRequired)
-                           .IsGreaterOrEqualsThan(DataInicio.Date, DateTime.Now.Date, nameof(DataInicio), Errors.InitialDateGrantCurrentDate)
+                           .IsGreaterOrEqualsThan(DataInicio.Date, DateTime.Now.AddDays(-1).Date, nameof(DataInicio), Errors.InitialDateGrantCurrentDate)
                            .IsGreaterOrEqualsThan(DataExpiracao, DataInicio, nameof(DataExpiracao), Errors.ExpirationDateGrantInitialDate)
                            );
 

@@ -151,6 +151,24 @@ namespace SystemNet.Practice.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Event Description.
+        /// </summary>
+        public static string EventDescription {
+            get {
+                return ResourceManager.GetString("EventDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This event already exists to this date.
+        /// </summary>
+        public static string EventExists {
+            get {
+                return ResourceManager.GetString("EventExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} already exists.
         /// </summary>
         public static string Exists {

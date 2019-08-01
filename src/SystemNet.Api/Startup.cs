@@ -89,6 +89,7 @@ namespace SystemNet.Api
             services.AddTransient<ControleLista, ControleLista>();
 
             services.AddTransient<IDataEventoRepository, DataEventoRepository>();
+            services.AddTransient<IDataEventoServices, DataEventoServices>();
             services.AddTransient<DataEvento, DataEvento>();
 
             services.AddTransient<IIrmaoRepository, IrmaoRepository>();
@@ -114,9 +115,7 @@ namespace SystemNet.Api
             services.AddTransient<AssistenciaReuniao, AssistenciaReuniao>();
 
             services.AddTransient<StorageHelper, StorageHelper>();
-            services.AddTransient<StorageConfig, StorageConfig>();
-
-            
+            services.AddTransient<StorageConfig, StorageConfig>();            
         }
 
         private void ConfigureAzureStorage(ref IServiceCollection services)
