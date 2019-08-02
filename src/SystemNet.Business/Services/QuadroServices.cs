@@ -595,11 +595,11 @@ namespace SystemNet.Business.Services
                 {
                     while (proximoLista == null)
                     {
-                        if (cont <= 50)
+                        if (cont <= 15)
                             proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirComFolga(ref unitOfWork,
                               (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
                               (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
-                        else if (cont >= 50 && cont <= 100)
+                        else if (cont > 15 && cont <= 50)
                             proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref unitOfWork,
                               (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
                               (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
@@ -612,6 +612,7 @@ namespace SystemNet.Business.Services
                             liberouproximo = true;
                         }
                         cont++;
+                        Task.Delay(10).Wait();
                     }
                 }
                 else if (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.AudioVideo)
