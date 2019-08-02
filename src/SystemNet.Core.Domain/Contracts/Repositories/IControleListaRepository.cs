@@ -16,5 +16,6 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
         void RemoverIrmaoLista(ref IUnitOfWork unitOfWork, int tipoListaId, int irmaoId);
         ControleLista GetListaIrmao(ref IUnitOfWork unitOfWork, int tipoListaId, int irmao);
         void LiberaProximoLista(ref IUnitOfWork unitOfWork, int tipoListaId);
+        ControleLista ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datareuniaoanterior, DateTime datereuniaoAtual, DateTime dataProximaReuniao);
     }
 }

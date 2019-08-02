@@ -580,6 +580,7 @@ namespace SystemNet.Business.Services
 
         private bool InsereDetalheQuadro(ref IUnitOfWork unitOfWork, DateTime dataControle, Congregacao item, int codigoQuadro, TipoLista itemTipoLista)
         {
+            var cont = 0;
             ControleLista proximoLista = null;
             bool liberouproximo = false;
             QuadroDetalhe quadrodetalhe = null;
@@ -594,14 +595,23 @@ namespace SystemNet.Business.Services
                 {
                     while (proximoLista == null)
                     {
-                        proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirComFolga(ref unitOfWork,
-                            (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
-                            (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
+                        if (cont <= 50)
+                            proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirComFolga(ref unitOfWork,
+                              (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
+                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
+                        else if (cont >= 50 && cont <= 100)
+                            proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref unitOfWork,
+                              (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
+                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
+                        else
+                            throw new Exception("Não é possivel obter um irmão para gerar a lista");
+
                         if (proximoLista == null)
                         {
                             _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo);
                             liberouproximo = true;
                         }
+                        cont++;
                     }
                 }
                 else if (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.AudioVideo)

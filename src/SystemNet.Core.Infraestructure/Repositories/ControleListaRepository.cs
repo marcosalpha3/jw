@@ -54,6 +54,28 @@ namespace SystemNet.Core.Infraestructure.Repositories
 )
                                                              Order by OrdenaFinal, Participacoes, CodigoControleLista ";
 
+        private const string SelectProximoListaSemFolgaAudio = @" SELECT top 1 * from ControleLista where TipoListaId = @TipoListaId and Participou = 0 
+                                                             and IrmaoId NOT IN (select IrmaoId from
+                                                            --(select *, Case when SistemaSonoro = 1 and Hoje = 1 then 1 else 1 end As Repetir 
+                                                            (select *, Case when SistemaSonoro = 1 and Hoje = 1 then 1 when SistemaSonoro = 1 and Hoje is null then 0 else 1 end As Repetir 
+                                                            from
+                                                            (select ISNULL(IrmaoId, 0) As IrmaoId, I2.SistemaSonoro,
+															 (select 1  from dbo.QuadroDetalhe QD3
+                                                             INNER JOIN Quadro Q3 ON Q3.Codigo = QD3.QuadroId
+                                                             where Q3.TipoListaId <> @ListaOracao and
+                                                             QD3.Data = CAST(@DataReuniaoAtual AS DATE)
+															 AND QD3.IrmaoId = QD.IrmaoId) As Hoje
+                                                             from dbo.QuadroDetalhe QD
+                                                             INNER JOIN Quadro Q ON Q.Codigo = QD.QuadroId
+															 INNER JOIN Irmao I2 ON QD.IrmaoId = I2.Codigo
+                                                             where Q.TipoListaId <> @ListaOracao and
+                                                            (Data = CAST(@DataReuniaoAnterior AS DATE) OR Data = 
+                                                             CAST(@DataReuniaoAtual AS DATE) OR Data = CAST(@DataProximaReuniao As Date))) As TabNot) As TabNot2
+                                                             WHERE Repetir = 1 
+)
+                                                             Order by OrdenaFinal, Participacoes, CodigoControleLista ";
+
+
         private const string SelectProximoListaSemFolga = @" SELECT top 1 * from ControleLista where TipoListaId = @TipoListaId and Participou = 0 
                                                              and IrmaoId NOT IN ( select ISNULL(IrmaoId, 0) from dbo.QuadroDetalhe where Data = CAST(@DataReuniaoAtual AS DATE))
                                                              Order by OrdenaFinal, CodigoControleLista ";
@@ -207,6 +229,22 @@ namespace SystemNet.Core.Infraestructure.Repositories
                     , transaction: unitOfWork.Transaction
                 ).FirstOrDefault();
         }
+
+        public ControleLista ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datareuniaoanterior, DateTime datereuniaoAtual, DateTime dataProximaReuniao)
+        {
+            return unitOfWork.Connection.Query<ControleLista>(SelectProximoListaSemFolgaAudio,
+                    param: new
+                    {
+                        @TipoListaId = tipoListaId,
+                        @DataReuniaoAnterior = datareuniaoanterior,
+                        @DataReuniaoAtual = datereuniaoAtual,
+                        @DataProximaReuniao = dataProximaReuniao,
+                        @ListaOracao = eTipoLista.OracaoFinal
+                    }
+                    , transaction: unitOfWork.Transaction
+                ).FirstOrDefault();
+        }
+
 
         public ControleLista ObterProximoListaSemRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual)
         {
