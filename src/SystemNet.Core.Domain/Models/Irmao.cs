@@ -113,7 +113,7 @@ namespace SystemNet.Core.Domain.Models
             return true;
         }
 
-        public bool AlteraSenhaAtual(string user, string passworddatabase, string password, string newpassword, string confirmNewPass, string userconnect)
+        public bool AlteraSenhaAtual(int userCod, string passworddatabase, string password, string newpassword, string confirmNewPass, int userconnect)
         {
             AddNotifications(new ValidationContract()
                 .HasMinLen(newpassword, 8, nameof(this.Senha), String.Format(Errors.MinPassword, 8))
@@ -122,7 +122,7 @@ namespace SystemNet.Core.Domain.Models
                 .AreNotEquals(CriptografarSenha(password), CriptografarSenha(newpassword), nameof(this.Senha), Errors.NewPasswordEqualPrevious)
                 .AreEquals(newpassword, confirmNewPass, nameof(this.Senha), Errors.PasswordDoesNotMatch)
                 .IsTrue(VerificaSenhaForte(newpassword), nameof(this.Senha), Errors.RequirementsPassword)
-                .AreEquals(user, userconnect, nameof(Irmao.Email), Errors.InvalidCredentials)
+                .AreEquals(userCod, userconnect, nameof(Irmao.Email), Errors.InvalidCredentials)
                 );
 
             if (Valid)

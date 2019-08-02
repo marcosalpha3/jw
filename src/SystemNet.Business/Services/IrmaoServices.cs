@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FluentValidator;
 using SystemNet.Core.Domain.Contracts.Repositories;
 using SystemNet.Core.Domain.Contracts.Services;
@@ -195,8 +196,8 @@ namespace SystemNet.Business.Services
 
                     if (model == null || model.Invalid) return model;
 
-                    if (model.AlteraSenhaAtual(model.Email, model.Senha,
-                        senha, novaSenha, confirmacaoNovaSenha, UserToken))
+                    if (model.AlteraSenhaAtual(model.Codigo, model.Senha,
+                        senha, novaSenha, confirmacaoNovaSenha, Convert.ToInt32(UserToken)))
                     {
                         _repository.AlterarSenha(ref unitOfWork, model.Codigo, model.Senha);
                         unitOfWork.Commit();
