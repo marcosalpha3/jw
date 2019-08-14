@@ -7,15 +7,17 @@ namespace SystemNet.Practices.Data
 {
     public static class Email
     {
-        public static SmtpClient smtpClient()
+        public static SmtpClient SmtpClient()
         {
-            SmtpClient ClientSmtp = new SmtpClient();
-            ClientSmtp.EnableSsl = true;
-            ClientSmtp.UseDefaultCredentials = false;
-            ClientSmtp.Credentials =  new NetworkCredential(Runtime.User.ToLower(),Runtime.Password);
-            ClientSmtp.Host = Runtime.Smtp.ToLower();
-            ClientSmtp.Port = Convert.ToInt32(Runtime.Port);
-            ClientSmtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+            SmtpClient ClientSmtp = new SmtpClient
+            {
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(Runtime.User.ToLower(), Runtime.Password),
+                Host = Runtime.Smtp.ToLower(),
+                Port = Convert.ToInt32(Runtime.Port),
+                DeliveryMethod = SmtpDeliveryMethod.Network
+            };
 
             return ClientSmtp;
         }

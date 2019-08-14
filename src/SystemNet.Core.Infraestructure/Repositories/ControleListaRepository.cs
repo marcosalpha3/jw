@@ -281,14 +281,15 @@ namespace SystemNet.Core.Infraestructure.Repositories
 
         public ControleLista GetListaIrmao(ref IUnitOfWork unitOfWork, int tipoListaId, int irmao)
         {
+            var param = new
+            {
+                @TipoListaId = tipoListaId,
+                irmao
+            };
             return unitOfWork.Connection.Query<ControleLista>(" select top 1 * from dbo.ControleLista where TipoListaId = @TipoListaId and IrmaoId = @irmao",
-                    param: new
-                    {
-                        @TipoListaId = tipoListaId,
-                        @irmao = irmao
-                    }
-                    , transaction: unitOfWork.Transaction
-                ).FirstOrDefault();
+          param: param
+          , transaction: unitOfWork.Transaction
+      ).FirstOrDefault();
         }
 
         public void LiberaProximoLista(ref IUnitOfWork unitOfWork, int tipoListaId)

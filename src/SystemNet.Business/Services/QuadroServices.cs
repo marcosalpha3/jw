@@ -349,7 +349,7 @@ namespace SystemNet.Business.Services
                         AtualizarControleLista(ref unitOfWork, congregacao.Codigo);
 
                         // Continua a geração da lista da data atual até o final da lista
-                        GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, DateTime.Now, quadro, dataFinalLista, false, false);
+                        GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, DateTime.Now.AddDays(1), quadro, dataFinalLista, false, false);
                     }
                     else
                     {
