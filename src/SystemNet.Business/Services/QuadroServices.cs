@@ -204,7 +204,7 @@ namespace SystemNet.Business.Services
                         {
                             quadro = _repositoryQuadro.ObterCodigoProximoQuadro(ref unitOfWork);
                             // Incluir / retirar irmãos da lista / atualiza designações
-                            AtualizarControleLista(ref unitOfWork, item.Codigo);
+                            AtualizarControleLista(ref unitOfWork, item.Codigo, true);
                         }
                         DateTime dataFinalLista = DateTime.MinValue;
 
@@ -346,7 +346,7 @@ namespace SystemNet.Business.Services
                         GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, dataInicioLista, quadro, DateTime.Now, true, true);
 
                         // Atualiza o Controle da lista com base nas atribuições atuais dos irmãos
-                        AtualizarControleLista(ref unitOfWork, congregacao.Codigo);
+                        AtualizarControleLista(ref unitOfWork, congregacao.Codigo, false);
 
                         // Continua a geração da lista da data atual até o final da lista
                         GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, DateTime.Now.AddDays(1), quadro, dataFinalLista, false, false);
@@ -358,7 +358,7 @@ namespace SystemNet.Business.Services
                             _repositoryControleLista.RecuperaBackupListaAtual(ref unitOfWork, (int)item.Codigo);
                         
                         // Atualiza o Controle da lista com base nas atribuições atuais dos irmãos
-                        AtualizarControleLista(ref unitOfWork, congregacao.Codigo);
+                        AtualizarControleLista(ref unitOfWork, congregacao.Codigo, false);
 
                         // Gera lista até data atual
                         GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, dataInicioLista, quadro, dataFinalLista, true, false);
@@ -490,7 +490,7 @@ namespace SystemNet.Business.Services
             return lista;
         }
 
-        private void AtualizarControleLista(ref IUnitOfWork unitOfWork, int congregacaoId)
+        private void AtualizarControleLista(ref IUnitOfWork unitOfWork, int congregacaoId, bool atualizaFlagAtualizarDesignacoes)
         {
             var irmaos = _repositoryIrmao.ObterIrmaosADesativarOuAtivar(ref unitOfWork, congregacaoId);
             ControleLista lista = null;
@@ -574,6 +574,8 @@ namespace SystemNet.Business.Services
                                 break;
                         }
                     }
+                    // Caso seja geração de uma nova lista, desabilitar flag que atualiza a lista
+                    if (atualizaFlagAtualizarDesignacoes) _repositoryIrmao.AtualizaFlagDesignacao(ref unitOfWork, itemIrmao.Codigo);
                 }
             }
         }

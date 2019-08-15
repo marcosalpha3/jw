@@ -25,5 +25,6 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
         void AlterarSenha(ref IUnitOfWork unitOfWork, int Id, string senha);
         IEnumerable<GetGrupoIrmao> ObterGruposComIrmaos(ref IUnitOfWork unitOfWork, int congregacaoId);
         void UpdateGrupoCampo(ref IUnitOfWork unitOfWork, int grupoAtual, int novoGrupo);
+        void AtualizaFlagDesignacao(ref IUnitOfWork unitOfWork, int Id);
     }
 }

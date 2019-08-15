@@ -260,6 +260,13 @@ namespace SystemNet.Core.Infraestructure.Repositories
                 transaction: unitOfWork.Transaction);
         }
 
+        public void AtualizaFlagDesignacao(ref IUnitOfWork unitOfWork, int Id)
+        {
+            unitOfWork.Connection.Execute("UPDATE dbo.[Irmao] SET AtualizarDesignacao = 0 where Codigo = @Id",
+                param: new { @Id = Id },
+                transaction: unitOfWork.Transaction);
+        }
+
         #region [Email]  
 
         private AlternateView alternateView(string htmlBody)

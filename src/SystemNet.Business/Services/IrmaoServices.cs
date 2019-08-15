@@ -141,8 +141,10 @@ namespace SystemNet.Business.Services
                         //Valida se não existe um outro registro com este mesmo e-mail
                         if (!VerificarEmail(ref unitOfWork, ref model, updatemodel.Email, model.Codigo)) return model.Notifications;
 
-                        // Verifica se precisa atualizar as designações
-                        updatemodel.VerificaDesignacoes(model);
+                        updatemodel.AtualizarDesignacao = model.AtualizarDesignacao;
+
+                        // Verifica se é necessário atualizar as designações
+                        if (!model.AtualizarDesignacao)  updatemodel.VerificaDesignacoes(model);
 
                         _repository.Atualizar(ref unitOfWork, updatemodel);
 
