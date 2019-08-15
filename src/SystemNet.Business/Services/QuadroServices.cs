@@ -612,7 +612,7 @@ namespace SystemNet.Business.Services
                         else
                             throw new Exception("Não foi possivel obter um irmão da lista ");
 
-                        if (dataControle.Date == Convert.ToDateTime("2018-08-18").Date && proximoLista != null && proximoLista.IrmaoId == 17)
+                        if (dataControle.Date == Convert.ToDateTime("2019-08-18").Date && proximoLista != null && proximoLista.IrmaoId == 17)
                             proximoLista = null;
 
                         if (proximoLista == null)
