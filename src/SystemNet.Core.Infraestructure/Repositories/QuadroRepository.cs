@@ -27,7 +27,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                            LEFT JOIN Irmao IL ON IL.Codigo = QDL.IrmaoId
                                                            LEFT JOIN DataEvento DE ON DE.Codigo = QDL.EventoId
                                                            WHERE (TipoListaId = @TipoLeitorELC OR TipoListaId = @TipoLeitorJW)
-                                                           AND QDL.Data >= CAST(DATEADD(DAY, -2, getdate()) As Date)
+                                                           AND QDL.Data >= CAST(DATEADD(DAY, -1, getdate()) As Date)
                                                            AND (Q.Quadro = @QuadroAtual or Q.Quadro = @QuadroProximo)
                                                            ORDER BY DATA ";
 
