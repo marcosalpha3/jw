@@ -244,22 +244,22 @@ namespace SystemNet.Business.Services
                                     case Core.Domain.enums.eTipoLista.OracaoFinal:
                                         if (dataControle.DayOfWeek == item.DiaReuniaoSentinela || dataControle.DayOfWeek == item.DiaReuniaoServico)
                                         {
-                                           InsereDetalheQuadro(ref unitOfWork, dataControle, item, codQuadro, itemTipoLista);
+                                            if (dataControle <= dataFinalLista) InsereDetalheQuadro(ref unitOfWork, dataControle, item, codQuadro, itemTipoLista);
                                             i++;
                                         }
                                         break;
                                     case Core.Domain.enums.eTipoLista.LeitorJW:
                                         if (dataControle.DayOfWeek == item.DiaReuniaoSentinela)
                                         {
-                                            if (dataControle <= dataFinalLista)  InsereDetalheQuadro(ref unitOfWork, dataControle, item, codQuadro, itemTipoLista);
-                                            i++;
+                                            InsereDetalheQuadro(ref unitOfWork, dataControle, item, codQuadro, itemTipoLista);
+                                            i = i + 2;
                                         }
                                         break;
                                     case Core.Domain.enums.eTipoLista.LeitorELC:
                                         if (dataControle.DayOfWeek == item.DiaReuniaoServico)
                                         {
-                                            if (dataControle <= dataFinalLista) InsereDetalheQuadro(ref unitOfWork, dataControle, item, codQuadro, itemTipoLista);
-                                            i++;
+                                            InsereDetalheQuadro(ref unitOfWork, dataControle, item, codQuadro, itemTipoLista);
+                                            i = i + 2;
                                         }
                                         break;
                                     default:
@@ -432,15 +432,15 @@ namespace SystemNet.Business.Services
                         case Core.Domain.enums.eTipoLista.LeitorJW:
                             if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela)
                             {
-                                if (dataControle <= dataFinalLista) InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
-                                i++;
+                                InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                i = i + 2;
                             }
                             break;
                         case Core.Domain.enums.eTipoLista.LeitorELC:
                             if (dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                             {
                                 if (dataControle <= dataFinalLista) InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
-                                i++;
+                                i = i + 2;
                             }
                             break;
                         default:
@@ -593,7 +593,7 @@ namespace SystemNet.Business.Services
             if (evento == null || (evento.VisitaSuperintendente && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorELC 
                 && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorJW))
             {
-                if (item.FolgaParticipacao && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.AudioVideo)
+                if (item.FolgaParticipacao && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.AudioVideo))
                 {
                     while (proximoLista == null)
                     {
@@ -601,12 +601,15 @@ namespace SystemNet.Business.Services
                             proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirComFolga(ref unitOfWork,
                               (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
                               (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
-                        else if (cont > 15 && cont <= 50)
+                        else if (cont > 15 && cont <= 30)
                             proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref unitOfWork,
                               (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
                               (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
+                        else if (cont > 30 && cont <= 50)
+                            proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolga(ref unitOfWork,
+                        (int)itemTipoLista.Codigo, dataControle);
                         else
-                            throw new Exception("Não é possivel obter um irmão para gerar a lista");
+                            throw new Exception("Não foi possivel obter um irmão da lista ");
 
                         if (proximoLista == null)
                         {
@@ -617,7 +620,7 @@ namespace SystemNet.Business.Services
                         Task.Delay(10).Wait();
                     }
                 }
-                else if (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.AudioVideo)
+                else if (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && ((itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.AudioVideo) || (!item.FolgaParticipacao)))
                 {
                     while (proximoLista == null)
                     {
@@ -630,22 +633,6 @@ namespace SystemNet.Business.Services
                             liberouproximo = true;
                         }
                             
-                    }
-                }
-                else if (itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.AudioVideo)
-                {
-                    while (proximoLista == null)
-                    {
-                        proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirComFolga(ref unitOfWork,
-                           (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
-                           (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
-
-                        if (proximoLista == null)
-                        {
-                            _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo);
-                            liberouproximo = true;
-                        }
-
                     }
                 }
                 else
