@@ -607,7 +607,8 @@ namespace SystemNet.Business.Services
                               (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
                         else if (cont > 30 && cont <= 50)
                             proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolga(ref unitOfWork,
-                        (int)itemTipoLista.Codigo, dataControle);
+                            (int)itemTipoLista.Codigo, dataControle, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, 
+                             (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
                         else
                             throw new Exception("Não foi possivel obter um irmão da lista ");
 
@@ -625,7 +626,8 @@ namespace SystemNet.Business.Services
                     while (proximoLista == null)
                     {
                         proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolga(ref unitOfWork,
-                        (int)itemTipoLista.Codigo, dataControle);
+                        (int)itemTipoLista.Codigo, dataControle, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data,
+                             (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
 
                         if (proximoLista == null)
                         {

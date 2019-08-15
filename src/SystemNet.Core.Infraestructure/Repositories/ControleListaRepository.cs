@@ -77,7 +77,11 @@ namespace SystemNet.Core.Infraestructure.Repositories
 
 
         private const string SelectProximoListaSemFolga = @" SELECT top 1 * from ControleLista where TipoListaId = @TipoListaId and Participou = 0 
-                                                             and IrmaoId NOT IN ( select ISNULL(IrmaoId, 0) from dbo.QuadroDetalhe where Data = CAST(@DataReuniaoAtual AS DATE))
+                                                             and IrmaoId NOT IN ( select ISNULL(IrmaoId, 0) from dbo.QuadroDetalhe where Data = CAST(@DataReuniaoAtual AS DATE) )
+                                                             AND IrmaoId NOT IN ( select ISNULL(IrmaoId, 0) from dbo.QuadroDetalhe QD
+                                                             inner join Quadro Q ON Q.Codigo = QD.QuadroId
+                                                             where Q.TipoListaId <> @TipoListaId and  (Data = CAST(@DataReuniaoAnterior AS DATE) 
+                                                             OR Data = CAST(@DataReuniaoProxima AS DATE)))
                                                              Order by OrdenaFinal, CodigoControleLista ";
 
         private const string LiberaProximo = @"DECLARE @CodigoControle int 
@@ -246,13 +250,15 @@ namespace SystemNet.Core.Infraestructure.Repositories
         }
 
 
-        public ControleLista ObterProximoListaSemRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual)
+        public ControleLista ObterProximoListaSemRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual, DateTime datareuniaoanterior, DateTime dataProximaReuniao)
         {
             return unitOfWork.Connection.Query<ControleLista>(SelectProximoListaSemFolga,
                     param: new
                     {
                         @TipoListaId = tipoListaId,
-                        @DataReuniaoAtual = datereuniaoAtual
+                        @DataReuniaoAtual = datereuniaoAtual,
+                        @DataReuniaoAnterior = datareuniaoanterior,
+                        @DataReuniaoProxima = dataProximaReuniao
                     }
                     , transaction: unitOfWork.Transaction
                 ).FirstOrDefault();

@@ -9,7 +9,7 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
         void BackupListaAtual(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime dataInicioLista);
         void RecuperaBackupListaAtual(ref IUnitOfWork unitOfWork, int tipoListaId);
         ControleLista ObterProximoListaSemRepetirComFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datareuniaoanterior, DateTime datereuniaoAtual, DateTime dataProximaReuniao);
-        ControleLista ObterProximoListaSemRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual);
+        ControleLista ObterProximoListaSemRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual, DateTime datareuniaoanterior, DateTime dataProximaReuniao);
         ControleLista ObterProximoListaPodeRepetir(ref IUnitOfWork unitOfWork, int tipoListaId);
         void AtualizaPartipacaoIrmaoLista(ref IUnitOfWork unitOfWork, int tipoListaId, int irmaoId, bool liberaproximo);
         void IncluirIrmaoLista(ref IUnitOfWork unitOfWork, int tipoListaId, int irmaoId, bool inicioLista);
