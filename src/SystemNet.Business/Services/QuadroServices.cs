@@ -528,6 +528,7 @@ namespace SystemNet.Business.Services
                             case Core.Domain.enums.eTipoLista.Microfonista:
                                 if (itemIrmao.Microfonista && lista == null)
                                 {
+                                    if (itemIrmao.Codigo == 17) inicioLista = true;
                                     _repositoryControleLista.IncluirIrmaoLista(ref unitOfWork, (int)item.Codigo, itemIrmao.Codigo, inicioLista);
                                     inicioLista = (inicioLista) ? false : true;
                                 }
