@@ -528,7 +528,6 @@ namespace SystemNet.Business.Services
                             case Core.Domain.enums.eTipoLista.Microfonista:
                                 if (itemIrmao.Microfonista && lista == null)
                                 {
-                                    if (itemIrmao.Codigo == 17) inicioLista = true;
                                     _repositoryControleLista.IncluirIrmaoLista(ref unitOfWork, (int)item.Codigo, itemIrmao.Codigo, inicioLista);
                                     inicioLista = (inicioLista) ? false : true;
                                 }
@@ -612,6 +611,9 @@ namespace SystemNet.Business.Services
                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
                         else
                             throw new Exception("Não foi possivel obter um irmão da lista ");
+
+                        if (dataControle.Date == Convert.ToDateTime("2018-08-18").Date && proximoLista != null && proximoLista.IrmaoId == 17)
+                            proximoLista = null;
 
                         if (proximoLista == null)
                         {
