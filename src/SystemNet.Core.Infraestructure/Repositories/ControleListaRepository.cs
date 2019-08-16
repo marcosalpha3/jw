@@ -82,7 +82,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                              inner join Quadro Q ON Q.Codigo = QD.QuadroId
                                                              where Q.TipoListaId <> @TipoListaId and  (Data = CAST(@DataReuniaoAnterior AS DATE) 
                                                              OR Data = CAST(@DataReuniaoProxima AS DATE)))
-                                                             Order by OrdenaFinal, CodigoControleLista ";
+                                                              Order by OrdenaFinal, Participacoes, CodigoControleLista  ";
 
         private const string LiberaProximo = @"DECLARE @CodigoControle int 
                                                     DECLARE @Indice int 
