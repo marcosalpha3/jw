@@ -604,11 +604,11 @@ namespace SystemNet.Business.Services
                             proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirComFolga(ref unitOfWork,
                               (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
                               (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
+                        //else if (cont > 15 && cont <= 30)
+                        //    proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref unitOfWork,
+                        //      (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
+                        //      (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
                         else if (cont > 15 && cont <= 30)
-                            proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref unitOfWork,
-                              (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
-                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
-                        else if (cont > 30 && cont <= 50)
                             proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolga(ref unitOfWork,
                             (int)itemTipoLista.Codigo, dataControle, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, 
                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
