@@ -244,7 +244,7 @@ namespace SystemNet.Business.Services
                                     case Core.Domain.enums.eTipoLista.OracaoFinal:
                                         if (dataControle.DayOfWeek == item.DiaReuniaoSentinela || dataControle.DayOfWeek == item.DiaReuniaoServico)
                                         {
-                                            if (dataControle <= dataFinalLista) InsereDetalheQuadro(ref unitOfWork, dataControle, item, codQuadro, itemTipoLista);
+                                            InsereDetalheQuadro(ref unitOfWork, dataControle, item, codQuadro, itemTipoLista);
                                             i++;
                                         }
                                         break;

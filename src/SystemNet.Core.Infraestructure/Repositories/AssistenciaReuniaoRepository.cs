@@ -70,7 +70,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
         public List<GetDetalheAssistencia> ObterAssistenciasPorCongregacao(ref IUnitOfWork unitOfWork, int congregacaoId, DateTime dataInicial, DateTime dataFinal)
         {
             return unitOfWork.Connection.Query<GetDetalheAssistencia>(@" SELECT  [Data], [AssistenciaParte1] ,[AssistenciaParte2]
-                                                                    FROM [QuadroJw].[dbo].[AssistenciasReunioes] A
+                                                                    FROM [AssistenciasReunioes] A
                                                                     INNER JOIN Congregacao C ON C.Codigo = A.CongregacaoId
                                                                     Where C.Codigo = @CongregacaoId
                                                                     and A.Data >= CAST(@DataInicial As Date) and A.Data <= CAST(@DataFinal As Date)
