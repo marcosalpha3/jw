@@ -613,7 +613,11 @@ namespace SystemNet.Business.Services
                             throw new Exception("Não foi possivel obter um irmão da lista ");
 
                         if (dataControle.Date == Convert.ToDateTime("2019-08-18").Date && proximoLista != null && proximoLista.IrmaoId == 17)
+                        {
+                            _repositoryControleLista.AtualizaPartipacaoIrmaoLista(ref unitOfWork, (int)itemTipoLista.Codigo, proximoLista.IrmaoId, liberouproximo);
                             proximoLista = null;
+                        }
+
 
                         if (proximoLista == null)
                         {
