@@ -477,7 +477,7 @@ namespace SystemNet.Business.Services
                 lista[i].Microfonistas = new List<string>();
                 foreach (var item2 in microfonistas)
                 {
-                    if (lista[i].Data.Date == Convert.ToDateTime("2019-08-18").Date && item2.Codigo == 17)
+                    if (lista[i].Data.Date == Convert.ToDateTime("2019-08-18").Date && item2.Nome == "Jorge Shimabukuro")
                         lista[i].Microfonistas.Add("Bruno Vergara");
                     else
                      lista[i].Microfonistas.Add(item2.Nome);
