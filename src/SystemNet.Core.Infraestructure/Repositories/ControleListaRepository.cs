@@ -52,7 +52,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                              CAST(@DataReuniaoAtual AS DATE) OR Data = CAST(@DataProximaReuniao As Date))) As TabNot) As TabNot2
                                                              WHERE Repetir = 1 
 )
-                                                             Order by OrdenaFinal, Participacoes, CodigoControleLista ";
+                                                             Order by  Participacoes, CodigoControleLista ";
 
         private const string SelectProximoListaSemFolgaAudio = @" SELECT top 1 * from ControleLista where TipoListaId = @TipoListaId and Participou = 0 
                                                              and IrmaoId NOT IN (select IrmaoId from
@@ -73,7 +73,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                              CAST(@DataReuniaoAtual AS DATE) OR Data = CAST(@DataProximaReuniao As Date))) As TabNot) As TabNot2
                                                              WHERE Repetir = 1 
 )
-                                                             Order by OrdenaFinal, Participacoes, CodigoControleLista ";
+                                                             Order by Participacoes, CodigoControleLista ";
 
 
         private const string SelectProximoListaSemFolga = @" SELECT top 1 * from ControleLista where TipoListaId = @TipoListaId and Participou = 0 
@@ -82,7 +82,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                              inner join Quadro Q ON Q.Codigo = QD.QuadroId
                                                              where Q.TipoListaId <> @TipoListaId and  (Data = CAST(@DataReuniaoAnterior AS DATE) 
                                                              OR Data = CAST(@DataReuniaoProxima AS DATE)))
-                                                              Order by OrdenaFinal, Participacoes, CodigoControleLista  ";
+                                                              Order by  Participacoes, CodigoControleLista  ";
 
         private const string LiberaProximo = @"DECLARE @CodigoControle int 
                                                     DECLARE @Indice int 
