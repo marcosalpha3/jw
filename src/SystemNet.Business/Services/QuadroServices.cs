@@ -477,10 +477,7 @@ namespace SystemNet.Business.Services
                 lista[i].Microfonistas = new List<string>();
                 foreach (var item2 in microfonistas)
                 {
-                    if (lista[i].Data.Date == Convert.ToDateTime("2019-08-18").Date && item2.Nome == "Jorge Shimabukuro")
-                        lista[i].Microfonistas.Add("Cleutom Moreira");
-                    else
-                        lista[i].Microfonistas.Add(item2.Nome);
+                    lista[i].Microfonistas.Add(item2.Nome);
                 }
 
                 var somvideo = _repositoryQuadroDetalhe.ObterIrmaosTipoLista(ref unitOfWork, Core.Domain.enums.eTipoLista.AudioVideo, quadroAtual, proximoQuadro, lista[i].Data);

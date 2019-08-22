@@ -75,7 +75,7 @@ namespace SystemNet.Api.Controllers
 
         [HttpPost]
         [Route("api/v1/quadro/congregacao/{id}/expirationdate/{expirationdate}/initialdate/{initialDate}/titulo/{titulo}")]
-        [Authorize(Policy = "Member")]
+        [Authorize(Policy = "LoadBoard")]
         public async Task<IActionResult> NovoQuadroPesonalizado(int id, string expirationdate, string initialDate, string titulo, IFormFile file)
         {
             try
@@ -142,7 +142,7 @@ namespace SystemNet.Api.Controllers
 
         [HttpPost]
         [Route("api/v1/quadro/personalizado")]
-        [Authorize(Policy = "Member")]
+        [Authorize(Policy = "LoadBoard")]
         public async Task<IActionResult> ApagarPersonalizado([FromBody]ApagarQuadroPersonalizado model)
         {
             try

@@ -93,7 +93,8 @@ namespace SystemNet.Api.Controllers
             try
             {
                 var result = _service.Adicionar(new Irmao(int.MinValue, model.Nome, model.Email, model.Telefone, model.Sexo, model.Indicador, model.Microfonista, model.LeitorSentinela,
-                    model.LeitorEstudoLivro, model.SistemaSonoro, model.OracaoFinal, model.PresidenteConferencia, model.Carrinho, model.GrupoId, model.CongregacaoId, model.AcessoAdmin), 
+                    model.LeitorEstudoLivro, model.SistemaSonoro, model.OracaoFinal, model.PresidenteConferencia, model.Carrinho, model.GrupoId, model.CongregacaoId, model.AcessoAdmin,
+                    model.AtualizarAssistencia, model.SubirQuadro), 
                     GetUserToken());
                 return await Response(result, result.Notifications);
             }
@@ -194,7 +195,8 @@ namespace SystemNet.Api.Controllers
             try
             {
                 var result = _service.Atualizar(new Irmao(model.Codigo, model.Nome, model.Email, model.Telefone, model.Sexo, model.Indicador, model.Microfonista, model.LeitorSentinela,
-                    model.LeitorEstudoLivro, model.SistemaSonoro, model.OracaoFinal, model.PresidenteConferencia, model.Carrinho, model.GrupoId, model.CongregacaoId, model.AcessoAdmin)
+                    model.LeitorEstudoLivro, model.SistemaSonoro, model.OracaoFinal, model.PresidenteConferencia, model.Carrinho, model.GrupoId, model.CongregacaoId, model.AcessoAdmin,
+                    model.AtualizarAssistencia,model.SubirQuadro)
                     ,GetUserToken());
                 return await Response(model, result);
             }

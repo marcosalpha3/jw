@@ -73,7 +73,7 @@ namespace SystemNet.Business.Services
                     var model = BuscarporLogin(ref unitOfWork, login);
 
                     if (model == null || model.Invalid) return model;
-                    else if (model.StatusId != (int)Status.Ativo)
+                    else if (model.StatusId != (int)Status.Ativo && model.StatusId != (int)Status.BloqueadoporSenha)
                     {
                         model.AddNotification(nameof(Irmao.Email), Errors.BlockedUser);
                         unitOfWork.Rollback();
@@ -81,7 +81,7 @@ namespace SystemNet.Business.Services
                     }
 
                     var novasenha = model.GeraNovaSenha(8, false);
-
+                    model.StatusId = (int)Status.Ativo;
                     _repository.ReiniciarSenha(ref unitOfWork, model);
                     _repository.SendEmail(model, novasenha, false);
                     unitOfWork.Commit();

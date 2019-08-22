@@ -52,7 +52,7 @@ namespace SystemNet.Api.Controllers
         /// <returns></returns>
         [HttpDelete]
         [Route("api/v1/assistencia/congregacao/{congregacaoid}/data/{data}")]
-        [Authorize(Policy = "Indicator")]
+        [Authorize(Policy = "Assistance")]
         public async Task<IActionResult> Apagar(int congregacaoId, DateTime data)
         {
             try
@@ -78,7 +78,7 @@ namespace SystemNet.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("api/v1/assistencia")]
-        [Authorize(Policy = "Indicator")]
+        [Authorize(Policy = "Assistance")]
         public async Task<IActionResult> Post([FromBody]AssistenciaReuniao model)
         {
             try

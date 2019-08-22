@@ -12,7 +12,7 @@ namespace SystemNet.Core.Domain.Models
     public class Irmao : Notifiable
     {
         public Irmao(int codigo, string nome, string email, string telefone, string sexo, bool indicador, bool microfonista, bool leitorSentinela, bool leitorEstudoLivro, bool sistemaSonoro, bool oracaoFinal, 
-            bool presidenteConferencia, bool carrinho, int grupoId, int congregacaoId, bool acessoAdmin)
+            bool presidenteConferencia, bool carrinho, int grupoId, int congregacaoId, bool acessoAdmin, bool atualizarAssistencia, bool subirQuadro)
         {
             Codigo = codigo;
             Nome = nome;
@@ -30,6 +30,8 @@ namespace SystemNet.Core.Domain.Models
             GrupoId = grupoId;
             CongregacaoId = congregacaoId;
             AcessoAdmin = acessoAdmin;
+            AtualizarAssistencia = atualizarAssistencia;
+            SubirQuadro = subirQuadro;
 
             AddNotifications(new ValidationContract()
                            .Requires()
@@ -74,6 +76,9 @@ namespace SystemNet.Core.Domain.Models
         public byte Tentativas { get; set; }
         public DateTime UltimoLogin { get; set; }
         public string CongregacaoNome { get; set; }
+        public bool SubirQuadro { get; set; }
+        public bool AtualizarAssistencia { get; set; }
+
 
         public void VerificaDesignacoes(Irmao modelAtual)
         {
@@ -100,7 +105,7 @@ namespace SystemNet.Core.Domain.Models
             {
                 this.Tentativas++;
                 AddNotification(nameof(Nome), Errors.InvalidPassword);
-                if (this.Tentativas >= 4)
+                if (this.Tentativas >= 10)
                 {
                     this.StatusId = (int)Status.BloqueadoporSenha;
                     AddNotification(nameof(Nome), Errors.BlockedUser);

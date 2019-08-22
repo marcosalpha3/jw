@@ -17,5 +17,7 @@
         public int GrupoId { get; set; }
         public int CongregacaoId { get; set; }
         public bool AcessoAdmin { get; set; }
+        public bool SubirQuadro { get; set; }
+        public bool AtualizarAssistencia { get; set; }
     }
 }

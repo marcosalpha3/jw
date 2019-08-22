@@ -95,27 +95,30 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                            SET [Nome] = @Nome, [Email] = @Email, [Telefone] = @Telefone, [Sexo] = @Sexo, [Indicador] = @Indicador, [Microfonista] = @Microfonista
                                                ,[LeitorSentinela] = @LeitorSentinela ,[LeitorEstudoLivro] = @LeitorEstudoLivro, [SistemaSonoro] = @SistemaSonoro, [OracaoFinal] = @OracaoFinal
                                                ,[PresidenteConferencia] = @PresidenteConferencia, [Carrinho] = @Carrinho, [GrupoId] = @GrupoId, [CongregacaoId] = @CongregacaoId, 
-                                               [AtualizarDesignacao] = @AtualizarDesignacao, [AcessoAdmin] = @AcessoAdmin
+                                               [AtualizarDesignacao] = @AtualizarDesignacao, [AcessoAdmin] = @AcessoAdmin, [DataUltimaAlteracao] = GETDATE(), SubirQuadro = @SubirQuadro,
+                                               [AtualizarAssistencia] = @AtualizarAssistencia
                                                 WHERE Codigo = @Codigo ",
                                         param: new
                                         {
-                                            @Nome = model.Nome,
-                                            @Email = model.Email,
-                                            @Telefone = model.Telefone,
-                                            @Sexo = model.Sexo,
-                                            @Indicador = model.Indicador,
-                                            @Microfonista = model.Microfonista,
-                                            @LeitorSentinela = model.LeitorSentinela,
-                                            @LeitorEstudoLivro = model.LeitorEstudoLivro,
-                                            @SistemaSonoro = model.SistemaSonoro,
-                                            @OracaoFinal = model.OracaoFinal,
-                                            @PresidenteConferencia = model.PresidenteConferencia,
-                                            @Carrinho = model.Carrinho,
-                                            @GrupoId = model.GrupoId,
-                                            @CongregacaoId = model.CongregacaoId,
-                                            @AtualizarDesignacao = model.AtualizarDesignacao,
-                                            @AcessoAdmin = model.AcessoAdmin,
-                                            @Codigo = model.Codigo
+                                            model.Nome,
+                                            model.Email,
+                                            model.Telefone,
+                                            model.Sexo,
+                                            model.Indicador,
+                                            model.Microfonista,
+                                            model.LeitorSentinela,
+                                            model.LeitorEstudoLivro,
+                                            model.SistemaSonoro,
+                                            model.OracaoFinal,
+                                            model.PresidenteConferencia,
+                                            model.Carrinho,
+                                            model.GrupoId,
+                                            model.CongregacaoId,
+                                            model.AtualizarDesignacao,
+                                            model.AcessoAdmin,
+                                            model.Codigo,
+                                            model.SubirQuadro,
+                                            model.AtualizarAssistencia
                                         },
                                         transaction: unitOfWork.Transaction);
         }
@@ -161,34 +164,37 @@ namespace SystemNet.Core.Infraestructure.Repositories
             return Convert.ToInt32(unitOfWork.Connection.ExecuteScalar(@" INSERT INTO [dbo].[Irmao] ([Nome], [Email], [Telefone], [Sexo], [Ativo], [Indicador], [Microfonista]
                                                                           ,[LeitorSentinela], [LeitorEstudoLivro], [SistemaSonoro], [OracaoFinal], [PresidenteConferencia]
                                                                           ,[Carrinho], [GrupoId], [CongregacaoId], [Senha], [DesativarProximaLista], [AtivarProximaLista], 
-                                                                          [AtualizarDesignacao], [AcessoAdmin], [StatusId], [AlterarSenha], [Tentativas])
+                                                                          [AtualizarDesignacao], [AcessoAdmin], [StatusId], [AlterarSenha], [Tentativas], [SubirQuadro],
+                                                                          [AtualizarAssistencia])
                                                                          VALUES
                                                                         (@Nome, @Email, @Telefone, @Sexo, @Ativo, @Indicador, @Microfonista, @LeitorSentinela, @LeitorEstudoLivro, @SistemaSonoro
                                                                         ,@OracaoFinal, @PresidenteConferencia, @Carrinho, @GrupoId, @CongregacaoId, @Senha, 0, 1, 1, @AcessoAdmin, @StatusId, 
-                                                                        @AlterarSenha, @Tentativas);
+                                                                        @AlterarSenha, @Tentativas, @SubirQuadro, @AtualizarAssistencia);
                                                                          SELECT SCOPE_IDENTITY() ",
                                param: new
                                {
-                                   @Nome = model.Nome,
-                                   @Email = model.Email,
-                                   @Telefone = model.Telefone,
-                                   @Sexo = model.Sexo,
+                                   model.Nome,
+                                   model.Email,
+                                   model.Telefone,
+                                   model.Sexo,
                                    @Ativo = 1,
-                                   @Indicador = model.Indicador,
-                                   @Microfonista = model.Microfonista,
-                                   @LeitorSentinela = model.LeitorSentinela,
-                                   @LeitorEstudoLivro = model.LeitorEstudoLivro,
-                                   @SistemaSonoro = model.SistemaSonoro,
-                                   @OracaoFinal = model.OracaoFinal,
-                                   @PresidenteConferencia = model.PresidenteConferencia,
-                                   @Carrinho = model.Carrinho,
-                                   @GrupoId = model.GrupoId,
-                                   @CongregacaoId = model.CongregacaoId,
-                                   @Senha = model.Senha,
-                                   @AcessoAdmin = model.AcessoAdmin,
-                                   @StatusId = model.StatusId,
-                                   @AlterarSenha = model.AlterarSenha,
-                                   @Tentativas = model.Tentativas
+                                   model.Indicador,
+                                   model.Microfonista,
+                                   model.LeitorSentinela,
+                                   model.LeitorEstudoLivro,
+                                   model.SistemaSonoro,
+                                   model.OracaoFinal,
+                                   model.PresidenteConferencia,
+                                   model.Carrinho,
+                                   model.GrupoId,
+                                   model.CongregacaoId,
+                                   model.Senha,
+                                   model.AcessoAdmin,
+                                   model.StatusId,
+                                   model.AlterarSenha,
+                                   model.Tentativas,
+                                   model.SubirQuadro,
+                                   model.AtualizarAssistencia
                                },
                                transaction: unitOfWork.Transaction));
         }

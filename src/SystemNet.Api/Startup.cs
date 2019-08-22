@@ -249,8 +249,11 @@ namespace SystemNet.Api
                     policy => policy.RequireClaim("MembershipId"));
                 options.AddPolicy("Brother",
                     policy => policy.RequireClaim("Brother"));
-                options.AddPolicy("Indicator",
-                    policy => policy.RequireClaim("Indicator"));                
+                options.AddPolicy("Assistance",
+                    policy => policy.RequireClaim("Assistance"));
+                options.AddPolicy("LoadBoard",
+                    policy => policy.RequireClaim("LoadBoard"));
+
             });
 
 
