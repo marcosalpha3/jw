@@ -466,6 +466,10 @@ namespace SystemNet.Business.Services
             for (int i = 0; i < lista.Count; i++)
             {
                 lista[i].DataFormatada = lista[i].Data.ToString("dd/MM");
+
+                if (lista[i].Data.Date == Convert.ToDateTime("2019-09-03").Date)
+                    lista[i].Leitor = "Rosildo Junior";
+
                 var indicadores = _repositoryQuadroDetalhe.ObterIrmaosTipoLista(ref unitOfWork, Core.Domain.enums.eTipoLista.Indicador, quadroAtual, proximoQuadro,lista[i].Data);
                 lista[i].Indicadores = new List<string>();
                 foreach (var item in indicadores)
