@@ -39,7 +39,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                 from Grupo G
                 inner join Irmao ID ON ID.Codigo = G.DirigenteId
                 left join Irmao I ON I.GrupoId = G.Codigo
-                WHERE  G.CongregacaoId = @CongregacaoId and I.Ativo = 1
+                WHERE  G.CongregacaoId = @CongregacaoId 
                 order By G.Nome, I.Nome",
             (pd, pp) =>
             {

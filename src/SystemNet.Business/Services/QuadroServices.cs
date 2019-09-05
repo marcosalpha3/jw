@@ -467,8 +467,6 @@ namespace SystemNet.Business.Services
             {
                 lista[i].DataFormatada = lista[i].Data.ToString("dd/MM");
 
-                if (lista[i].Data.Date == Convert.ToDateTime("2019-09-03").Date)
-                    lista[i].Leitor = "Rosildo Junior";
 
                 var indicadores = _repositoryQuadroDetalhe.ObterIrmaosTipoLista(ref unitOfWork, Core.Domain.enums.eTipoLista.Indicador, quadroAtual, proximoQuadro,lista[i].Data);
                 lista[i].Indicadores = new List<string>();
@@ -488,7 +486,10 @@ namespace SystemNet.Business.Services
                 lista[i].SomVideo = new List<string>();
                 foreach (var item3 in somvideo)
                 {
-                    lista[i].SomVideo.Add(item3.Nome);
+                    if (lista[i].Data.Date == Convert.ToDateTime("2019-09-08").Date && item3.Nome == "Danilo Severiano")
+                        lista[i].SomVideo.Add("Tiago Silva");
+                    else
+                     lista[i].SomVideo.Add(item3.Nome);
                 }
             }
             return lista;
