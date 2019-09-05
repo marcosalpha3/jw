@@ -13,5 +13,6 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
         void Inserir(ref IUnitOfWork unitOfWork, AssistenciaReuniao model);
         void Atualizar(ref IUnitOfWork unitOfWork, AssistenciaReuniao model);
         void Apagar(ref IUnitOfWork unitOfWork, DateTime data, int congregacaoId);
+        List<GetAssistenciaMensal> ObterAssistenciasMensal(ref IUnitOfWork unitOfWork, int congregacaoId);
     }
 }

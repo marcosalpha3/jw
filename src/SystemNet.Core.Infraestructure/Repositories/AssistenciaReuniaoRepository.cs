@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using SystemNet.Core.Domain.Contracts.Repositories;
 using SystemNet.Core.Domain.Models;
@@ -35,7 +36,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                    @AssistenciaParte1 = model.AssistenciaParte1,
                    @AssistenciaParte2 = model.AssistenciaParte2,
                    @Data = model.Data
-               }, transaction: unitOfWork.Transaction
+               }, transaction: unitOfWork.Transaction               
                );
         }
 
@@ -84,5 +85,18 @@ namespace SystemNet.Core.Infraestructure.Repositories
                            ).ToList();
 
         }
+
+        public List<GetAssistenciaMensal> ObterAssistenciasMensal(ref IUnitOfWork unitOfWork, int congregacaoId)
+        {
+            return unitOfWork.Connection.Query<GetAssistenciaMensal>("p_sel_assistencias_reuniao_mensal",
+                            param: new
+                            {
+                                @CongregacaoId = congregacaoId
+                            },
+                            commandType: CommandType.StoredProcedure
+                           ).ToList();
+
+        }
+
     }
 }

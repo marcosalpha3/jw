@@ -11,5 +11,6 @@ namespace SystemNet.Core.Domain.Contracts.Services
         List<GetDetalheAssistencia> ObterAssistenciasPorCongregacao(int congregacaoId, DateTime dataInicial, DateTime dataFinal);
         IReadOnlyCollection<Notification> Atualizar(AssistenciaReuniao updatemodel);
         IReadOnlyCollection<Notification> Apagar(int congregacaoId, DateTime data);
+        GetGraficoAssistenciaMensal ObterAssistenciasMensal(int congregacaoId);
     }
 }

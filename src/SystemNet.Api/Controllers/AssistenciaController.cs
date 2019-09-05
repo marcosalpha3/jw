@@ -45,6 +45,32 @@ namespace SystemNet.Api.Controllers
         }
 
         /// <summary>
+        /// Obter media de assistencias às reuniões mensal
+        /// </summary>
+        /// <param name="congregacaoId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/v1/assistencia/mensal/congregacao/{congregacaoid}")]
+        [Authorize(Policy = "Brother")]
+        public async Task<IActionResult> GetAssistenciaMensal(int congregacaoId)
+        {
+            try
+            {
+                var result = _service.ObterAssistenciasMensal(congregacaoId);
+                return (result == null) ? NoContent() : await Response(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    errors = new[] { ex }
+                });
+            }
+        }
+
+
+        /// <summary>
         /// Apagar uma assistência
         /// </summary>
         /// <param name="congregacaoId"></param>

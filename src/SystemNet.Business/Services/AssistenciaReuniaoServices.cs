@@ -1,6 +1,7 @@
 ﻿using FluentValidator;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SystemNet.Core.Domain.Contracts.Repositories;
 using SystemNet.Core.Domain.Contracts.Services;
 using SystemNet.Core.Domain.Models;
@@ -14,10 +15,13 @@ namespace SystemNet.Business.Services
     public class AssistenciaReuniaoServices : IAssistenciaReuniaoServices
     {
         IAssistenciaReuniaoRepository _repository;
+        ICongregacaoRepository _repositoryCongregacao;
 
-        public AssistenciaReuniaoServices(IAssistenciaReuniaoRepository repository)
+        public AssistenciaReuniaoServices(IAssistenciaReuniaoRepository repository,
+                                          ICongregacaoRepository repositoryCongregacao)
         {
             _repository = repository;
+            _repositoryCongregacao = repositoryCongregacao;
         }
 
         public IReadOnlyCollection<Notification> Apagar(int congregacaoId, DateTime data)
@@ -94,6 +98,56 @@ namespace SystemNet.Business.Services
                 }
             }
         }
-    
+
+        public GetGraficoAssistenciaMensal ObterAssistenciasMensal(int congregacaoId)
+        {
+            string[] background = { "rgba(75, 112, 0, 0.6)", "rgba(0, 3, 205, 0.6)"} ;
+            string[] borderColor = { "rgba(75, 112, 0, 1)", "rgba(0, 3, 205, 1)" };
+            const int borderWidth = 1;
+
+            using (RepositorySession dalSession = new RepositorySession(Runtime.JWInstance))
+            {
+                IUnitOfWork unitOfWork = dalSession.UnitOfWork;
+                try
+                {
+                    var congregacao = _repositoryCongregacao.ListAll(ref unitOfWork).FirstOrDefault(x => x.Codigo == congregacaoId);
+                    var ret = _repository.ObterAssistenciasMensal(ref unitOfWork, congregacaoId);
+                    var model = new GetGraficoAssistenciaMensal
+                    {
+                        Labels = new List<string>(),
+                        Datasets = new List<Dataset>()
+                    };
+                    var label = "";
+
+                    for (int i = 0; i < ret.Count; i++)
+                    {
+                        label = DateValues.ObterMesPortugues(ret[i].Mes, ret[i].Ano);
+                        if (!model.Labels.Contains(label))
+                            model.Labels.Add(label);
+
+                        if (!model.Datasets.Any(x => x.Label == DateValues.ObterDiaSemanaPortugues(ret[i].DiaReuniao)))
+                        {
+                            model.Datasets.Add(new Dataset
+                            {
+                                BackgroundColor = (ret[i].DiaReuniao ==  congregacao.DiaReuniaoServico) ? background[0] : background[1],
+                                BorderColor = (ret[i].DiaReuniao == congregacao.DiaReuniaoServico) ? borderColor[0] : borderColor[1],
+                                BorderWidth = borderWidth,
+                                Label = DateValues.ObterDiaSemanaPortugues(ret[i].DiaReuniao),
+                                Data = ret.Where(x => x.DiaReuniao == ret[i].DiaReuniao).Select(c => c.AssistenciaTotal / c.QuantidadeReunioes).ToList()
+                            });
+                        }
+                    }
+
+                    return model;
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+        }
+
+
+
     }
 }
