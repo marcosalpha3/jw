@@ -9,7 +9,7 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
     {
         int ObterCodigoProximoQuadro(ref IUnitOfWork unitOfWork);
         int InserirNovoQuadro(ref IUnitOfWork unitOfWork, int congregacaoId, int quadroId, int tipoListaId);
-        List<GetQuadroDesignacaoMecanica> ObterListaDesignacoesMecanicas(ref IUnitOfWork unitOfWork, int quadroAtual, int quadroProximo);
+        List<GetQuadroDesignacaoMecanica> ObterListaDesignacoesMecanicas(ref IUnitOfWork unitOfWork, int quadroAtual, int quadroProximo, int dias);
         Quadro ObterUltimoQuadro(ref IUnitOfWork unitOfWork, int congregacaoId);
         int ObterQuadroAtual(ref IUnitOfWork unitOfWork, int congregacaoId);
         int ObterProximoQuadro(ref IUnitOfWork unitOfWork, int congregacaoId);

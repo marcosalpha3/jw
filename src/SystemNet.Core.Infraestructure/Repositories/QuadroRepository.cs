@@ -27,7 +27,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                            LEFT JOIN Irmao IL ON IL.Codigo = QDL.IrmaoId
                                                            LEFT JOIN DataEvento DE ON DE.Codigo = QDL.EventoId
                                                            WHERE (TipoListaId = @TipoLeitorELC OR TipoListaId = @TipoLeitorJW)
-                                                           AND QDL.Data >= CAST(DATEADD(DAY, -1, getdate()) As Date)
+                                                           AND QDL.Data >= CAST(DATEADD(DAY, @Dias, getdate()) As Date)
                                                            AND (Q.Quadro = @QuadroAtual or Q.Quadro = @QuadroProximo)
                                                            ORDER BY DATA ";
 
@@ -166,14 +166,15 @@ namespace SystemNet.Core.Infraestructure.Repositories
             transaction: unitOfWork.Transaction);
         }
 
-        public List<GetQuadroDesignacaoMecanica> ObterListaDesignacoesMecanicas(ref IUnitOfWork unitOfWork, int quadroAtual, int quadroProximo)
+        public List<GetQuadroDesignacaoMecanica> ObterListaDesignacoesMecanicas(ref IUnitOfWork unitOfWork, int quadroAtual, int quadroProximo, int dias)
         {
             return unitOfWork.Connection.Query<GetQuadroDesignacaoMecanica>(SelectDesignacoesMecanicas,
                     param: new { @TipoLeitorELC = eTipoLista.LeitorELC,
                                  @TipoLeitorJW = eTipoLista.LeitorJW,
                                  @TipoOracaoFinal = eTipoLista.OracaoFinal,
                                  @QuadroAtual = quadroAtual,
-                                 @QuadroProximo = quadroProximo
+                                 @QuadroProximo = quadroProximo,
+                                 @Dias = dias
                     }
                 ).ToList();
         }
