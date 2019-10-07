@@ -462,7 +462,7 @@ namespace SystemNet.Business.Services
 
         private List<GetQuadroDesignacaoMecanica> ObterListaPorQuadroId(ref IUnitOfWork unitOfWork, int quadroAtual, int proximoQuadro)
         {
-            var dias = (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday || DateTime.Now.DayOfWeek == DayOfWeek.Thursday || DateTime.Now.DayOfWeek == DayOfWeek.Friday) ? 4 : 1;
+            var dias = (DateTime.Now.DayOfWeek == DayOfWeek.Tuesday || DateTime.Now.DayOfWeek == DayOfWeek.Wednesday || DateTime.Now.DayOfWeek == DayOfWeek.Thursday || DateTime.Now.DayOfWeek == DayOfWeek.Friday) ? ((int)DateTime.Now.DayOfWeek - 1) : 1;
             var lista = _repositoryQuadro.ObterListaDesignacoesMecanicas(ref unitOfWork, quadroAtual, proximoQuadro, dias);
             for (int i = 0; i < lista.Count; i++)
             {
