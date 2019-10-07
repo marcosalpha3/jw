@@ -174,7 +174,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                  @TipoOracaoFinal = eTipoLista.OracaoFinal,
                                  @QuadroAtual = quadroAtual,
                                  @QuadroProximo = quadroProximo,
-                                 @Dias = dias
+                                 @Dias = dias * -1
                     }
                 ).ToList();
         }
