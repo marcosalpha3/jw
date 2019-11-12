@@ -31,7 +31,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
         private const string SelectProximaReuniao = @"SELECT top 1 * FROM [dbo].[QuadroDetalhe] QD
                                                       INNER JOIN dbo.Quadro Q ON Q.Codigo = QD.QuadroId
                                                       Where Data > Cast(@data As Date)
-                                                      and Q.CongregacaoId = 1 
+                                                      and Q.CongregacaoId = @CongregacaoId
                                                       order by Data ";
         #endregion
 

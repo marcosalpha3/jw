@@ -10,7 +10,7 @@ namespace SystemNet.Core.Domain.Contracts.Services
 {
     public interface IQuadroServices
     {
-        IReadOnlyCollection<Notification> GeraLista();
+        IReadOnlyCollection<Notification> GeraLista(int congregacaoAtual);
         IReadOnlyCollection<Notification> RegerarListaAtual(int congregacaoAtual);
         List<GetQuadroDesignacaoMecanica> ObterListaDesignacoesMecanicas(int congregacaoId);
         Task<QuadroPersonalizado> NovoQuadroPersonalizado(QuadroPersonalizado model, StorageConfig config, IFormFile file);

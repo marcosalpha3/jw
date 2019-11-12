@@ -201,7 +201,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
 
         public IEnumerable<Irmao> ObterIrmaosADesativarOuAtivar(ref IUnitOfWork unitOfWork, int congregacaoId)
         {
-            return unitOfWork.Connection.Query<Irmao>("Select * from dbo.Irmao where [AtivarProximaLista] = 1 or [DesativarProximaLista] = 1 or [AtualizarDesignacao] = 1 and CongregacaoId = @congregacao",
+            return unitOfWork.Connection.Query<Irmao>("Select * from dbo.Irmao where CongregacaoId = @congregacao and ([AtivarProximaLista] = 1 or [DesativarProximaLista] = 1 or [AtualizarDesignacao] = 1) ",
                 param: new 
                 {
                     @congregacao = congregacaoId

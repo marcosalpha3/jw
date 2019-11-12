@@ -32,13 +32,13 @@ namespace SystemNet.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/v1/quadro")]
+        [Route("api/v1/quadro/congregacao/{id}")]
         [Authorize(Policy = "Member")]
-        public async Task<IActionResult> Post()
+        public async Task<IActionResult> Post(int id)
         {
             try
             {
-                var result = _service.GeraLista();
+                var result = _service.GeraLista(id);
                 return await Response(new Quadro { Codigo = 1 }, result);
             }
             catch (Exception ex)
