@@ -602,6 +602,8 @@ namespace SystemNet.Business.Services
             {
                 if (item.FolgaParticipacao && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.AudioVideo))
                 {
+                    if (itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.Indicador) cont = 16;
+
                     while (proximoLista == null)
                     {
                         if (cont <= 15)
