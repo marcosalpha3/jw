@@ -634,8 +634,8 @@ namespace SystemNet.Business.Services
                         Task.Delay(10).Wait();
                     }
                 }
-                else if (((itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.AudioVideo) || itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.OracaoFinal ||
-                    itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.OracaoInicial || (!item.FolgaParticipacao)))
+                else if (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoInicial && 
+                    ((itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.AudioVideo) || (!item.FolgaParticipacao)))
                 {
                     while (proximoLista == null)
                     {
