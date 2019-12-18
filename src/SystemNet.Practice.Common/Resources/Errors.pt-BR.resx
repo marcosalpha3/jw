@@ -132,6 +132,9 @@
   <data name="BlockedUser" xml:space="preserve">
     <value>Usuário bloqueado, Entre em contato com o administrador do sistema.</value>
   </data>
+  <data name="BrotherRequired" xml:space="preserve">
+    <value>O Irmão é obrigatório</value>
+  </data>
   <data name="CongreagationRequired" xml:space="preserve">
     <value>A congregação é obrigatório</value>
   </data>
@@ -152,6 +155,9 @@
   </data>
   <data name="EventExists" xml:space="preserve">
     <value>Já existe um evento cadastrado para esta data</value>
+  </data>
+  <data name="ExceptionsExists" xml:space="preserve">
+    <value>Já existe uma exceção cadastradada para este irmão nesta data</value>
   </data>
   <data name="Exists" xml:space="preserve">
     <value>{0} já existe.</value>
@@ -266,6 +272,9 @@
   </data>
   <data name="ProfileRequired" xml:space="preserve">
     <value>O perfil do usuário é obrigatório</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Motivo</value>
   </data>
   <data name="RegisterNotFound" xml:space="preserve">
     <value>{0} não encontrado.</value>

@@ -132,6 +132,9 @@
   <data name="BlockedUser" xml:space="preserve">
     <value>Usuario bloqueado, Contactar el administrador de la operadora.</value>
   </data>
+  <data name="BrotherRequired" xml:space="preserve">
+    <value>El hermano es requerido</value>
+  </data>
   <data name="CongreagationRequired" xml:space="preserve">
     <value>La congreagación es obligatorio</value>
   </data>
@@ -152,6 +155,9 @@
   </data>
   <data name="EventExists" xml:space="preserve">
     <value>Ya existe un evento registrado para esta fecha</value>
+  </data>
+  <data name="ExceptionsExists" xml:space="preserve">
+    <value>Ya hay una excepción registrada para este hermano en esta fecha</value>
   </data>
   <data name="Exists" xml:space="preserve">
     <value>{0} ya existe</value>
@@ -269,6 +275,9 @@
   </data>
   <data name="ProfileRequired" xml:space="preserve">
     <value>El perfil del usuario es obligatorio</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Razón</value>
   </data>
   <data name="RegisterNotFound" xml:space="preserve">
     <value>{0} no existe.</value>

@@ -76,6 +76,7 @@ namespace SystemNet.Core.Domain.Models
         public byte Tentativas { get; set; }
         public DateTime UltimoLogin { get; set; }
         public string CongregacaoNome { get; set; }
+        public bool ExibirOracaoInicial { get; set; }
         public bool SubirQuadro { get; set; }
         public bool AtualizarAssistencia { get; set; }
 

@@ -65,7 +65,8 @@ namespace SystemNet.Api.Products.Controllers
                     admin = ret.AcessoAdmin,
                     email = ret.Email,
                     Assistance = ret.AtualizarAssistencia,
-                    LoadBoard = ret.SubirQuadro
+                    LoadBoard = ret.SubirQuadro,
+                    ExibirOracaoInicial = ret.ExibirOracaoInicial
                 });
 
             }

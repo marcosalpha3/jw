@@ -12,6 +12,7 @@ namespace SystemNet.Core.Domain.Querys
         public List<string> SomVideo { get; set; }
         public string Leitor { get; set; }
         public string OracaoFinal { get; set; }
+        public string OracaoInicial { get; set; }
         public string Evento { get; set; }
     }
 }

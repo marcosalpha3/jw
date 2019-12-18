@@ -106,6 +106,15 @@ namespace SystemNet.Practice.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Brother is required.
+        /// </summary>
+        public static string BrotherRequired {
+            get {
+                return ResourceManager.GetString("BrotherRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Congreagation is required.
         /// </summary>
         public static string CongreagationRequired {
@@ -165,6 +174,15 @@ namespace SystemNet.Practice.Common.Resources {
         public static string EventExists {
             get {
                 return ResourceManager.GetString("EventExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This exception already exists to this date and this brother.
+        /// </summary>
+        public static string ExceptionsExists {
+            get {
+                return ResourceManager.GetString("ExceptionsExists", resourceCulture);
             }
         }
         
@@ -507,6 +525,15 @@ namespace SystemNet.Practice.Common.Resources {
         public static string ProfileRequired {
             get {
                 return ResourceManager.GetString("ProfileRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reason.
+        /// </summary>
+        public static string Reason {
+            get {
+                return ResourceManager.GetString("Reason", resourceCulture);
             }
         }
         

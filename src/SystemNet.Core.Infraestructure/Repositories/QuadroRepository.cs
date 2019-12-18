@@ -21,7 +21,17 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                            (SELECT top 1 IL2.Nome from dbo.Quadro Q2											
                                                            LEFT JOIN QuadroDetalhe QDL2 ON QDL2.QuadroId = Q2.Codigo 
                                                            LEFT JOIN Irmao IL2 ON IL2.Codigo = QDL2.IrmaoId
-                                                           WHERE Q2.TipoListaId = @TipoOracaoFinal and QDL2.Data = QDL.DATA) As OracaoFinal
+                                                           WHERE Q2.TipoListaId = @TipoOracaoFinal and QDL2.Data = QDL.DATA
+                                                           AND (Q2.Quadro = @QuadroAtual or Q2.Quadro = @QuadroProximo)
+                                                           ) As OracaoFinal,
+
+                                                           (SELECT top 1 IL3.Nome from dbo.Quadro Q3											
+                                                           LEFT JOIN QuadroDetalhe QDL3 ON QDL3.QuadroId = Q3.Codigo 
+                                                           LEFT JOIN Irmao IL3 ON IL3.Codigo = QDL3.IrmaoId
+                                                           WHERE Q3.TipoListaId = @TipoOracaoInicial and QDL3.Data = QDL.DATA
+                                                           AND (Q3.Quadro = @QuadroAtual or Q3.Quadro = @QuadroProximo)
+                                                           ) As OracaoInicial                                                            
+
                                                            from dbo.Quadro Q											
                                                            LEFT JOIN QuadroDetalhe QDL ON QDL.QuadroId = Q.Codigo 
                                                            LEFT JOIN Irmao IL ON IL.Codigo = QDL.IrmaoId
@@ -172,7 +182,8 @@ namespace SystemNet.Core.Infraestructure.Repositories
                     param: new { @TipoLeitorELC = eTipoLista.LeitorELC,
                                  @TipoLeitorJW = eTipoLista.LeitorJW,
                                  @TipoOracaoFinal = eTipoLista.OracaoFinal,
-                                 @QuadroAtual = quadroAtual,
+                                @TipoOracaoInicial = eTipoLista.OracaoInicial,
+                                @QuadroAtual = quadroAtual,
                                  @QuadroProximo = quadroProximo,
                                  @Dias = dias * -1
                     }

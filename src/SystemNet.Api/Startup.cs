@@ -114,6 +114,9 @@ namespace SystemNet.Api
             services.AddTransient<IAssistenciaReuniaoServices, AssistenciaReuniaoServices>();
             services.AddTransient<AssistenciaReuniao, AssistenciaReuniao>();
 
+            services.AddTransient<IExcecaoDesignacaoRepository, ExcecaoDesignacaoRepository>();
+            services.AddTransient<IExcecaoDesignacaoServices, ExcecaoDesignacaoServices>();
+
             services.AddTransient<StorageHelper, StorageHelper>();
             services.AddTransient<StorageConfig, StorageConfig>();            
         }
@@ -272,9 +275,9 @@ namespace SystemNet.Api
                 c.SwaggerDoc("v1",
                     new Info
                     {
-                        Title = "Access control for the Ortiz Portal",
-                        Version = "1.0.0",
-                        Description = "Create or update users, generate passwords and tokens"
+                        Title = "Quadro JW",
+                        Version = "1.3.0",
+                        Description = "Controle Quadro do salão do reino da Congregação Revigua"
                     });
 
                 var filePath =

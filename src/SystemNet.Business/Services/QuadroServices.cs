@@ -160,7 +160,6 @@ namespace SystemNet.Business.Services
             }
         }
 
-
         public IReadOnlyCollection<Notification> GeraLista(int congregacaoAtual)
         {
             var model = new Quadro();
@@ -179,7 +178,6 @@ namespace SystemNet.Business.Services
                         unitOfWork.Rollback();
                         return model.Notifications;
                     }
-
 
                         DateTime dataInicioLista;
                         if (DateTime.Now.Date < Convert.ToDateTime(congregacao.DataPrimeiraLista).Date)
@@ -212,7 +210,7 @@ namespace SystemNet.Business.Services
                         foreach (var itemTipoLista in tipolistas)
                         {
                             DateTime dataControle = dataInicioLista;
-                            _repositoryControleLista.BackupListaAtual(ref unitOfWork, (int)itemTipoLista.Codigo, dataInicioLista);
+                            _repositoryControleLista.BackupListaAtual(ref unitOfWork, (int)itemTipoLista.Codigo, dataInicioLista, itemTipoLista.CongregacaoId);
                             codQuadro =_repositoryQuadro.InserirNovoQuadro(ref unitOfWork, congregacao.Codigo, quadro, (int)itemTipoLista.Codigo);
 
                             int i = 0;
@@ -242,7 +240,8 @@ namespace SystemNet.Business.Services
                                             i++;
                                         }
                                         break;
-                                    case Core.Domain.enums.eTipoLista.OracaoFinal:
+                                case Core.Domain.enums.eTipoLista.OracaoFinal:
+                                case Core.Domain.enums.eTipoLista.OracaoInicial:
                                         if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                                         {
                                             InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
@@ -356,7 +355,7 @@ namespace SystemNet.Business.Services
                     {
                         // Recupera Backup das lista 
                         foreach (var item in tipolistas)
-                            _repositoryControleLista.RecuperaBackupListaAtual(ref unitOfWork, (int)item.Codigo);
+                            _repositoryControleLista.RecuperaBackupListaAtual(ref unitOfWork, (int)item.Codigo, congregacaoAtual);
                         
                         // Atualiza o Controle da lista com base nas atribuições atuais dos irmãos
                         AtualizarControleLista(ref unitOfWork, congregacao.Codigo, false);
@@ -386,7 +385,7 @@ namespace SystemNet.Business.Services
             {
                 DateTime dataControle = dataInicioLista;
 
-                if (recuperabackup) _repositoryControleLista.RecuperaBackupListaAtual(ref unitOfWork, (int)itemTipoLista.Codigo);
+                if (recuperabackup) _repositoryControleLista.RecuperaBackupListaAtual(ref unitOfWork, (int)itemTipoLista.Codigo, congregacao.Codigo);
 
                 // Se estiver for o primeiro ciclo de geração da lista
                 if (regerarlista)
@@ -424,6 +423,7 @@ namespace SystemNet.Business.Services
                             }
                             break;
                         case Core.Domain.enums.eTipoLista.OracaoFinal:
+                        case Core.Domain.enums.eTipoLista.OracaoInicial:
                             if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                             {
                                 InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
@@ -488,9 +488,9 @@ namespace SystemNet.Business.Services
                 lista[i].SomVideo = new List<string>();
                 foreach (var item3 in somvideo)
                 {
-                    if (lista[i].Data.Date == Convert.ToDateTime("2019-09-29").Date && item3.Nome == "Tiago Silva")
-                        lista[i].SomVideo.Add("Danilo Severiano");
-                    else
+                    //if (lista[i].Data.Date == Convert.ToDateTime("2019-09-29").Date && item3.Nome == "Tiago Silva")
+                    //    lista[i].SomVideo.Add("Danilo Severiano");
+                    //else
                      lista[i].SomVideo.Add(item3.Nome);
                 }
             }
@@ -551,6 +551,7 @@ namespace SystemNet.Business.Services
                                     _repositoryControleLista.RemoverIrmaoLista(ref unitOfWork, (int)item.Codigo, itemIrmao.Codigo);
                                 break;
                             case Core.Domain.enums.eTipoLista.OracaoFinal:
+                            case Core.Domain.enums.eTipoLista.OracaoInicial:
                                 if (itemIrmao.OracaoFinal && lista == null)
                                 {
                                     _repositoryControleLista.IncluirIrmaoLista(ref unitOfWork, (int)item.Codigo, itemIrmao.Codigo, inicioLista);
@@ -600,7 +601,9 @@ namespace SystemNet.Business.Services
             if (evento == null || (evento.VisitaSuperintendente && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorELC 
                 && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorJW))
             {
-                if (item.FolgaParticipacao && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.AudioVideo))
+                if (item.FolgaParticipacao && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal
+                    && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoInicial 
+                    && (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.AudioVideo))
                 {
                     if (itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.Indicador) cont = 16;
 
@@ -609,39 +612,40 @@ namespace SystemNet.Business.Services
                         if (cont <= 15)
                             proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirComFolga(ref unitOfWork,
                               (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
-                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
+                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data, item.Codigo);
                         else if (cont > 15 && cont <= 30)
                             proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref unitOfWork,
                               (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
-                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
+                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data, item.Codigo);
                         else if (cont > 30 && cont <= 50)
                             proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolga(ref unitOfWork,
                             (int)itemTipoLista.Codigo, dataControle, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, 
-                             (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
+                             (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data, item.Codigo);
                         else
                             throw new Exception("Não foi possivel obter um irmão da lista ");
 
      
                         if (proximoLista == null)
                         {
-                            _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo);
+                            _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo, item.Codigo);
                             liberouproximo = true;
                         }
                         cont++;
                         Task.Delay(10).Wait();
                     }
                 }
-                else if (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && ((itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.AudioVideo) || (!item.FolgaParticipacao)))
+                else if (((itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.AudioVideo) || itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.OracaoFinal ||
+                    itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.OracaoInicial || (!item.FolgaParticipacao)))
                 {
                     while (proximoLista == null)
                     {
                         proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolga(ref unitOfWork,
                         (int)itemTipoLista.Codigo, dataControle, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data,
-                             (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data);
+                             (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data, item.Codigo);
 
                         if (proximoLista == null)
                         {
-                            _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo);
+                            _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo, item.Codigo);
                             liberouproximo = true;
                         }
                             
@@ -656,7 +660,7 @@ namespace SystemNet.Business.Services
 
                         if (proximoLista == null)
                         {
-                            _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo);
+                            _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo, item.Codigo);
                             liberouproximo = true;
                         }
                     }

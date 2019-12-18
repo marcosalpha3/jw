@@ -230,10 +230,10 @@ namespace SystemNet.Core.Infraestructure.Repositories
         public Irmao PesquisarporEmail(ref IUnitOfWork unitOfWork, string email, int? id = null)
         {
             return unitOfWork.Connection.Query<Irmao>(
-                      (id != null) ? @"SELECT I.*, C.Nome As CongregacaoNome FROM dbo.[Irmao] I 
+                      (id != null) ? @"SELECT I.*, C.Nome As CongregacaoNome, C.ExibirOracaoInicial FROM dbo.[Irmao] I 
                                      INNER JOIN Congregacao C ON C.Codigo = I.CongregacaoId
                                      WHERE Email = @Email  and I.Codigo <> @Codigo " :
-                                     @" SELECT I.*, C.Nome As CongregacaoNome FROM 
+                                     @" SELECT I.*, C.Nome As CongregacaoNome,  C.ExibirOracaoInicial FROM 
                                         dbo.[Irmao] I 
                                         INNER JOIN Congregacao C ON C.Codigo = I.CongregacaoId
                                         WHERE Email = @Email ",

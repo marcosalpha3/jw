@@ -12,21 +12,21 @@ namespace SystemNet.Core.Infraestructure.Repositories
     {
         #region [Scripts SQL]
 
-        private const string backupListaAtualSQL = @" DELETE FROM dbo.BackupControleLista WHERE TipoListaId = @TipoListaId;
+        private const string backupListaAtualSQL = @" DELETE FROM dbo.BackupControleLista WHERE TipoListaId = @TipoListaId and CongregacaoId = @CongregacaoId;
 
                                                       INSERT INTO[dbo].[BackupControleLista]
                                                       (CodigoControleLista, [TipoListaId], [IrmaoId], CongregacaoId, [Participou], [DataInicioLista], OrdenaFinal, Proximo, Participacoes)
-                                                      SELECT CodigoControleLista, TipoListaId, IrmaoId, CongregacaoId, Participou, CAST(@DataInicioLista AS DATE), OrdenaFinal, Proximo, Participacoes 
-                                                      from dbo.ControleLista WHERE TipoListaId = @TipoListaId;";
+                                                      SELECT CodigoControleLista, TipoListaId, IrmaoId, @CongregacaoId, Participou, CAST(@DataInicioLista AS DATE), OrdenaFinal, Proximo, Participacoes 
+                                                      from dbo.ControleLista WHERE TipoListaId = @TipoListaId and CongregacaoId = @CongregacaoId ";
 
-        private const string recuperaBackupLista = @"DELETE FROM dbo.ControleLista WHERE TipoListaId = @TipoListaId;
+        private const string recuperaBackupLista = @"DELETE FROM dbo.ControleLista WHERE TipoListaId = @TipoListaId and CongregacaoId = @CongregacaoId;
 
                                                      SET IDENTITY_INSERT dbo.ControleLista ON;  
 
                                                      INSERT INTO [dbo].[ControleLista]
                                                      (CodigoControleLista, [TipoListaId], [IrmaoId], [CongregacaoId], [Participou], OrdenaFinal, Proximo, Participacoes)
                                                      SELECT CodigoControleLista, [TipoListaId], [IrmaoId], [CongregacaoId], [Participou], OrdenaFinal, Proximo, Participacoes
-                                                     from BackupControleLista WHERE TipoListaId = @TipoListaId;
+                                                     from BackupControleLista WHERE TipoListaId = @TipoListaId and CongregacaoId = @CongregacaoId;
 
                                                      SET IDENTITY_INSERT dbo.ControleLista OFF;  ";
 
@@ -34,9 +34,19 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                     SELECT @TipoListaId, @IrmaoId, CongregacaoId, 0, @OrdenaFinal  FROM dbo.Irmao WHERE Codigo = @IrmaoId";
 
         private const string SelectProximoListaComFolga = @" SELECT top 1 * from ControleLista where TipoListaId = @TipoListaId and Participou = 0 
+
+                                                           and CongregacaoId = @CongregacaoId
+
+                                                           and IrmaoId NOT IN
+                                                            (
+                                                             SELECT EX.IrmaoId FROM ExcecaoDesignacao EX
+                                                             INNER JOIN Irmao I3 on I3.Codigo = EX.IrmaoId
+                                                             where EX.Data = CAST(@DataReuniaoAtual AS DATE)
+                                                             and I3.CongregacaoId = @CongregacaoId
+                                                            ) 
+
                                                              and IrmaoId NOT IN (select IrmaoId from
                                                             (select *, Case when SistemaSonoro = 1 and Hoje = 1 then 1 else 1 end As Repetir 
-                                                            --(select *, Case when SistemaSonoro = 1 and Hoje = 1 then 1 when SistemaSonoro = 1 and Hoje is null then 0 else 1 end As Repetir 
                                                             from
                                                             (select ISNULL(IrmaoId, 0) As IrmaoId, I2.SistemaSonoro,
 															 (select 1  from dbo.QuadroDetalhe QD3
@@ -55,8 +65,19 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                              Order by  Participacoes, CodigoControleLista ";
 
         private const string SelectProximoListaSemFolgaAudio = @" SELECT top 1 * from ControleLista where TipoListaId = @TipoListaId and Participou = 0 
+
+                                                               and CongregacaoId = @CongregacaoId
+
+                                                               and IrmaoId NOT IN
+                                                               (
+                                                                SELECT EX.IrmaoId FROM ExcecaoDesignacao EX
+                                                                INNER JOIN Irmao I3 on I3.Codigo = EX.IrmaoId
+                                                                where EX.Data = CAST(@DataReuniaoAtual AS DATE)
+                                                                and I3.CongregacaoId = @CongregacaoId
+                                                               ) 
+
+
                                                              and IrmaoId NOT IN (select IrmaoId from
-                                                            --(select *, Case when SistemaSonoro = 1 and Hoje = 1 then 1 else 1 end As Repetir 
                                                             (select *, Case when SistemaSonoro = 1 and Hoje = 1 then 1 when SistemaSonoro = 1 and Hoje is null then 0 else 1 end As Repetir 
                                                             from
                                                             (select ISNULL(IrmaoId, 0) As IrmaoId, I2.SistemaSonoro,
@@ -77,6 +98,17 @@ namespace SystemNet.Core.Infraestructure.Repositories
 
 
         private const string SelectProximoListaSemFolga = @" SELECT top 1 * from ControleLista where TipoListaId = @TipoListaId and Participou = 0 
+
+                                                            and CongregacaoId = @CongregacaoId
+
+                                                            and IrmaoId NOT IN
+                                                            (
+                                                             SELECT EX.IrmaoId FROM ExcecaoDesignacao EX
+                                                             INNER JOIN Irmao I3 on I3.Codigo = EX.IrmaoId
+                                                             where EX.Data = CAST(@DataReuniaoAtual AS DATE)
+                                                             and I3.CongregacaoId = @CongregacaoId
+                                                            ) 
+
                                                              and IrmaoId NOT IN ( select ISNULL(IrmaoId, 0) from dbo.QuadroDetalhe where Data = CAST(@DataReuniaoAtual AS DATE) )
                                                              AND IrmaoId NOT IN ( select ISNULL(IrmaoId, 0) from dbo.QuadroDetalhe QD
                                                              inner join Quadro Q ON Q.Codigo = QD.QuadroId
@@ -160,6 +192,9 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                   INNER JOIN Quadro Q ON Q.Codigo = QD.QuadroId
                                                   INNER JOIN ControleLista CL ON CL.IrmaoId = QD.IrmaoId 
                                                   WHERE Q.TipoListaId = @TipoListaId
+
+                                                  and Q.CongregacaoId = @CongregacaoId
+
                                                   and QD.IrmaoId is not null
                                                   and CL.Participou = 1
                                                   and CL.TipoListaId = @TipoListaId
@@ -189,13 +224,14 @@ namespace SystemNet.Core.Infraestructure.Repositories
                transaction: unitOfWork.Transaction);
         }
 
-        public void BackupListaAtual(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime dataInicioLista)
+        public void BackupListaAtual(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime dataInicioLista, int congregacaoId)
         {
             unitOfWork.Connection.Execute(backupListaAtualSQL,
                param: new
                {
                    @TipoListaId = tipoListaId,
-                   @DataInicioLista = dataInicioLista
+                   @DataInicioLista = dataInicioLista,
+                   @CongregacaoId = congregacaoId
                },
                transaction: unitOfWork.Transaction);
         }
@@ -221,20 +257,23 @@ namespace SystemNet.Core.Infraestructure.Repositories
                 ).FirstOrDefault();
         }
 
-        public ControleLista ObterProximoListaSemRepetirComFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datareuniaoanterior, DateTime datereuniaoAtual, DateTime dataProximaReuniao)
+        public ControleLista ObterProximoListaSemRepetirComFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datareuniaoanterior, DateTime datereuniaoAtual, 
+            DateTime dataProximaReuniao, int congregacaoId)
         {
             return unitOfWork.Connection.Query<ControleLista>(SelectProximoListaComFolga,
                     param: new { @TipoListaId = tipoListaId,
                                  @DataReuniaoAnterior = datareuniaoanterior,
                                  @DataReuniaoAtual = datereuniaoAtual,
                                  @DataProximaReuniao = dataProximaReuniao,
-                                 @ListaOracao = eTipoLista.OracaoFinal
+                                 @ListaOracao = eTipoLista.OracaoFinal,
+                                 @CongregacaoId = congregacaoId
                     }
                     , transaction: unitOfWork.Transaction
                 ).FirstOrDefault();
         }
 
-        public ControleLista ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datareuniaoanterior, DateTime datereuniaoAtual, DateTime dataProximaReuniao)
+        public ControleLista ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datareuniaoanterior, DateTime datereuniaoAtual, 
+            DateTime dataProximaReuniao, int congregacaoId)
         {
             return unitOfWork.Connection.Query<ControleLista>(SelectProximoListaSemFolgaAudio,
                     param: new
@@ -243,14 +282,16 @@ namespace SystemNet.Core.Infraestructure.Repositories
                         @DataReuniaoAnterior = datareuniaoanterior,
                         @DataReuniaoAtual = datereuniaoAtual,
                         @DataProximaReuniao = dataProximaReuniao,
-                        @ListaOracao = eTipoLista.OracaoFinal
+                        @ListaOracao = eTipoLista.OracaoFinal,
+                        @CongregacaoId = congregacaoId
                     }
                     , transaction: unitOfWork.Transaction
                 ).FirstOrDefault();
         }
 
 
-        public ControleLista ObterProximoListaSemRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual, DateTime datareuniaoanterior, DateTime dataProximaReuniao)
+        public ControleLista ObterProximoListaSemRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual, DateTime datareuniaoanterior, 
+            DateTime dataProximaReuniao, int congregacaoId)
         {
             return unitOfWork.Connection.Query<ControleLista>(SelectProximoListaSemFolga,
                     param: new
@@ -258,18 +299,20 @@ namespace SystemNet.Core.Infraestructure.Repositories
                         @TipoListaId = tipoListaId,
                         @DataReuniaoAtual = datereuniaoAtual,
                         @DataReuniaoAnterior = datareuniaoanterior,
-                        @DataReuniaoProxima = dataProximaReuniao
+                        @DataReuniaoProxima = dataProximaReuniao,
+                        @CongregacaoId = congregacaoId
                     }
                     , transaction: unitOfWork.Transaction
                 ).FirstOrDefault();
         }
 
-        public void RecuperaBackupListaAtual(ref IUnitOfWork unitOfWork, int tipoListaId)
+        public void RecuperaBackupListaAtual(ref IUnitOfWork unitOfWork, int tipoListaId, int congregacaoId)
         {
             unitOfWork.Connection.Execute(recuperaBackupLista,
                param: new
                {
-                   @TipoListaId = tipoListaId
+                   @TipoListaId = tipoListaId,
+                   @CongregacaoId = congregacaoId
                },
                transaction: unitOfWork.Transaction);
         }
@@ -298,12 +341,13 @@ namespace SystemNet.Core.Infraestructure.Repositories
       ).FirstOrDefault();
         }
 
-        public void LiberaProximoLista(ref IUnitOfWork unitOfWork, int tipoListaId)
+        public void LiberaProximoLista(ref IUnitOfWork unitOfWork, int tipoListaId, int congregacaoId)
         {
             var id = unitOfWork.Connection.ExecuteScalar(LiberaMaisAntigo,
                param: new
                {
-                   @TipoListaId = tipoListaId
+                   @TipoListaId = tipoListaId,
+                   @CongregacaoId = congregacaoId
                },
                transaction: unitOfWork.Transaction);
         }
