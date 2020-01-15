@@ -248,11 +248,11 @@ namespace SystemNet.Core.Infraestructure.Repositories
                transaction: unitOfWork.Transaction);
         }
 
-        public ControleLista ObterProximoListaPodeRepetir(ref IUnitOfWork unitOfWork, int tipoListaId)
+        public ControleLista ObterProximoListaPodeRepetir(ref IUnitOfWork unitOfWork, int tipoListaId, int congregacaoId)
         {
-            return unitOfWork.Connection.Query<ControleLista>(@"select top 1 * from dbo.ControleLista where TipoListaId = @TipoListaId and Participou = 0 
+            return unitOfWork.Connection.Query<ControleLista>(@"select top 1 * from dbo.ControleLista where TipoListaId = @TipoListaId and Participou = 0 and CongregacaoId = @CongregacaoId
                                                               Order by OrdenaFinal, CodigoControleLista",
-                    param: new { @TipoListaId = tipoListaId }
+                    param: new { @TipoListaId = tipoListaId, @CongregacaoId = congregacaoId }
                     , transaction: unitOfWork.Transaction
                 ).FirstOrDefault();
         }

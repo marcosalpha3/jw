@@ -656,7 +656,7 @@ namespace SystemNet.Business.Services
                     while (proximoLista == null)
                     {
                         proximoLista = _repositoryControleLista.ObterProximoListaPodeRepetir(ref unitOfWork,
-                        (int)itemTipoLista.Codigo);
+                        (int)itemTipoLista.Codigo, item.Codigo);
 
                         if (proximoLista == null)
                         {

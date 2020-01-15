@@ -12,7 +12,7 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
                     DateTime dataProximaReuniao, int congregacaoId);
         ControleLista ObterProximoListaSemRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual, DateTime datareuniaoanterior,
                     DateTime dataProximaReuniao, int congregacaoId);
-        ControleLista ObterProximoListaPodeRepetir(ref IUnitOfWork unitOfWork, int tipoListaId);
+        ControleLista ObterProximoListaPodeRepetir(ref IUnitOfWork unitOfWork, int tipoListaId, int congregacaoId);
         void AtualizaPartipacaoIrmaoLista(ref IUnitOfWork unitOfWork, int tipoListaId, int irmaoId, bool liberaproximo);
         void IncluirIrmaoLista(ref IUnitOfWork unitOfWork, int tipoListaId, int irmaoId, bool inicioLista);
         void RemoverIrmaoLista(ref IUnitOfWork unitOfWork, int tipoListaId, int irmaoId);
