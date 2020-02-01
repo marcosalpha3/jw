@@ -248,11 +248,12 @@ namespace SystemNet.Core.Infraestructure.Repositories
                transaction: unitOfWork.Transaction);
         }
 
-        public ControleLista ObterProximoListaPodeRepetir(ref IUnitOfWork unitOfWork, int tipoListaId, int congregacaoId)
+        public ControleLista ObterProximoListaPodeRepetir(ref IUnitOfWork unitOfWork, int tipoListaId, int congregacaoId, DateTime dataReuniaoAtual)
         {
             return unitOfWork.Connection.Query<ControleLista>(@"select top 1 * from dbo.ControleLista where TipoListaId = @TipoListaId and Participou = 0 and CongregacaoId = @CongregacaoId
+                                                               and IrmaoId NOT IN ( select ISNULL(IrmaoId, 0) from dbo.QuadroDetalhe where Data = CAST(@DataReuniaoAtual AS DATE) )           
                                                               Order by OrdenaFinal, CodigoControleLista",
-                    param: new { @TipoListaId = tipoListaId, @CongregacaoId = congregacaoId }
+                    param: new { @TipoListaId = tipoListaId, @CongregacaoId = congregacaoId, @DataReuniaoAtual = dataReuniaoAtual }
                     , transaction: unitOfWork.Transaction
                 ).FirstOrDefault();
         }
