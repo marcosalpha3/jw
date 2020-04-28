@@ -639,9 +639,15 @@ namespace SystemNet.Business.Services
                 {
                     while (proximoLista == null)
                     {
-                        proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolga(ref unitOfWork,
-                        (int)itemTipoLista.Codigo, dataControle, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data,
+
+                        if (cont <= 25)
+                            proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolga(ref unitOfWork,
+                            (int)itemTipoLista.Codigo, dataControle, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data,
                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data, item.Codigo);
+                        else
+                            proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref unitOfWork,
+                              (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
+                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data, item.Codigo);
 
                         if (proximoLista == null)
                         {
