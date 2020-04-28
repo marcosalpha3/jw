@@ -648,7 +648,11 @@ namespace SystemNet.Business.Services
                             _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo, item.Codigo);
                             liberouproximo = true;
                         }
-                            
+
+                        if (cont > 50)
+                            throw new Exception("Não foi possivel obter um irmão da lista de audio e video");
+
+                        cont++;
                     }
                 }
                 else
