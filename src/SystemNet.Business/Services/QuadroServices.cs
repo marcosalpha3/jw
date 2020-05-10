@@ -488,9 +488,9 @@ namespace SystemNet.Business.Services
                 lista[i].SomVideo = new List<string>();
                 foreach (var item3 in somvideo)
                 {
-                    //if (lista[i].Data.Date == Convert.ToDateTime("2019-09-29").Date && item3.Nome == "Tiago Silva")
-                    //    lista[i].SomVideo.Add("Danilo Severiano");
-                    //else
+                    if (lista[i].Data.Date == Convert.ToDateTime("2020-05-17").Date && item3.Nome == "Danilo Severiano")
+                        lista[i].SomVideo.Add("Marcos Rodrigues");
+                    else
                      lista[i].SomVideo.Add(item3.Nome);
                 }
             }
