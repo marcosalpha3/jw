@@ -380,7 +380,7 @@ namespace SystemNet.Business.Services
             bool regerarlista, bool recuperabackup)
         {
             int codQuadro = 0;
-            DateTime dataFinalLista = DateTime.MinValue;
+
             foreach (var itemTipoLista in tipolistas)
             {
                 DateTime dataControle = dataInicioLista;
@@ -440,7 +440,7 @@ namespace SystemNet.Business.Services
                         case Core.Domain.enums.eTipoLista.LeitorELC:
                             if (dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                             {
-                                if (dataControle <= dataFinalLista) InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                if (dataControle.Date <= datalimite.Date) InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
                                 i = i + 2;
                             }
                             break;
@@ -455,8 +455,6 @@ namespace SystemNet.Business.Services
                     }
 
                 }
-                if (dataFinalLista == DateTime.MinValue)
-                    dataFinalLista = dataControle.AddDays(-1);
 
             }
         }
