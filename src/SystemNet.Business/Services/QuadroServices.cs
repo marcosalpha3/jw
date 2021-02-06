@@ -220,7 +220,6 @@ namespace SystemNet.Business.Services
                                 switch (itemTipoLista.Codigo)
                                 {
                                     case Core.Domain.enums.eTipoLista.Indicador:
-                                    case Core.Domain.enums.eTipoLista.AudioVideo:
                                         if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                                         {
                                             for (int iIndicador = 0; iIndicador < congregacao.QuantidadeIndicadores; iIndicador++)
@@ -230,7 +229,17 @@ namespace SystemNet.Business.Services
                                             i++;
                                         }
                                         break;
-                                    case Core.Domain.enums.eTipoLista.Microfonista:
+                                case Core.Domain.enums.eTipoLista.AudioVideo:
+                                    if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
+                                    {
+                                        for (int iSistemaSonoro = 0; iSistemaSonoro < congregacao.QuantidadeSistemaSonoro; iSistemaSonoro++)
+                                        {
+                                            if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                        }
+                                        i++;
+                                    }
+                                    break;
+                                case Core.Domain.enums.eTipoLista.Microfonista:
                                         if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                                         {
                                             for (int iMicrofonistas = 0; iMicrofonistas < congregacao.QuantidadeMicrofonistas; iMicrofonistas++)
@@ -402,10 +411,20 @@ namespace SystemNet.Business.Services
                     switch (itemTipoLista.Codigo)
                     {
                         case Core.Domain.enums.eTipoLista.Indicador:
-                        case Core.Domain.enums.eTipoLista.AudioVideo:
+
                             if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                             {
                                 for (int iIndicador = 0; iIndicador < congregacao.QuantidadeIndicadores; iIndicador++)
+                                {
+                                    if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                }
+                                i++;
+                            }
+                            break;
+                        case Core.Domain.enums.eTipoLista.AudioVideo:
+                            if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
+                            {
+                                for (int iSistemaSonoro = 0; iSistemaSonoro < congregacao.QuantidadeSistemaSonoro; iSistemaSonoro++)
                                 {
                                     if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
                                 }

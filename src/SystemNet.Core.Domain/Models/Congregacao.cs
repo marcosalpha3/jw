@@ -13,5 +13,6 @@ namespace SystemNet.Core.Domain.Models
         public DateTime DataPrimeiraLista { get; set; }
         public int DiasAntecedenciaGerarLista { get; set; }
         public bool FolgaParticipacao { get; set; }
+        public int QuantidadeSistemaSonoro { get; set; }
     }
 }
