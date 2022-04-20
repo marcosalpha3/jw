@@ -14,7 +14,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
     {
         #region [Scripts SQL]
 
-        private const string SelectIrmaoDetalheLista = @"SELECT I.Nome FROM [dbo].[QuadroDetalhe] QD
+        private const string SelectIrmaoDetalheLista = @"SELECT I.Nome, I.CongregacaoId FROM [dbo].[QuadroDetalhe] QD
                                                             INNER JOIN dbo.Quadro Q ON Q.Codigo = QD.QuadroId
 															INNER JOIN dbo.Irmao I ON I.Codigo = QD.IrmaoId
                                                             Where (Q.Quadro = @QuadroAtual or Q.Quadro = @QuadroProximo)

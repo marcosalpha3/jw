@@ -505,11 +505,20 @@ namespace SystemNet.Business.Services
                 lista[i].SomVideo = new List<string>();
                 foreach (var item3 in somvideo)
                 {
-                    if (lista[i].Data.Date == Convert.ToDateTime("2020-05-17").Date && item3.Nome == "Danilo Severiano")
+                    if (lista[i].Data.Date.DayOfWeek == DayOfWeek.Sunday && item3.CongregacaoId == 1)
+                    {
+                        lista[i].SomVideo.Add("Lucas Vieira");
+                        lista[i].SomVideo.Add("Marcos Boscariolo");
+                        lista[i].SomVideo.Add("Miguel Costa");
+                        break; 
+                    }
+                    else if (lista[i].Data.Date.DayOfWeek == DayOfWeek.Tuesday && item3.CongregacaoId == 1)
+                    {
                         lista[i].SomVideo.Add("Marcos Rodrigues");
-                    else if (lista[i].Data.Date == Convert.ToDateTime("2020-05-26").Date && item3.Nome == "Lucas Vieira")
-                        lista[i].SomVideo.Add("Jonas Batista");
-
+                        lista[i].SomVideo.Add("Luciano L Junior");
+                        lista[i].SomVideo.Add("Vinícius B Monteiro");
+                        break;
+                    }
                     else
                         lista[i].SomVideo.Add(item3.Nome);
                 }

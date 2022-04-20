@@ -276,7 +276,7 @@ namespace SystemNet.Api
                     new Info
                     {
                         Title = "Quadro JW",
-                        Version = "1.3.0",
+                        Version = "1.3.1",
                         Description = "Controle Quadro do salão do reino da Congregação Revigua"
                     });
 
