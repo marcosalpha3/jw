@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using SystemNet.Core.Domain.Contracts.Repositories;
 using SystemNet.Core.Domain.Contracts.Services;
 using SystemNet.Core.Domain.Models;
@@ -10,7 +12,7 @@ namespace SystemNet.Business.Services
 {
     public class ExcecaoDesignacaoServices : IExcecaoDesignacaoServices
     {
-        IExcecaoDesignacaoRepository _repository;
+        readonly IExcecaoDesignacaoRepository _repository;
 
         public ExcecaoDesignacaoServices(IExcecaoDesignacaoRepository repository)
         {
@@ -68,6 +70,24 @@ namespace SystemNet.Business.Services
                 }
             }
             return model;
+        }
+
+        public void InserirExcecaoAteData(int irmaoId, DayOfWeek dayofWeekExeption, DateTime toDate)
+        {
+            var currentDate = DateTime.Now.Date;
+            while (currentDate <= toDate)
+            {
+                if (currentDate.DayOfWeek == dayofWeekExeption)
+                    try
+                    {
+                        Inserir(new ExcecaoDesignacao(int.MinValue, currentDate, irmaoId, "Acompanha reunião zoom"));
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine($"Já registrado {ex.Message}");
+                    }
+                currentDate = currentDate.AddDays(1);
+            }
         }
 
         public IEnumerable<ExcecaoDesignacao> ObterExcecaoPorCongregacao(int congregacaoId)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -93,5 +94,29 @@ namespace SystemNet.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Adiciona uma exceção até determinada data
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("api/v1/excecaodesignacao/data")]
+        [Authorize(Policy = "Member")]
+        public async Task<IActionResult> AdicionarAteUmaData([FromBody] ExcecaoAteData model)
+        {
+            try
+            {
+                _service.InserirExcecaoAteData(model.IrmaoId, model.Dia, model.AteData);
+                return await Response(new ExcecaoDesignacao(model.IrmaoId, model.AteData, model.IrmaoId, String.Empty ));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    errors = new[] { ex }
+                });
+            }
+        }
     }
 }
