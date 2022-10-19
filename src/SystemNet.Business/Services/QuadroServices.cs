@@ -507,7 +507,7 @@ namespace SystemNet.Business.Services
                     if (lista[i].Data.Date == Convert.ToDateTime("2022-10-25").Date && item3.Nome == "João Salas")
                         lista[i].SomVideo.Add("Marcos Rodrigues");
                     else if (lista[i].Data.Date == Convert.ToDateTime("2022-10-25").Date && item3.Nome == "Marcos Boscariolo")
-                        lista[i].SomVideo.Add("Luciano L Junior");
+                        lista[i].SomVideo.Add("Lucas Vieira");
                     else
                         lista[i].SomVideo.Add(item3.Nome);
                 }
