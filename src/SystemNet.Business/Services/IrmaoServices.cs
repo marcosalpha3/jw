@@ -15,7 +15,7 @@ namespace SystemNet.Business.Services
 {
     public class IrmaoServices : IIrmaoServices
     {
-        IIrmaoRepository _repository;
+        readonly IIrmaoRepository _repository;
 
         public IrmaoServices(IIrmaoRepository repository)
         {

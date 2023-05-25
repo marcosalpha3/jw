@@ -44,8 +44,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                 order By G.Nome, I.Nome",
             (pd, pp) =>
             {
-                GetGrupoIrmao grupoEntry;
-                if (!grupoDictionary.TryGetValue(pd.Codigo, out grupoEntry))
+                if (!grupoDictionary.TryGetValue(pd.Codigo, out GetGrupoIrmao grupoEntry))
                 {
                     grupoEntry = pd;
                     grupoEntry.Irmaos = new List<GetIrmaoGrupo>();
@@ -65,7 +64,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
         {
             unitOfWork.Connection.Execute(
               "UPDATE Irmao SET Senha = @Senha, Tentativas = @Tentativas, StatusId = @StatusId, AlterarSenha = 1 where Codigo = @Id ",
-                param: new { @Senha = model.Senha, @Id = model.Codigo, @Tentativas = model.Tentativas, @StatusId = model.StatusId },
+                param: new { model.Senha, @Id = model.Codigo, model.Tentativas, model.StatusId },
                 transaction: unitOfWork.Transaction);
         }
 
@@ -74,7 +73,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
             unitOfWork.Connection.Execute("UPDATE [dbo].[Irmao]  SET [Ativo] = 1, [AtivarProximaLista] = 0  WHERE Codigo = @id",
                param: new
                {
-                   @id = id
+                   id
                },
                transaction: unitOfWork.Transaction);
         }
@@ -85,7 +84,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
             LeitorEstudoLivro = 0, SistemaSonoro = 0, OracaoFinal = 0, PresidenteConferencia = 0, Carrinho = 0 WHERE Codigo = @id",
             param: new
             {
-                @id = id
+                id
             },
             transaction: unitOfWork.Transaction);
         }
@@ -97,7 +96,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                ,[LeitorSentinela] = @LeitorSentinela ,[LeitorEstudoLivro] = @LeitorEstudoLivro, [SistemaSonoro] = @SistemaSonoro, [OracaoFinal] = @OracaoFinal
                                                ,[PresidenteConferencia] = @PresidenteConferencia, [Carrinho] = @Carrinho, [GrupoId] = @GrupoId, [CongregacaoId] = @CongregacaoId, 
                                                [AtualizarDesignacao] = @AtualizarDesignacao, [AcessoAdmin] = @AcessoAdmin, [DataUltimaAlteracao] = GETDATE(), SubirQuadro = @SubirQuadro,
-                                               [AtualizarAssistencia] = @AtualizarAssistencia
+                                               [AtualizarAssistencia] = @AtualizarAssistencia, IndicadorAuditorio = @IndicadorAuditorio
                                                 WHERE Codigo = @Codigo ",
                                         param: new
                                         {
@@ -119,7 +118,8 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                             model.AcessoAdmin,
                                             model.Codigo,
                                             model.SubirQuadro,
-                                            model.AtualizarAssistencia
+                                            model.AtualizarAssistencia,
+                                            model.IndicadorAuditorio
                                         },
                                         transaction: unitOfWork.Transaction);
         }
@@ -154,7 +154,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
             return unitOfWork.Connection.Query<Irmao>("Select * from dbo.Irmao where Codigo = @id",
                     param: new
                     {
-                        @id = id
+                        id
                     }
                     , transaction: unitOfWork.Transaction
                 ).FirstOrDefault();
@@ -166,11 +166,11 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                                           ,[LeitorSentinela], [LeitorEstudoLivro], [SistemaSonoro], [OracaoFinal], [PresidenteConferencia]
                                                                           ,[Carrinho], [GrupoId], [CongregacaoId], [Senha], [DesativarProximaLista], [AtivarProximaLista], 
                                                                           [AtualizarDesignacao], [AcessoAdmin], [StatusId], [AlterarSenha], [Tentativas], [SubirQuadro],
-                                                                          [AtualizarAssistencia])
+                                                                          [AtualizarAssistencia], [IndicadorAuditorio])
                                                                          VALUES
                                                                         (@Nome, @Email, @Telefone, @Sexo, @Ativo, @Indicador, @Microfonista, @LeitorSentinela, @LeitorEstudoLivro, @SistemaSonoro
                                                                         ,@OracaoFinal, @PresidenteConferencia, @Carrinho, @GrupoId, @CongregacaoId, @Senha, 0, 1, 1, @AcessoAdmin, @StatusId, 
-                                                                        @AlterarSenha, @Tentativas, @SubirQuadro, @AtualizarAssistencia);
+                                                                        @AlterarSenha, @Tentativas, @SubirQuadro, @AtualizarAssistencia, @IndicadorAuditorio);
                                                                          SELECT SCOPE_IDENTITY() ",
                                param: new
                                {
@@ -195,7 +195,8 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                    model.AlterarSenha,
                                    model.Tentativas,
                                    model.SubirQuadro,
-                                   model.AtualizarAssistencia
+                                   model.AtualizarAssistencia,
+                                   model.IndicadorAuditorio
                                },
                                transaction: unitOfWork.Transaction));
         }
@@ -214,7 +215,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
         public void AlterarSenha(ref IUnitOfWork unitOfWork, int Id, string senha)
         {
             unitOfWork.Connection.Execute("UPDATE dbo.[Irmao] SET Senha = @Senha, AlterarSenha = 0 where Codigo = @Id",
-                param: new { @Senha = senha, @Id = Id },
+                param: new { @Senha = senha, Id },
                 transaction: unitOfWork.Transaction);
         }
 
@@ -263,24 +264,18 @@ namespace SystemNet.Core.Infraestructure.Repositories
         public void Login(ref IUnitOfWork unitOfWork, Irmao model)
         {
             unitOfWork.Connection.Execute("update Irmao set StatusId = @StatusId, Tentativas = @Tentativas, UltimoLogin = @UltimoLogin where Codigo = @Codigo",
-                param: new { @StatusId = model.StatusId, @Tentativas = model.Tentativas, @UltimoLogin = model.UltimoLogin, @Codigo = model.Codigo },
+                param: new { model.StatusId, model.Tentativas, model.UltimoLogin, model.Codigo },
                 transaction: unitOfWork.Transaction);
         }
 
         public void AtualizaFlagDesignacao(ref IUnitOfWork unitOfWork, int Id)
         {
             unitOfWork.Connection.Execute("UPDATE dbo.[Irmao] SET AtualizarDesignacao = 0 where Codigo = @Id",
-                param: new { @Id = Id },
+                param: new { Id },
                 transaction: unitOfWork.Transaction);
         }
 
         #region [Email]  
-
-        private AlternateView alternateView(string htmlBody)
-        {
-            return AlternateView.CreateAlternateViewFromString(htmlBody, null, MediaTypeNames.Text.Html);
-        }
-
 
         public void SendEmail(Irmao model, string password, bool newUser)
         {
@@ -289,8 +284,8 @@ namespace SystemNet.Core.Infraestructure.Repositories
 
             string HtmlHelloMessage = (newUser) ? Errors.HtmlBody_1 : Errors.HtmlBody_1b;
 
-            MailMessage mailMsg = new MailMessage();
-            MailAddress endereco = new MailAddress(Runtime.Sender, "JW");
+            var mailMsg = new MailMessage();
+            var endereco = new MailAddress(Runtime.Sender, "JW");
 
             string htmlBody = "<html> <body> <p> " + String.Format(HtmlHelloMessage, model.Nome) + "</p> <p>" +
                           string.Format(Errors.HtmlBody_5, urlEnvironment) + " </p> <p>" +

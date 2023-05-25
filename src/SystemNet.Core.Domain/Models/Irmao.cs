@@ -12,7 +12,7 @@ namespace SystemNet.Core.Domain.Models
     public class Irmao : Notifiable
     {
         public Irmao(int codigo, string nome, string email, string telefone, string sexo, bool indicador, bool microfonista, bool leitorSentinela, bool leitorEstudoLivro, bool sistemaSonoro, bool oracaoFinal, 
-            bool presidenteConferencia, bool carrinho, int grupoId, int congregacaoId, bool acessoAdmin, bool atualizarAssistencia, bool subirQuadro)
+            bool presidenteConferencia, bool carrinho, int grupoId, int congregacaoId, bool acessoAdmin, bool atualizarAssistencia, bool subirQuadro, bool indicadorAuditorio)
         {
             Codigo = codigo;
             Nome = nome;
@@ -32,6 +32,7 @@ namespace SystemNet.Core.Domain.Models
             AcessoAdmin = acessoAdmin;
             AtualizarAssistencia = atualizarAssistencia;
             SubirQuadro = subirQuadro;
+            IndicadorAuditorio = indicadorAuditorio;
 
             AddNotifications(new ValidationContract()
                            .Requires()
@@ -79,14 +80,14 @@ namespace SystemNet.Core.Domain.Models
         public bool ExibirOracaoInicial { get; set; }
         public bool SubirQuadro { get; set; }
         public bool AtualizarAssistencia { get; set; }
-
+        public bool IndicadorAuditorio { get; set; }
 
         public void VerificaDesignacoes(Irmao modelAtual)
         {
             if ((modelAtual.Indicador != this.Indicador) || (modelAtual.LeitorEstudoLivro != this.LeitorEstudoLivro) ||
                 (modelAtual.LeitorSentinela != this.LeitorSentinela) || (modelAtual.Microfonista != this.Microfonista) ||
                 (modelAtual.OracaoFinal != this.OracaoFinal) || (modelAtual.PresidenteConferencia != this.PresidenteConferencia) ||
-                (modelAtual.SistemaSonoro != this.SistemaSonoro))
+                (modelAtual.SistemaSonoro != this.SistemaSonoro) || (modelAtual.IndicadorAuditorio != this.IndicadorAuditorio))
                 this.AtualizarDesignacao = true;
             else
                 this.AtualizarDesignacao = false;

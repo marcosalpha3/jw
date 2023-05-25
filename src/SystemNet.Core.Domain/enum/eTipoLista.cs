@@ -2,12 +2,12 @@
 {
     public enum eTipoLista : int
     {
-        Indicador = 1,
+        IndicadorEntrada = 1,
         Microfonista = 2,
         LeitorJW = 3,
         OracaoFinal = 4,
         LeitorELC = 5,
         AudioVideo = 6,
-        OracaoInicial = 7
+        IndicadorAuditorio = 7
     }
 }

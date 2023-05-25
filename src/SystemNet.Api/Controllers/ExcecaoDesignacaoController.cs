@@ -12,7 +12,7 @@ namespace SystemNet.Api.Controllers
 {
     public class ExcecaoDesignacaoController : BaseController
     {
-        IExcecaoDesignacaoServices _service;
+        readonly IExcecaoDesignacaoServices _service;
 
         public ExcecaoDesignacaoController(IExcecaoDesignacaoServices service)
         {

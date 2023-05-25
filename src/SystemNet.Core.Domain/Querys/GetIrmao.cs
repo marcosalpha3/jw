@@ -21,6 +21,6 @@
         public bool AcessoAdmin { get; set; }
         public bool SubirQuadro { get; set; }
         public bool AtualizarAssistencia { get; set; }
-
+        public bool IndicadorAuditorio { get; set; }
     }
 }

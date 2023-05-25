@@ -28,9 +28,10 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                            (SELECT top 1 IL3.Nome from dbo.Quadro Q3											
                                                            LEFT JOIN QuadroDetalhe QDL3 ON QDL3.QuadroId = Q3.Codigo 
                                                            LEFT JOIN Irmao IL3 ON IL3.Codigo = QDL3.IrmaoId
-                                                           WHERE Q3.TipoListaId = @TipoOracaoInicial and QDL3.Data = QDL.DATA
+                                                           WHERE Q3.TipoListaId = @TipoIndicadorAuditorio and QDL3.Data = QDL.DATA
                                                            AND (Q3.Quadro = @QuadroAtual or Q3.Quadro = @QuadroProximo)
-                                                           ) As OracaoInicial                                                            
+                                                           ) As IndicadorAuditorio
+
 
                                                            from dbo.Quadro Q											
                                                            LEFT JOIN QuadroDetalhe QDL ON QDL.QuadroId = Q.Codigo 
@@ -74,12 +75,12 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                          (@Url, @Titulo, @CongregacaoId, @DataExpiracao, @DataInicio, @AtivoStorage)",
                param: new
                {
-                   @Url = model.Url,
-                   @Titulo = model.Titulo,
-                   @CongregacaoId = model.CongregacaoId,
-                   @DataExpiracao = model.DataExpiracao,
-                   @DataInicio = model.DataInicio,
-                   @AtivoStorage = model.AtivoStorage
+                   model.Url,
+                   model.Titulo,
+                   model.CongregacaoId,
+                   model.DataExpiracao,
+                   model.DataInicio,
+                   model.AtivoStorage
                }, transaction: unitOfWork.Transaction
                );
         }
@@ -100,7 +101,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                param: new
                {
                    @Url = url,
-                   @congregacaoId = congregacaoId
+                   congregacaoId
                }, transaction: unitOfWork.Transaction
                );
         }
@@ -182,8 +183,9 @@ namespace SystemNet.Core.Infraestructure.Repositories
                     param: new { @TipoLeitorELC = eTipoLista.LeitorELC,
                                  @TipoLeitorJW = eTipoLista.LeitorJW,
                                  @TipoOracaoFinal = eTipoLista.OracaoFinal,
-                                @TipoOracaoInicial = eTipoLista.OracaoInicial,
-                                @QuadroAtual = quadroAtual,
+                                 @TipoIndicadorEntrada = eTipoLista.IndicadorEntrada,
+                                 @TipoIndicadorAuditorio = eTipoLista.IndicadorAuditorio,
+                                 @QuadroAtual = quadroAtual,
                                  @QuadroProximo = quadroProximo,
                                  @Dias = dias * -1
                     }

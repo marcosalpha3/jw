@@ -40,7 +40,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
             unitOfWork.Connection.Execute("DELETE FROM [dbo].[Quadro] WHERE Quadro = @QuadroId",
                 param: new
                 {
-                    @QuadroId = QuadroId
+                    QuadroId
                 },
                 transaction: unitOfWork.Transaction);
         }
@@ -51,8 +51,8 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                              VALUES (@QuadroId, @Data, @IrmaoId, @EventoId) ",
                 param: new
                 {
-                    @QuadroId = model.QuadroId,
-                    @Data = model.Data,
+                    model.QuadroId,
+                    model.Data,
                     @IrmaoId = (model.IrmaoId <= 0) ? (int?)null : model.IrmaoId,
                     @EventoId = (model.EventoId <= 0) ? (int?)null : model.EventoId,
                 },
@@ -77,7 +77,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
             return unitOfWork.Connection.Query<QuadroDetalhe>(SelectUltimaReuniao,
                 param: new
                 {
-                    @data = data,
+                    data,
                     @CongregacaoId = congregacaoId
                 },
                     transaction: unitOfWork.Transaction
@@ -89,7 +89,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
             return unitOfWork.Connection.Query<QuadroDetalhe>(SelectProximaReuniao,
                 param: new
                 {
-                    @data = data,
+                    data,
                     @CongregacaoId = congregacaoId
                 },
                     transaction: unitOfWork.Transaction
