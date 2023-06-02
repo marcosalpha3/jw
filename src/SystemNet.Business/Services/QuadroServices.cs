@@ -219,8 +219,17 @@ namespace SystemNet.Business.Services
                                 bool assembleia = false;
                                 switch (itemTipoLista.Codigo)
                                 {
-                                    case Core.Domain.enums.eTipoLista.IndicadorEntrada:
-                                    case Core.Domain.enums.eTipoLista.IndicadorAuditorio:
+                                case Core.Domain.enums.eTipoLista.IndicadorEntrada:
+                                    if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
+                                    {
+                                        for (int iIndicador = 0; iIndicador < congregacao.QuantidadeIndicadores; iIndicador++)
+                                        {
+                                            if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                        }
+                                        i++;
+                                    }
+                                    break;
+                                case Core.Domain.enums.eTipoLista.IndicadorAuditorio:
                                     if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                                         {
                                             if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);

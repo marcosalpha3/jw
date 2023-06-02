@@ -107,7 +107,7 @@ namespace SystemNet.Api.Controllers
             try
             {
                 _service.InserirExcecaoAteData(model.IrmaoId, model.Dia, model.AteData);
-                return await Response(new ExcecaoDesignacao(model.IrmaoId, model.AteData, model.IrmaoId, String.Empty ));
+                return await Response(new ExcecaoDesignacao(model.IrmaoId, model.AteData, model.IrmaoId, model.Motivo));
             }
             catch (Exception ex)
             {
