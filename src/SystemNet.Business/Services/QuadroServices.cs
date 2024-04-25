@@ -514,13 +514,6 @@ namespace SystemNet.Business.Services
                 lista[i].SomVideo = new List<string>();
                 foreach (var item3 in somvideo)
                 {
-                    if (lista[i].Data.Date == Convert.ToDateTime("2023-07-11").Date && item3.Nome == "Vinícius B Monteiro")
-                        lista[i].SomVideo.Add("Marcos Rodrigues");
-                    else if (lista[i].Data.Date == Convert.ToDateTime("2023-07-18").Date && item3.Nome == "Luciano L Junior")
-                        lista[i].SomVideo.Add("Lucas Vieira");
-                    else if (lista[i].Data.Date == Convert.ToDateTime("2023-07-23").Date && item3.Nome == "Edvaldo Melo")
-                        lista[i].SomVideo.Add("Marcos Rodrigues");
-                    else
                         lista[i].SomVideo.Add(item3.Nome);
                 }
             }
