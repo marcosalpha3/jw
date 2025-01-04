@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentValidator;
 using SystemNet.Core.Domain.Contracts.Repositories;
 using SystemNet.Core.Domain.Contracts.Services;
@@ -263,7 +264,6 @@ namespace SystemNet.Business.Services
             }
         }
 
-
         public IEnumerable<GetIrmao> ObterIrmaosPorCongregacao(int congregacaoId)
         {
             using (RepositorySession dalSession = new RepositorySession("JW"))
@@ -272,6 +272,25 @@ namespace SystemNet.Business.Services
                 try
                 {
                     return _repository.ObterIrmaosPorCongregacao(ref unitOfWork, congregacaoId);
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+        }
+        public IEnumerable<GetIrmao> ObterIrmaosPorCongregacaoPorAdmin(int congregacaoId, int userId)
+        {
+            using (RepositorySession dalSession = new RepositorySession("JW"))
+            {
+                IUnitOfWork unitOfWork = dalSession.UnitOfWork;
+                try
+                {
+                    var ret = _repository.ObterIrmaosPorCongregacao(ref unitOfWork, congregacaoId).ToList();
+                    var isAdmin = ret.Find(x => x.Codigo == userId).AcessoAdmin;
+                    if (!isAdmin) return ret.FindAll(x => x.Codigo == userId);
+
+                    return ret;
                 }
                 catch
                 {

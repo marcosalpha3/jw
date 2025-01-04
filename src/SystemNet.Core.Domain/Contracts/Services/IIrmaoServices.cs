@@ -17,5 +17,6 @@ namespace SystemNet.Core.Domain.Contracts.Services
         Irmao EsquecerSenha(string login);
         Irmao AlterarSenha(string login, string UserToken, string senha, string novaSenha, string confirmacaoNovaSenha);
         IEnumerable<GetGrupoIrmao> ObterGruposComIrmaos(int congregacaoId);
+        IEnumerable<GetIrmao> ObterIrmaosPorCongregacaoPorAdmin(int congregacaoId, int userId);
     }
 }

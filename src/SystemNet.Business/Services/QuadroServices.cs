@@ -12,6 +12,8 @@ using SystemNet.Practices.Data.Storage;
 using SystemNet.Practices.Data.Storage.Models;
 using SystemNet.Practices.Data.Uow;
 using SystemNet.Shared;
+using SystemNet.Practice.Common;
+using System.Diagnostics;
 
 namespace SystemNet.Business.Services
 {
@@ -196,97 +198,97 @@ namespace SystemNet.Business.Services
                             return model.Notifications;
                         }
 
-                        var tipolistas = _repositoryTipoLista.ListAll(ref unitOfWork, congregacao.Codigo);
+                        var tipolistas = _repositoryTipoLista.ListAll(ref unitOfWork, congregacao.Codigo).ToList();
                         int quadro = 0;
-                        int codQuadro = 0;
+                        int quantidadeDatas = 0;
                         if (tipolistas.Count() > 0)
                         {
                             quadro = _repositoryQuadro.ObterCodigoProximoQuadro(ref unitOfWork);
                             // Incluir / retirar irmãos da lista / atualiza designações
                             AtualizarControleLista(ref unitOfWork, congregacao.Codigo, true);
-                        }
-                        DateTime dataFinalLista = DateTime.MinValue;
+                            quantidadeDatas = tipolistas.FirstOrDefault().QuantidadeDatas;
 
-                        foreach (var itemTipoLista in tipolistas)
-                        {
-                            DateTime dataControle = dataInicioLista;
-                            _repositoryControleLista.BackupListaAtual(ref unitOfWork, (int)itemTipoLista.Codigo, dataInicioLista, itemTipoLista.CongregacaoId);
-                            codQuadro =_repositoryQuadro.InserirNovoQuadro(ref unitOfWork, congregacao.Codigo, quadro, (int)itemTipoLista.Codigo);
-
-                            int i = 0;
-                            while (i < itemTipoLista.QuantidadeDatas)
+                            for (int iv = 0; iv < tipolistas.Count(); iv++)
                             {
-                                bool assembleia = false;
-                                switch (itemTipoLista.Codigo)
-                                {
+                              tipolistas[iv].CodigoQuadro = _repositoryQuadro.InserirNovoQuadro(ref unitOfWork, congregacao.Codigo, quadro, (int)tipolistas[iv].Codigo);
+                            }
+                        }
+
+                        int i = 0;
+                        DateTime dataControle = dataInicioLista;
+                        while (i < quantidadeDatas)
+                        {
+                        bool assembleia = false;
+                        bool dataReuniaoValida = false;
+                         foreach (var itemTipoLista in tipolistas)
+                            {
+                            switch (itemTipoLista.Codigo)
+                            {
                                 case Core.Domain.enums.eTipoLista.IndicadorEntrada:
                                     if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                                     {
                                         for (int iIndicador = 0; iIndicador < congregacao.QuantidadeIndicadores; iIndicador++)
                                         {
-                                            if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                            if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
                                         }
-                                        i++;
+                                        dataReuniaoValida = true;
                                     }
                                     break;
                                 case Core.Domain.enums.eTipoLista.IndicadorAuditorio:
                                     if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
-                                        {
-                                            if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
-                                            i++;
-                                        }
-                                        break;
+                                    {
+                                        if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
+                                        dataReuniaoValida = true;
+                                    }
+                                    break;
                                 case Core.Domain.enums.eTipoLista.AudioVideo:
                                     if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                                     {
                                         for (int iSistemaSonoro = 0; iSistemaSonoro < congregacao.QuantidadeSistemaSonoro; iSistemaSonoro++)
                                         {
-                                            if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                            if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
+                                            dataReuniaoValida = true;
                                         }
-                                        i++;
                                     }
                                     break;
                                 case Core.Domain.enums.eTipoLista.Microfonista:
-                                        if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
+                                    if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
+                                    {
+                                        for (int iMicrofonistas = 0; iMicrofonistas < congregacao.QuantidadeMicrofonistas; iMicrofonistas++)
                                         {
-                                            for (int iMicrofonistas = 0; iMicrofonistas < congregacao.QuantidadeMicrofonistas; iMicrofonistas++)
-                                            {
-                                                if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
-                                            }
-                                            i++;
+                                            if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
                                         }
-                                        break;
+                                        dataReuniaoValida = true;
+                                    }
+                                    break;
                                 case Core.Domain.enums.eTipoLista.OracaoFinal:
-                                        if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
-                                        {
-                                            InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
-                                            i++;
-                                        }
-                                        break;
-                                    case Core.Domain.enums.eTipoLista.LeitorJW:
-                                        if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela)
-                                        {
-                                            InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
-                                            i += 2;
-                                        }
-                                        break;
-                                    case Core.Domain.enums.eTipoLista.LeitorELC:
-                                        if (dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
-                                        {
-                                            InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
-                                            i += 2;
-                                        }
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                dataControle = dataControle.AddDays(1);
+                                    if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
+                                    {
+                                        InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
+                                        dataReuniaoValida = true;
+                                    }
+                                    break;
+                                case Core.Domain.enums.eTipoLista.LeitorJW:
+                                    if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela)
+                                    {
+                                        InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
+                                        dataReuniaoValida = true;
+                                    }
+                                    break;
+                                case Core.Domain.enums.eTipoLista.LeitorELC:
+                                    if (dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
+                                    {
+                                        InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
+                                        dataReuniaoValida = true;
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
-                            if (dataFinalLista == DateTime.MinValue)
-                                dataFinalLista =dataControle.AddDays(-1); 
-
                         }
-
+                        dataControle = dataControle.AddDays(1);
+                        if (dataReuniaoValida) i++;
+                    }
                     unitOfWork.Commit();
                 }
                 catch
@@ -348,36 +350,13 @@ namespace SystemNet.Business.Services
 
                     dataInicioLista = _repositoryQuadroDetalhe.ObterDataInicioQuadro(ref unitOfWork, quadro);
 
-
-                    var tipolistas = _repositoryTipoLista.ListAll(ref unitOfWork, congregacaoAtual);
+                    var tipolistas = _repositoryTipoLista.ListAll(ref unitOfWork, congregacaoAtual).ToList();
                     DateTime dataFinalLista = _repositoryQuadroDetalhe.ObterDataFimQuadro(ref unitOfWork, quadro);
                     //Apaga Lista Atual
                     _repositoryQuadroDetalhe.ApagaDetalhesQuadro(ref unitOfWork, quadro);
 
-                    // Caso a próxima lista ainda não foi gerada, a lista atual será gerada até a última reunião antes da data atual
-                    if (proximoQuadro == 0)
-                    {
-                        // Gera lista até data atual
-                        GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, dataInicioLista, quadro, DateTime.Now, true, true);
-
-                        // Atualiza o Controle da lista com base nas atribuições atuais dos irmãos
-                        AtualizarControleLista(ref unitOfWork, congregacao.Codigo, false);
-
-                        // Continua a geração da lista da data atual até o final da lista
-                        GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, DateTime.Now.AddDays(1), quadro, dataFinalLista, false, false);
-                    }
-                    else
-                    {
-                        // Recupera Backup das lista 
-                        foreach (var item in tipolistas)
-                            _repositoryControleLista.RecuperaBackupListaAtual(ref unitOfWork, (int)item.Codigo, congregacaoAtual);
-                        
-                        // Atualiza o Controle da lista com base nas atribuições atuais dos irmãos
-                        AtualizarControleLista(ref unitOfWork, congregacao.Codigo, false);
-
-                        // Gera lista até data atual
-                        GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, dataInicioLista, quadro, dataFinalLista, true, false);
-                    }
+                    // Gera lista até data atual
+                    GeraListas(ref unitOfWork, ref tipolistas, ref congregacao, dataInicioLista, quadro, dataFinalLista, true);
 
                     unitOfWork.Commit();
                 }
@@ -391,28 +370,30 @@ namespace SystemNet.Business.Services
             return model.Notifications;
         }
 
-        private void GeraListas(ref IUnitOfWork unitOfWork, ref IEnumerable<TipoLista> tipolistas, ref Congregacao congregacao, DateTime dataInicioLista, int quadro, DateTime datalimite, 
-            bool regerarlista, bool recuperabackup)
+        private void GeraListas(ref IUnitOfWork unitOfWork, ref List<TipoLista> tipolistas, ref Congregacao congregacao, DateTime dataInicioLista, int quadro, DateTime datalimite, 
+            bool regerarlista)
         {
-            foreach (var itemTipoLista in tipolistas)
+            for (int iv = 0; iv < tipolistas.Count(); iv++)
             {
-                DateTime dataControle = dataInicioLista;
-
-                if (recuperabackup) _repositoryControleLista.RecuperaBackupListaAtual(ref unitOfWork, (int)itemTipoLista.Codigo, congregacao.Codigo);
-
-                int codQuadro;
-                // Se estiver for o primeiro ciclo de geração da lista
                 if (regerarlista)
                 {
-                    codQuadro = _repositoryQuadro.InserirNovoQuadro(ref unitOfWork, congregacao.Codigo, quadro, (int)itemTipoLista.Codigo);
+                    tipolistas[iv].CodigoQuadro = _repositoryQuadro.InserirNovoQuadro(ref unitOfWork, congregacao.Codigo, quadro, (int)tipolistas[iv].Codigo);
                 }
                 else
-                    codQuadro = _repositoryQuadro.ObterQuadroTipoLista(ref unitOfWork, quadro, (int)itemTipoLista.Codigo);
+                    tipolistas[iv].CodigoQuadro = _repositoryQuadro.ObterQuadroTipoLista(ref unitOfWork, quadro, (int)tipolistas[iv].Codigo);
+            }
 
-                int i = 0;
-                while (i < itemTipoLista.QuantidadeDatas)
+            var quantidadeDatas = tipolistas.FirstOrDefault().QuantidadeDatas;
+
+            int i = 0;
+            DateTime dataControle = dataInicioLista;
+            while (i < quantidadeDatas)
+            {
+                bool assembleia = false;
+                bool dataReuniaoValida = false;
+
+                foreach (var itemTipoLista in tipolistas)
                 {
-                    bool assembleia = false;
                     switch (itemTipoLista.Codigo)
                     {
                         case Core.Domain.enums.eTipoLista.IndicadorEntrada:
@@ -420,16 +401,16 @@ namespace SystemNet.Business.Services
                             {
                                 for (int iIndicador = 0; iIndicador < congregacao.QuantidadeIndicadores; iIndicador++)
                                 {
-                                    if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                    if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
                                 }
-                                i++;
+                                dataReuniaoValida = true;
                             }
                             break;
                         case Core.Domain.enums.eTipoLista.IndicadorAuditorio:
                             if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                             {
-                                if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
-                                i++;
+                                if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
+                                dataReuniaoValida = true;
                             }
                             break;
                         case Core.Domain.enums.eTipoLista.AudioVideo:
@@ -437,9 +418,9 @@ namespace SystemNet.Business.Services
                             {
                                 for (int iSistemaSonoro = 0; iSistemaSonoro < congregacao.QuantidadeSistemaSonoro; iSistemaSonoro++)
                                 {
-                                    if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                    if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
                                 }
-                                i++;
+                                dataReuniaoValida = true;
                             }
                             break;
                         case Core.Domain.enums.eTipoLista.Microfonista:
@@ -447,44 +428,42 @@ namespace SystemNet.Business.Services
                             {
                                 for (int iMicrofonistas = 0; iMicrofonistas < congregacao.QuantidadeMicrofonistas; iMicrofonistas++)
                                 {
-                                    if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
+                                    if (!assembleia) assembleia = InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
                                 }
-                                i++;
+                                dataReuniaoValida = true;
                             }
                             break;
                         case Core.Domain.enums.eTipoLista.OracaoFinal:
                             if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela || dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                             {
-                                InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
-                                i++;
+                                InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
+                                dataReuniaoValida = true;
                             }
                             break;
                         case Core.Domain.enums.eTipoLista.LeitorJW:
                             if (dataControle.DayOfWeek == congregacao.DiaReuniaoSentinela)
                             {
-                                InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
-                                i += 2;
+                                InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
+                                dataReuniaoValida = true;
                             }
                             break;
                         case Core.Domain.enums.eTipoLista.LeitorELC:
                             if (dataControle.DayOfWeek == congregacao.DiaReuniaoServico)
                             {
-                                if (dataControle.Date <= datalimite.Date) InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, codQuadro, itemTipoLista);
-                                i += 2;
+                                if (dataControle.Date <= datalimite.Date) InsereDetalheQuadro(ref unitOfWork, dataControle, congregacao, itemTipoLista.CodigoQuadro, itemTipoLista);
+                                dataReuniaoValida = true;
                             }
                             break;
                         default:
                             break;
                     }
-                    dataControle = dataControle.AddDays(1);
-                    // Para a atualização
-                    if (dataControle.Date > datalimite.Date)
-                    {
-                        i = itemTipoLista.QuantidadeDatas;
-                    }
-
                 }
+                dataControle = dataControle.AddDays(1);
+                // Para a atualização
+                if (dataControle.Date > datalimite.Date)
+                    i = quantidadeDatas;
 
+                if (dataReuniaoValida) i++;
             }
         }
 
@@ -624,68 +603,45 @@ namespace SystemNet.Business.Services
             ControleLista proximoLista = null;
             bool liberouproximo = false;
             DataEvento evento = _repositoryDataEvento.ListByDate(ref unitOfWork, item.Codigo, dataControle);
-            var ultimaReuniao = _repositoryQuadroDetalhe.ObterUltimaReuniaoValida(ref unitOfWork, item.Codigo, dataControle);
-            var proximaReuniao = _repositoryQuadroDetalhe.ObterProximaReuniaoValida(ref unitOfWork, item.Codigo, dataControle);
+
+            if (itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.LeitorJW || itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.LeitorELC)
+            {
+                Trace.WriteLine("Lista Microfose");
+            }
+
+            if (itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.IndicadorEntrada || itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.Microfonista)
+            {
+                Trace.WriteLine("Lista Microfose");
+            }
 
             QuadroDetalhe quadrodetalhe;
             if (evento == null || (evento.VisitaSuperintendente && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorELC
                 && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorJW))
             {
-                if (item.FolgaParticipacao && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal
-                    && (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.AudioVideo))
+                if (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorELC && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorJW)
                 {
-                    if (itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.IndicadorEntrada || itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.IndicadorAuditorio) cont = 16;
-
                     while (proximoLista == null)
                     {
-                        if (cont <= 15)
-                            proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirComFolga(ref unitOfWork,
-                              (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
-                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data, item.Codigo);
-                        else if (cont > 15 && cont <= 30)
-                            proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref unitOfWork,
-                              (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
-                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data, item.Codigo);
-                        else if (cont > 30 && cont <= 50)
-                            proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolga(ref unitOfWork,
-                            (int)itemTipoLista.Codigo, dataControle, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data,
-                             (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data, item.Codigo);
+                        if (cont <= 1)
+                            proximoLista =  _repositoryControleLista.ObterMaisAntigoGeralSemRepetir(ref unitOfWork,
+                              (int)itemTipoLista.Codigo, dataControle, item.Codigo, itemTipoLista.Codigo.GetDescription());
                         else
                             throw new Exception("Não foi possivel obter um irmão da lista ");
 
-
-                        if (proximoLista == null)
-                        {
-                            _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo, item.Codigo);
-                            liberouproximo = true;
-                        }
                         cont++;
                         Task.Delay(10).Wait();
                     }
                 }
                 else if (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal &&
-                    ((itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.AudioVideo) || (!item.FolgaParticipacao)))
+                    (itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.LeitorELC || itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.LeitorJW))
                 {
                     while (proximoLista == null)
                     {
-
-                        if (cont <= 25)
-                            proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolga(ref unitOfWork,
-                            (int)itemTipoLista.Codigo, dataControle, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data,
-                             (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data, item.Codigo);
+                        if (cont <= 1)
+                            proximoLista = _repositoryControleLista.ObterMaisAntigoDesignacaoLeitorSemRepetir(ref unitOfWork, (int)itemTipoLista.Codigo,
+                              dataControle, item.Codigo, itemTipoLista.Codigo.GetDescription());
                         else
-                            proximoLista = _repositoryControleLista.ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref unitOfWork,
-                              (int)itemTipoLista.Codigo, (ultimaReuniao == null) ? dataControle.AddDays(-1) : ultimaReuniao.Data, dataControle,
-                              (proximaReuniao == null) ? dataControle.AddDays(1) : proximaReuniao.Data, item.Codigo);
-
-                        if (proximoLista == null)
-                        {
-                            _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo, item.Codigo);
-                            liberouproximo = true;
-                        }
-
-                        if (cont > 50)
-                            throw new Exception("Não foi possivel obter um irmão da lista de audio e video");
+                            throw new Exception("Não foi possivel obter um irmão da lista de Leitor");
 
                         cont++;
                     }
@@ -694,14 +650,8 @@ namespace SystemNet.Business.Services
                 {
                     while (proximoLista == null)
                     {
-                        proximoLista = _repositoryControleLista.ObterProximoListaPodeRepetir(ref unitOfWork,
-                        (int)itemTipoLista.Codigo, item.Codigo, dataControle);
-
-                        if (proximoLista == null)
-                        {
-                            _repositoryControleLista.LiberaProximoLista(ref unitOfWork, (int)itemTipoLista.Codigo, item.Codigo);
-                            liberouproximo = true;
-                        }
+                        proximoLista = _repositoryControleLista.ObterMaisAntigoPodeRepetirSemFolga(ref unitOfWork,
+                        (int)itemTipoLista.Codigo, item.Codigo, itemTipoLista.Codigo.GetDescription(), dataControle);
                     }
                 }
 

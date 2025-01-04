@@ -12,5 +12,6 @@ namespace SystemNet.Core.Domain.Models
         public bool PodeRepetirDia { get; set; }
         public int QuantidadeDatas { get; set; }
         public int CongregacaoId { get; set; }
+        public int CodigoQuadro { get; set; }
     }
 }

@@ -205,6 +205,7 @@ namespace SystemNet.Core.Infraestructure.Repositories
                                                     select @IrmaoId
 ";
 
+
         #endregion
         public void AtualizaPartipacaoIrmaoLista(ref IUnitOfWork unitOfWork, int tipoListaId, int irmaoId, bool liberaproximo)
         {
@@ -273,6 +274,23 @@ namespace SystemNet.Core.Infraestructure.Repositories
                 ).FirstOrDefault();
         }
 
+        public ControleLista ObterMaisAntigoSemRepetirComFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datareuniaoanterior, DateTime datereuniaoAtual,
+            DateTime dataProximaReuniao, int congregacaoId)
+        {
+            return unitOfWork.Connection.Query<ControleLista>(SelectProximoListaComFolga,
+                    param: new
+                    {
+                        @TipoListaId = tipoListaId,
+                        @DataReuniaoAnterior = datareuniaoanterior,
+                        @DataReuniaoAtual = datereuniaoAtual,
+                        @DataProximaReuniao = dataProximaReuniao,
+                        @ListaOracao = eTipoLista.OracaoFinal,
+                        @CongregacaoId = congregacaoId
+                    }
+                    , transaction: unitOfWork.Transaction
+                ).FirstOrDefault();
+        }
+
         public ControleLista ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datareuniaoanterior, DateTime datereuniaoAtual, 
             DateTime dataProximaReuniao, int congregacaoId)
         {
@@ -306,6 +324,182 @@ namespace SystemNet.Core.Infraestructure.Repositories
                     , transaction: unitOfWork.Transaction
                 ).FirstOrDefault();
         }
+
+        public ControleLista ObterMaisAntigoSemRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual, int congregacaoId, string cargo)
+        {
+            return unitOfWork.Connection.Query<ControleLista>(@"SELECT TOP 1 IrmaoId FROM
+                                                 (SELECT Codigo As IrmaoId, Nome,
+                                                 (SELECT MAX(QD.Data) from QuadroDetalhe QD
+                                                  INNER JOIN  Quadro Q ON Q.Codigo = QD.QuadroId
+                                                  where Q.TipoListaId = @TipoListaId AND QD.IrmaoId = I.Codigo) As LastDate
+                                                  FROM Irmao I
+                                                  where I.CongregacaoId = @CongregacaoId AND " + $" {cargo} = 1 " +
+
+                                                   @" and I.Codigo NOT IN
+                                                            (
+                                                             SELECT Isnull(EX.IrmaoId, 0) As IrmaoId  FROM ExcecaoDesignacao EX
+                                                             INNER JOIN Irmao I3 on I3.Codigo = EX.IrmaoId
+                                                             where EX.Data = CAST(@DataReuniaoAtual AS DATE)
+                                                             and I3.CongregacaoId = @CongregacaoId
+                                                            ) 
+                                                  and I.Codigo NOT IN
+
+                                                  (
+                                                   select Isnull(QD2.IrmaoId, 0) As IrmaoId from QuadroDetalhe QD2 
+                                                   INNER JOIN  Quadro Q2 ON Q2.Codigo = QD2.QuadroId
+                                                   where Data = @DataReuniaoAtual AND CongregacaoId = @CongregacaoId AND Q2.TipoListaId <> @ListaOracao
+                                                  )
+
+
+                                                  ) AS TAB1
+                                                  ORDER BY LastDate
+                                                  ",
+                    param: new
+                    {
+                        @TipoListaId = tipoListaId,
+                        @DataReuniaoAtual = datereuniaoAtual,
+                        @CongregacaoId = congregacaoId,
+                        @ListaOracao = eTipoLista.OracaoFinal
+                    }
+                    , transaction: unitOfWork.Transaction
+                ).FirstOrDefault();
+        }
+
+        public ControleLista ObterMaisAntigoGeralSemRepetir(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual, int congregacaoId, string cargo)
+        {
+            var ret  = unitOfWork.Connection.Query<ControleLista>(@"SELECT TOP 1 IrmaoId, 0 As CodigoControleLista, @TipoListaId As TipoListaId, @CongregacaoId As  CongregacaoId, Cast(0 As Bit) As Participou  FROM
+                                                 (SELECT Codigo As IrmaoId, Nome,
+
+                                                 (SELECT MAX(QD.Data) from QuadroDetalhe QD
+                                                  INNER JOIN  Quadro Q ON Q.Codigo = QD.QuadroId
+                                                  where Q.TipoListaId = @TipoListaId AND QD.IrmaoId = I.Codigo and QD.Data < CAST(@DataReuniaoAtual AS DATE)) As UltimaDesignacao,
+
+                                                 (SELECT MAX(QD.Data) from QuadroDetalhe QD
+                                                  INNER JOIN  Quadro Q ON Q.Codigo = QD.QuadroId
+                                                  where QD.IrmaoId = I.Codigo and QD.Data < CAST(@DataReuniaoAtual AS DATE)) As UltimaDesignacaoGeral
+
+                                                  FROM Irmao I
+                                                  where I.CongregacaoId = @CongregacaoId AND " + $" {cargo} = 1 " +
+
+                                                   @" and I.Codigo NOT IN
+                                                            (
+                                                             SELECT Isnull(EX.IrmaoId, 0) As IrmaoId FROM ExcecaoDesignacao EX
+                                                             INNER JOIN Irmao I3 on I3.Codigo = EX.IrmaoId
+                                                             where EX.Data = CAST(@DataReuniaoAtual AS DATE)
+                                                             and I3.CongregacaoId = @CongregacaoId
+
+
+                                                            ) " +
+
+                                                   @" 
+
+                                                    and I.Codigo NOT IN
+													 (
+                                                      select Isnull(QD2.IrmaoId, 0) As IrmaoId from QuadroDetalhe QD2 
+													  INNER JOIN  Quadro Q2 ON Q2.Codigo = QD2.QuadroId
+													  where QD2.Data =  CAST(@DataReuniaoAtual AS DATE) AND Q2.CongregacaoId = @CongregacaoId AND Q2.TipoListaId <> @ListaOracao
+                                                     )
+
+                                                  ) AS TAB1
+                                                  ORDER BY UltimaDesignacaoGeral, UltimaDesignacao
+                                                  ",
+                    param: new
+                    {
+                        @TipoListaId = tipoListaId,
+                        @DataReuniaoAtual = datereuniaoAtual,
+                        @CongregacaoId = congregacaoId,
+                        @ListaOracao = eTipoLista.OracaoFinal
+                    }
+                    , transaction: unitOfWork.Transaction
+                );
+
+            if (ret == null || ret.Count() == 0)
+                return null;
+
+            return ret.FirstOrDefault();
+        }
+        public ControleLista ObterMaisAntigoDesignacaoLeitorSemRepetir(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual, int congregacaoId, string cargo)
+        {
+            var ret = unitOfWork.Connection.Query<ControleLista>(@"SELECT TOP 1 IrmaoId, 0 As CodigoControleLista, 0 As TipoListaId, @CongregacaoId As  CongregacaoId, Cast(0 As Bit) As Participou  FROM
+                                                 (SELECT Codigo As IrmaoId, Nome,
+
+                                                 (SELECT MAX(QD.Data) from QuadroDetalhe QD
+                                                  INNER JOIN  Quadro Q ON Q.Codigo = QD.QuadroId
+                                                  where Q.TipoListaId = @TipoListaId AND QD.IrmaoId = I.Codigo and QD.Data < CAST(@DataReuniaoAtual AS DATE)) As UltimaDesignacao
+
+                                                  FROM Irmao I
+                                                  where I.CongregacaoId = @CongregacaoId AND " + $" {cargo} = 1 " +
+
+                                                   @" and I.Codigo NOT IN
+                                                            (
+                                                             SELECT Isnull(EX.IrmaoId, 0) As IrmaoId FROM ExcecaoDesignacao EX
+                                                             INNER JOIN Irmao I3 on I3.Codigo = EX.IrmaoId
+                                                             where EX.Data = CAST(@DataReuniaoAtual AS DATE)
+                                                             and I3.CongregacaoId = @CongregacaoId
+
+
+                                                            ) " +
+
+                                                   @" 
+
+                                                    and I.Codigo NOT IN
+													 (
+                                                      select Isnull(QD2.IrmaoId, 0) As IrmaoId from QuadroDetalhe QD2 
+													  INNER JOIN  Quadro Q2 ON Q2.Codigo = QD2.QuadroId
+													  where QD2.Data =  CAST(@DataReuniaoAtual AS DATE) AND Q2.CongregacaoId = @CongregacaoId AND Q2.TipoListaId <> @ListaOracao
+                                                     )
+
+                                                  ) AS TAB1
+                                                  ORDER BY UltimaDesignacao
+                                                  ",
+                    param: new
+                    {
+                        @TipoListaId = tipoListaId,
+                        @DataReuniaoAtual = datereuniaoAtual,
+                        @CongregacaoId = congregacaoId,
+                        @ListaOracao = eTipoLista.OracaoFinal
+                    }
+                    , transaction: unitOfWork.Transaction
+                );
+
+            if (ret == null || ret.Count() == 0)
+                return null;
+
+            return ret.FirstOrDefault();
+        }
+
+        public ControleLista ObterMaisAntigoPodeRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, int congregacaoId, string cargo, DateTime datereuniaoAtual)
+        {
+            return unitOfWork.Connection.Query<ControleLista>(@"SELECT TOP 1 IrmaoId FROM
+                                                 (SELECT Codigo As IrmaoId, Nome,
+                                                 (SELECT MAX(QD.Data) from QuadroDetalhe QD
+                                                  INNER JOIN  Quadro Q ON Q.Codigo = QD.QuadroId
+                                                  where Q.TipoListaId = @TipoListaId AND QD.IrmaoId = I.Codigo and QD.Data < CAST(@DataReuniaoAtual AS DATE)) As UltimaDesignacao
+
+                                                  FROM Irmao I
+                                                  where I.CongregacaoId = @CongregacaoId AND " + $" {cargo} = 1 " +
+
+                                                   @" and I.Codigo NOT IN
+                                                            (
+                                                             SELECT EX.IrmaoId FROM ExcecaoDesignacao EX
+                                                             INNER JOIN Irmao I3 on I3.Codigo = EX.IrmaoId
+                                                             where EX.Data = CAST(@DataReuniaoAtual AS DATE)
+                                                             and I3.CongregacaoId = @CongregacaoId
+                                                            ) 
+
+                                                  ) AS TAB1
+                                                  ORDER BY UltimaDesignacao
+                                                  ",
+                    param: new
+                    {
+                        @TipoListaId = tipoListaId,
+                        @DataReuniaoAtual = datereuniaoAtual,
+                        @CongregacaoId = congregacaoId
+                    }
+                    , transaction: unitOfWork.Transaction
+                ).FirstOrDefault();
+        }
+
 
         public void RecuperaBackupListaAtual(ref IUnitOfWork unitOfWork, int tipoListaId, int congregacaoId)
         {

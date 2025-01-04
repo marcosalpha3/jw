@@ -21,5 +21,9 @@ namespace SystemNet.Core.Domain.Contracts.Repositories
         ControleLista ObterProximoListaSemRepetirSemFolgaParaAudioSonoro(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datareuniaoanterior, DateTime datereuniaoAtual,
                     DateTime dataProximaReuniao, int congregacaoId);
 
+        ControleLista ObterMaisAntigoSemRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual, int congregacaoId, string cargo);
+        ControleLista ObterMaisAntigoGeralSemRepetir(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual, int congregacaoId, string cargo);
+        ControleLista ObterMaisAntigoPodeRepetirSemFolga(ref IUnitOfWork unitOfWork, int tipoListaId, int congregacaoId, string cargo, DateTime datereuniaoAtual);
+        ControleLista ObterMaisAntigoDesignacaoLeitorSemRepetir(ref IUnitOfWork unitOfWork, int tipoListaId, DateTime datereuniaoAtual, int congregacaoId, string cargo);
     }
 }
