@@ -650,8 +650,8 @@ namespace SystemNet.Business.Services
                 {
                     while (proximoLista == null)
                     {
-                        proximoLista = _repositoryControleLista.ObterMaisAntigoPodeRepetirSemFolga(ref unitOfWork,
-                        (int)itemTipoLista.Codigo, item.Codigo, itemTipoLista.Codigo.GetDescription(), dataControle);
+                        proximoLista = _repositoryControleLista.ObterMaisAntigoDesignacaoLeitorSemRepetir(ref unitOfWork, (int)itemTipoLista.Codigo,
+                              dataControle, item.Codigo, itemTipoLista.Codigo.GetDescription());
                     }
                 }
 
