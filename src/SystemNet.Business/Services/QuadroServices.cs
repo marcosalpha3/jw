@@ -618,7 +618,8 @@ namespace SystemNet.Business.Services
             if (evento == null || (evento.VisitaSuperintendente && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorELC
                 && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorJW))
             {
-                if (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorELC && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorJW)
+                if (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorELC && itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.LeitorJW &&
+                    itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.IndicadorAuditorio)
                 {
                     while (proximoLista == null)
                     {
@@ -633,7 +634,7 @@ namespace SystemNet.Business.Services
                     }
                 }
                 else if (itemTipoLista.Codigo != Core.Domain.enums.eTipoLista.OracaoFinal &&
-                    (itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.LeitorELC || itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.LeitorJW))
+                    (itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.LeitorELC || itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.LeitorJW || itemTipoLista.Codigo == Core.Domain.enums.eTipoLista.IndicadorAuditorio))
                 {
                     while (proximoLista == null)
                     {
