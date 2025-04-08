@@ -18,7 +18,7 @@ namespace SystemNet.Practices.Data
                 Port = Convert.ToInt32(Runtime.Port),
                 DeliveryMethod = SmtpDeliveryMethod.Network
             };
-
+            //Comentário
             return ClientSmtp;
         }
 
