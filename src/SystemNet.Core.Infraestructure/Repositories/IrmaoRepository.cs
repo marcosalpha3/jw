@@ -1,9 +1,11 @@
 ﻿using Dapper;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using SendGrid.Helpers.Mail.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
 using SystemNet.Core.Domain.Contracts.Repositories;
@@ -12,6 +14,7 @@ using SystemNet.Core.Domain.Querys;
 using SystemNet.Core.Domain.Querys.Grupo;
 using SystemNet.Practice.Common.Resources;
 using SystemNet.Practice.Common.Values;
+using SystemNet.Practices.Data;
 using SystemNet.Practices.Data.Uow;
 using SystemNet.Shared;
 
@@ -288,20 +291,32 @@ namespace SystemNet.Core.Infraestructure.Repositories
             var endereco = new MailAddress(Runtime.Sender, "JW");
 
             string htmlBody = "<html> <body> <p> " + String.Format(HtmlHelloMessage, model.Nome) + "</p> <p>" +
-                          string.Format(Errors.HtmlBody_5, urlEnvironment) + " </p> <p>" +
-                            Errors.HtmlBody_2 + "<b> " + model.Email + "</b> </p> <p>" +
-                            Errors.HtmlBody_3 + "<b> " + password + "</b> </p> <p>" +
+                string.Format(Errors.HtmlBody_5, urlEnvironment) + " </p> <p>" +
+                Errors.HtmlBody_2 + "<b> " + model.Email + "</b> </p> <p>" +
+                Errors.HtmlBody_3 + "<b> " + password + "</b> </p> <p>" +
              "</p> <p>" + Errors.HtmlBody_4 + " </p> </body></html>";
 
             if (!String.IsNullOrEmpty(model.Email))
             {
+                var smtpClient = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587,
+                    Credentials = new NetworkCredential(Runtime.Sender, Runtime.KeySendGrid), // Use a App Password aqui!
+                    EnableSsl = true,
+                };
 
-                var client = new SendGridClient(Runtime.KeySendGrid);
-                var from = new EmailAddress(Runtime.Sender, "JW");
                 var subject = (newUser) ? Errors.SubjectEmail : Errors.SubjectEmail1;
-                var to = new EmailAddress(model.Email, model.Nome);
-                var msg = MailHelper.CreateSingleEmail(from, to, subject,"", htmlBody);
-                var response = client.SendEmailAsync(msg);
+                var msg = new MailMessage() { From = endereco, Body = htmlBody, IsBodyHtml = true, Subject = subject };
+                msg.To.Add(model.Email);
+                smtpClient.Send(msg);
+
+                //var client = new SendGridClient(Runtime.KeySendGrid);
+                //var from = new EmailAddress(Runtime.Sender);
+                //var subject = "Teste de entrega Gmail"; // (newUser) ? Errors.SubjectEmail : Errors.SubjectEmail1;
+                //var to = new EmailAddress(model.Email, model.Nome);
+                //var msg = MailHelper.CreateSingleEmail(from, to, subject, htmlBody, "");
+                //// var msg = MailHelper.CreateSingleEmail(from, to, subject,"", htmlBody);
+                //var response = await client.SendEmailAsync(msg);
             }
         }
 
